@@ -1,10 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+const TAG = "app.tsx ";
 
 function render() {
   const handleClick = () => {
     window.electronAPI.moveMouse();
-    console.log("button clicked. window. electronAPI", window.electronAPI);
+    console.log(TAG, "button clicked. window. electronAPI", window.electronAPI);
   };
   ReactDOM.render(
     <>
