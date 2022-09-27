@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "electron-rebuild": "build-opencv --electron --version 4.5.4 build"
   },
   "keywords": [],
   "author": "mannysa",
@@ -86,8 +87,15 @@
   },
   "dependencies": {
     "@nut-tree/nut-js": "^2.2.0",
+    "@u4/opencv4nodejs": "6.2.4",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "overrides": {
+    "nan": "github:tec27/nan#remove_accessor_signature"
+  },
+  "opencv4nodejs": {
+    "autoBuildFlags": "-DOPENCV_GENERATE_PKGCONFIG=ON -DOPENCV_PC_FILE_NAME=opencv.pc -DCMAKE_CXX_STANDARD=14 -DWITH_FFMPEG=OFF -DBUILD_opencv_freetype=OFF -DBUILD_opencv_highgui=OFF -DENABLE_PRECOMPILED_HEADERS=OFF"
   }
 }
