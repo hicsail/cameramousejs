@@ -1,3 +1,5 @@
+import { Button } from "@nut-tree/nut-js";
+
 const {
   mouse,
   left,
@@ -17,7 +19,7 @@ const {
  *  -
  */
 
-function moveMouse() {
+async function moveMouse() {
   const square = async () => {
     await mouse.move(right(500));
     await mouse.move(down(500));
@@ -31,4 +33,12 @@ function moveMouse() {
   })();
 }
 
-export { moveMouse };
+async function moveTo(position: { x: number; y: number }) {
+  await mouse.move(straightTo(position));
+}
+
+async function click(direction: "left" | "right") {
+  mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
+}
+
+export { moveMouse, moveTo, click };

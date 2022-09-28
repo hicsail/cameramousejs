@@ -2,15 +2,13 @@ let express = require("express");
 let cors = require("cors");
 let bodyParser = require("body-parser");
 const createError = require("http-errors");
-// require("dotenv").config();
 const PORT = 3001;
 
 const TAG = "server.ts: ";
-// const healthRoute = require("./routes/health.route");
 
 import { router as mouseCommandsRoute } from "./routes/mouseCommands.routes";
 
-const MOUSE_COMMANDS_PATH = "/mouseCommands";
+const MOUSE_PATH = "/mouse";
 
 function startServer() {
   // start server
@@ -22,7 +20,7 @@ function startServer() {
     })
   );
   app.use(cors());
-  app.use(MOUSE_COMMANDS_PATH, mouseCommandsRoute);
+  app.use(MOUSE_PATH, mouseCommandsRoute);
 
   const server = app.listen(PORT, () => {
     console.log(TAG, "Server listening at port " + PORT);

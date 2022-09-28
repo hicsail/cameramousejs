@@ -1,23 +1,30 @@
 import { Router } from "express";
-import { moveMouse } from "../../controlApis/mouseCommands";
+import { click, moveTo } from "../../controlApis/mouseCommands";
 
 let router = Router();
 const { handleUnknownError } = require("../utils");
+const MOVEMENT_PATH = "/moveto";
+const ACTION_PATH = "/action";
 
-//health check
-router.route("/").get(async (req, res) => {
+router.route(MOVEMENT_PATH).post(async (req, res) => {
   try {
-    res.send("ok");
+    console.log("received movement command", req.body);
+    if (req.body.x && req.body.y) {
+      moveTo(req.body);
+    }
+    res.send({ status: "ok" });
   } catch (error) {
     handleUnknownError(res, error);
   }
 });
 
 // move mouse to position
-router.route("/").post(async (req: any, res: any) => {
+router.route(ACTION_PATH).post(async (req: any, res: any) => {
   try {
-    console.log("received mouseCommands");
-    moveMouse();
+    console.log("received action command", req.body);
+    if (req.body.action) {
+      click(req.body.action == "leftClick" ? "left" : "right");
+    }
     res.send({ status: "ok" });
   } catch (error) {
     handleUnknownError(res, error);
