@@ -9,3 +9,6 @@ available keyboard commands
 how to begin/end tracking
  * 
  */
+const devMode = true;
+
+export { devMode };

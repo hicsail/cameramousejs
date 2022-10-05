@@ -6,6 +6,7 @@ const { handleUnknownError } = require("../utils");
 const MOVEMENT_PATH = "/moveto";
 const ACTION_PATH = "/action";
 
+// move mouse to position
 router.route(MOVEMENT_PATH).post(async (req, res) => {
   try {
     console.log("received movement command", req.body);
@@ -18,7 +19,7 @@ router.route(MOVEMENT_PATH).post(async (req, res) => {
   }
 });
 
-// move mouse to position
+// perform mouse click
 router.route(ACTION_PATH).post(async (req: any, res: any) => {
   try {
     console.log("received action command", req.body);
