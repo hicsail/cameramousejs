@@ -1,5 +1,5 @@
-import { app, BrowserWindow, ipcMain } from "electron";
-import { devMode } from "./config/config";
+import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import { configuration, devMode, TRACKING_STATUS } from "./config/config";
 import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
 import { setMouseSpeed, moveTo, demoMove } from "./controlApis/mouseCommands";
 import { startServer } from "./server/server";
@@ -49,6 +49,17 @@ app.whenReady().then(() => {
   });
   ipcMain.on(IPC_FUNCTION_KEYS.DEMO_FUNCTION, (_, input: number) => {
     demoMove(input);
+  });
+
+  //register shortcuts
+  globalShortcut.register("Escape", () => {
+    console.log("Escape shortcuts!");
+    configuration.trackingStatus = TRACKING_STATUS.OFF;
+  });
+  globalShortcut.register("Return", () => {
+    console.log("Return shortcuts!");
+    configuration.trackingStatus = TRACKING_STATUS.ON;
+    console.log("configuration.trackingStatus", configuration.trackingStatus);
   });
   createWindow();
   startServer();

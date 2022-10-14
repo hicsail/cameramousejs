@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { configuration, TRACKING_STATUS } from "../../config/config";
 import { click, moveTo } from "../../controlApis/mouseCommands";
 
 let router = Router();
@@ -11,7 +12,11 @@ router.route(MOVEMENT_PATH).post(async (req, res) => {
   try {
     console.log("received movement command", req.body);
     if (req.body.x && req.body.y) {
-      moveTo(req.body);
+      if (configuration.trackingStatus == TRACKING_STATUS.ON) {
+        moveTo(req.body);
+      } else {
+        console.log("tracking is turned off");
+      }
     }
     res.send({ status: "ok" });
   } catch (error) {
@@ -24,7 +29,11 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
   try {
     console.log("received action command", req.body);
     if (req.body.action) {
-      click(req.body.action == "leftClick" ? "left" : "right");
+      if (configuration.trackingStatus == TRACKING_STATUS.ON) {
+        click(req.body.action == "leftClick" ? "left" : "right");
+      } else {
+        console.log("tracking is turned off");
+      }
     }
     res.send({ status: "ok" });
   } catch (error) {

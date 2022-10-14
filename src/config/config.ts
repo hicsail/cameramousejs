@@ -9,13 +9,18 @@ available keyboard commands
 how to begin/end tracking
  * 
  */
+const enum TRACKING_STATUS {
+  OFF,
+  ON,
+}
 const devMode = true;
-const configuration = {
+var configuration = {
   mouseSpeed: 50,
   availableTrackers: {
     thirdParty: true,
     internal: false,
   },
+  trackingStatus: TRACKING_STATUS.OFF,
 };
 
-export { devMode, configuration };
+export { devMode, configuration, TRACKING_STATUS };
