@@ -6,4 +6,8 @@ import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
 contextBridge.exposeInMainWorld("electronAPI", {
   moveMouse: () => ipcRenderer.send(IPC_FUNCTION_KEYS.MOVE_MOUSE),
   openSettings: () => ipcRenderer.send(IPC_FUNCTION_KEYS.OPEN_SETTINGS),
+  setMouseSpeed: (mouseSpeed: number) =>
+    ipcRenderer.send(IPC_FUNCTION_KEYS.DEMO_FUNCTION, mouseSpeed),
+  demoFunction: (input: number) =>
+    ipcRenderer.send(IPC_FUNCTION_KEYS.DEMO_FUNCTION, input),
 });

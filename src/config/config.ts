@@ -10,5 +10,12 @@ how to begin/end tracking
  * 
  */
 const devMode = true;
+const configuration = {
+  mouseSpeed: 50,
+  availableTrackers: {
+    thirdParty: true,
+    internal: false,
+  },
+};
 
-export { devMode };
+export { devMode, configuration };

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { devMode } from "./config/config";
 import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
-import { moveMouse } from "./controlApis/mouseCommands";
+import { setMouseSpeed, moveTo, demoMove } from "./controlApis/mouseCommands";
 import { startServer } from "./server/server";
 import { openSettings } from "./utils/screenUtils";
 
@@ -43,9 +43,13 @@ const createWindow = (): void => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   //expose functions to UI
-  ipcMain.on(IPC_FUNCTION_KEYS.MOVE_MOUSE, moveMouse);
   ipcMain.on(IPC_FUNCTION_KEYS.OPEN_SETTINGS, openSettings);
-
+  ipcMain.on(IPC_FUNCTION_KEYS.SET_MOUSE_SPEED, (_, mouseSpeed: number) => {
+    setMouseSpeed(mouseSpeed);
+  });
+  ipcMain.on(IPC_FUNCTION_KEYS.DEMO_FUNCTION, (_, input: number) => {
+    demoMove(input);
+  });
   createWindow();
   startServer();
 });
@@ -72,7 +76,8 @@ declare global {
   interface Window {
     electronAPI?: {
       openSettings: () => void;
-      moveMouse(): () => void;
+      setMouseSpeed: (mouseSpeed: number) => void;
+      demoFunction: (input: number) => void; //placeholder for quicker developement
     };
   }
 }

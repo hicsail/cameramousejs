@@ -1,5 +1,6 @@
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import React, { useState } from "react";
+import Settings from "./Settings";
 
 export interface Props {}
 const TAG = "Home.tsx ";
@@ -18,9 +19,7 @@ const Home: React.FC<Props> = (props) => {
           ? "Press ESC to stop tracking"
           : "Press ENTER to begin tracking"}
       </h2>
-      <Button variant="outlined" onClick={goToSettings}>
-        Settings
-      </Button>
+      <Settings />
     </>
   );
 };
