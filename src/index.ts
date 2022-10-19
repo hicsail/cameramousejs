@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, MenuItem } from "electron";
 import { configuration, devMode, TRACKING_STATUS } from "./config/config";
 import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
 import { setMouseSpeed, moveTo, demoMove } from "./controlApis/mouseCommands";
@@ -38,6 +38,35 @@ const createWindow = (): void => {
   }
 };
 
+const createMenu = (): void => {
+  const menu = new Menu();
+  menu.append(
+    new MenuItem({
+      label: "New Menu",
+      submenu: [
+        {
+          label: "Start tracking",
+          accelerator: "Return",
+          click: () => {
+            console.log("Turned on tracking!");
+            configuration.trackingStatus = TRACKING_STATUS.ON;
+          },
+        },
+        {
+          label: "Stop tracking",
+          accelerator: "Escape",
+          click: () => {
+            console.log("Turned off tracking!");
+            configuration.trackingStatus = TRACKING_STATUS.OFF;
+          },
+        },
+      ],
+    })
+  );
+  Menu.setApplicationMenu(menu);
+};
+createMenu();
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -51,16 +80,6 @@ app.whenReady().then(() => {
     demoMove(input);
   });
 
-  //register shortcuts
-  globalShortcut.register("Escape", () => {
-    console.log("Escape shortcuts!");
-    configuration.trackingStatus = TRACKING_STATUS.OFF;
-  });
-  globalShortcut.register("Return", () => {
-    console.log("Return shortcuts!");
-    configuration.trackingStatus = TRACKING_STATUS.ON;
-    console.log("configuration.trackingStatus", configuration.trackingStatus);
-  });
   createWindow();
   startServer();
 });
