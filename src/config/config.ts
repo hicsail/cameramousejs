@@ -7,13 +7,18 @@ selected tracker settings
 available mouse commands
 available keyboard commands
 how to begin/end tracking
- * 
+ 
  */
+
 const enum TRACKING_STATUS {
   OFF,
   ON,
 }
+
 const devMode = true;
+
+//TODO define appConfiguration interface
+
 var configuration = {
   mouseSpeed: 50,
   availableTrackers: {

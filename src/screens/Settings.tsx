@@ -3,9 +3,11 @@ import {
   FormControlLabel,
   FormGroup,
   Slider,
+  Stack,
   Switch,
   Typography,
 } from "@mui/material";
+// import { ipcRenderer } from "electron";
 import React, { useContext, useEffect, useState } from "react";
 import { AppConfigContext } from "../store/AppConfigContext";
 
@@ -14,7 +16,6 @@ const TAG = "Settings.tsx ";
 
 const Settings: React.FC<Props> = (props) => {
   const { appConfig, setAppConfig } = useContext(AppConfigContext);
-
   const [mouseSpeed, setMouseSpeed] = useState<number>(0);
 
   useEffect(() => {
@@ -24,19 +25,15 @@ const Settings: React.FC<Props> = (props) => {
   const handleMouseSliderChange = (_: Event, newValue: number | number[]) => {
     if (typeof newValue == "number") {
       setMouseSpeed(newValue);
-      window.electronAPI.setMouseSpeed(newValue);
+
+      const newAppConfig = { ...appConfig, mouseSpeed: newValue };
+      window.electronAPI.updateConfiguration(newAppConfig);
+      // TODO save to local storage
     }
   };
 
-  const saveSettings = () => {
-    const newAppConfig = { ...appConfig };
-    newAppConfig.mouseSpeed = mouseSpeed;
-    setAppConfig(newAppConfig);
-    //TODO save to local storage
-  };
-
   return (
-    <>
+    <Stack width={"100%"}>
       <Typography variant="h6" gutterBottom>
         Mouse speed
       </Typography>
@@ -46,7 +43,7 @@ const Settings: React.FC<Props> = (props) => {
         aria-label="mouse speed slider"
         min={1} //ensures mouse speed never gets to zero
       />
-      <Typography variant="h6" gutterBottom>
+      {/* <Typography variant="h6" gutterBottom>
         Tracker
       </Typography>
 
@@ -59,12 +56,16 @@ const Settings: React.FC<Props> = (props) => {
           control={<Switch checked={appConfig.availableTrackers.thirdParty} />}
           label="3rd-Party Tracker"
         />
-      </FormGroup>
+      </FormGroup> */}
 
-      <Button variant="contained" onClick={saveSettings}>
-        Save
-      </Button>
-    </>
+      {/* <Button
+        variant="contained"
+        onClick={saveSettings}
+        style={{ marginTop: 30 }}
+      >
+        Save Settings
+      </Button> */}
+    </Stack>
   );
 };
 

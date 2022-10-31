@@ -4,7 +4,7 @@ An Electron rewrite of CameraMouse app
 
 # Description
 
-A client that communicates with Cameramouse.js via localhost to control mouse with face-tracking
+When started, the app starts a server on port 3000. A client app can send commands to the server to control the mouse.
 
 ## How to install required packages
 

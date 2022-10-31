@@ -16,10 +16,11 @@ if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
   app.quit();
 }
+let mainWindow: BrowserWindow;
 
 const createWindow = (): void => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     height: 600,
     width: 800,
     webPreferences: {
@@ -50,6 +51,10 @@ const createMenu = (): void => {
           click: () => {
             console.log("Turned on tracking!");
             configuration.trackingStatus = TRACKING_STATUS.ON;
+            mainWindow.webContents.send(
+              IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
+              configuration
+            );
           },
         },
         {
@@ -58,6 +63,10 @@ const createMenu = (): void => {
           click: () => {
             console.log("Turned off tracking!");
             configuration.trackingStatus = TRACKING_STATUS.OFF;
+            mainWindow.webContents.send(
+              IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
+              configuration
+            );
           },
         },
       ],
@@ -73,12 +82,21 @@ createMenu();
 app.whenReady().then(() => {
   //expose functions to UI
   ipcMain.on(IPC_FUNCTION_KEYS.OPEN_SETTINGS, openSettings);
-  ipcMain.on(IPC_FUNCTION_KEYS.SET_MOUSE_SPEED, (_, mouseSpeed: number) => {
-    setMouseSpeed(mouseSpeed);
-  });
-  ipcMain.on(IPC_FUNCTION_KEYS.DEMO_FUNCTION, (_, input: number) => {
-    demoMove(input);
-  });
+  // ipcMain.on(IPC_FUNCTION_KEYS.SET_MOUSE_SPEED, (_, mouseSpeed: number) => {
+  //   setMouseSpeed(mouseSpeed);
+  // });
+  // ipcMain.on(IPC_FUNCTION_KEYS.DEMO_FUNCTION, (_, input: number) => {
+  //   demoMove(input);
+  // });
+  ipcMain.on(
+    IPC_FUNCTION_KEYS.UPDATE_APP_CONFIGURATION,
+    (_, configuration: any) => {
+      console.log(
+        'main received renderer"s request to change config: ',
+        configuration
+      );
+    }
+  );
 
   createWindow();
   startServer();
@@ -106,8 +124,10 @@ declare global {
   interface Window {
     electronAPI?: {
       openSettings: () => void;
-      setMouseSpeed: (mouseSpeed: number) => void;
-      demoFunction: (input: number) => void; //placeholder for quicker developement
+      // setMouseSpeed: (mouseSpeed: number) => void;
+      // demoFunction: (input: number) => void; //placeholder for quicker developement
+      handleConfigurationUpdate: (configuration: any) => void;
+      updateConfiguration: (configuration: any) => void;
     };
   }
 }

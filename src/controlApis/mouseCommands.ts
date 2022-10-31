@@ -14,15 +14,14 @@ import {
  */
 
 /**
- *
+ * normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
  * @param mouseSpeed ranges from 1-100
  */
 function setMouseSpeed(mouseSpeed: number) {
-  //normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
   const newSpeed =
     MOUSE_SPEED_LOWERBOUND +
     ((MOUSE_SPEED_UPPERBOUND - MOUSE_SPEED_LOWERBOUND) * mouseSpeed) / 100;
-  console.log("new mouse speed", newSpeed);
+  console.log("New mouse speed after normalizing", newSpeed);
   mouse.config.mouseSpeed = newSpeed;
 }
 

@@ -6,15 +6,46 @@ import Settings from "./screens/Settings";
 import { createRoot } from "react-dom/client";
 import { AppConfigContext } from "./store/AppConfigContext";
 import { configuration } from "./config/config";
+import { useEffect } from "react";
+import { APP_CONFIGURATION } from "./constants/storageKeys";
 
 const TAG = "App.tsx ";
 
 const App = (): JSX.Element => {
+  const configFromStorageObject = localStorage.getItem(APP_CONFIGURATION);
+  const configFromStorage = JSON.parse(configFromStorageObject);
+  console.log("configFromStorage", configFromStorage);
+
   const [appConfig, setAppConfig] = React.useState(configuration);
+
+  // listen to config changes from main
+  useEffect(() => {
+    window.electronAPI.handleConfigurationUpdate(
+      (_event: any, appConfiguration: any) => {
+        console.log(
+          "handleConfigurationChange triggered in react. value",
+          appConfiguration
+        );
+        setAppConfig(appConfiguration);
+        localStorage.setItem(
+          APP_CONFIGURATION,
+          JSON.stringify(appConfiguration)
+        );
+      }
+    );
+  }, []);
+
   const providerValue = {
     appConfig,
-    setAppConfig,
+    // setAppConfig should be called anytime config is changed in renderer
+    setAppConfig: (config: any) => {
+      setAppConfig(config);
+      localStorage.setItem(APP_CONFIGURATION, JSON.stringify(config));
+      //send latest config state to main
+      window.electronAPI.updateConfiguration(config);
+    },
   };
+
   return (
     <AppConfigContext.Provider value={providerValue}>
       <HashRouter>
