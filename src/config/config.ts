@@ -15,7 +15,8 @@ var configuration = {
   },
   trackingStatus: TRACKING_STATUS.OFF,
   mouseMovementScaleFactor: 5, //ranges from 1-10
-  screenWidth: 1080,
+  mouseMovementScaleFactorY: 5, //
+  screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
 };
 
