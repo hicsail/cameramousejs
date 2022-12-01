@@ -1,5 +1,10 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem, screen } from "electron";
-import { configuration, devMode, TRACKING_STATUS } from "./config/config";
+import {
+  configuration,
+  devMode,
+  TRACKING_STATUS,
+  updateConfiguration,
+} from "./config/config";
 import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
 import { startServer } from "./server/server";
 
@@ -9,7 +14,7 @@ import { startServer } from "./server/server";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 const TAG = "index.ts ";
-
+// export var configuration = defaultConfiguration;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
@@ -50,6 +55,7 @@ const createMenu = (): void => {
           click: () => {
             console.log("Turned on tracking!");
             configuration.trackingStatus = TRACKING_STATUS.ON;
+            configuration.mousePositionSequence = [];
             mainWindow.webContents.send(
               IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
               configuration
@@ -82,14 +88,14 @@ app.whenReady().then(() => {
   //expose functions to UI
   ipcMain.on(
     IPC_FUNCTION_KEYS.UPDATE_APP_CONFIGURATION,
-    (_, newConfiguration: any) => {
+    (_, newConfiguration: typeof configuration) => {
       console.log(
         'main received renderer"s request to change config: ',
         newConfiguration
       );
-      //TODO update all elems in configuration
-      configuration.mouseMovementScaleFactor =
-        newConfiguration.mouseMovementScaleFactor;
+      updateConfiguration(newConfiguration);
+
+      // configuration = { ...defaultConfiguration, ...newConfiguration };
     }
   );
   const primaryDisplay = screen.getPrimaryDisplay();

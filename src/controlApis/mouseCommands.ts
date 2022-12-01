@@ -1,11 +1,13 @@
 import { Button } from "@nut-tree/nut-js";
+import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 import {
   MOUSE_SPEED_UPPERBOUND,
   MOUSE_SPEED_LOWERBOUND,
+  HOVER_TO_CLICK_MIN_POINTS,
+  HOVER_TO_CLICK_DISTANCE_THRESHOLD,
 } from "../config/mouseConfigs";
-import { configuration } from "../config/config";
 
 /**
  * normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
@@ -68,12 +70,51 @@ async function moveTo(position: { x: number; y: number }) {
 
   console.log("moving to position", position);
 
+  configuration.mousePositionSequence.push(position);
+  console.log("position", configuration.mousePositionSequence.length);
+
+  // TODO smoothing
+  /*
+
+  Add position to current Sequence of positions
+
+  function getNewFilteredPosition(currentSequence):Position{
+
+  }
+  const newSequence = oldSequence.append(position)
+  //get last N values in sequence
+  //store last N values in sequence
+  const filteredPosition = getNewFilteredPosition(newSequence)
+  mouse.move(filteredPosition)
+  */
+
   //TODO figure out how to forcibly terminate previous move command before beginning new one
   mouse.move(straightTo(position));
+}
+
+//TODO do not consider last HOVER_TO_CLICK_MIN_POINTS all over again if distance threshold was broken
+function detectClick() {
+  if (configuration.mousePositionSequence.length > HOVER_TO_CLICK_MIN_POINTS) {
+    const cluster = configuration.mousePositionSequence.slice(
+      -HOVER_TO_CLICK_MIN_POINTS
+    );
+    const longestDistanceX =
+      Math.max(...cluster.map((p) => p.x)) -
+      Math.min(...cluster.map((p) => p.x));
+    const longestDistanceY =
+      Math.max(...cluster.map((p) => p.y)) -
+      Math.min(...cluster.map((p) => p.y));
+    if (
+      longestDistanceX < HOVER_TO_CLICK_DISTANCE_THRESHOLD &&
+      longestDistanceY < HOVER_TO_CLICK_DISTANCE_THRESHOLD
+    ) {
+      click("left");
+    }
+  }
 }
 
 async function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
 
-export { moveTo, click, setMouseSpeed };
+export { moveTo, click, setMouseSpeed, detectClick };

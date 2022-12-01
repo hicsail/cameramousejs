@@ -6,7 +6,6 @@ const enum TRACKING_STATUS {
 const devMode = true;
 
 //TODO define appConfiguration interface
-
 var configuration = {
   mouseSpeed: 50,
   availableTrackers: {
@@ -18,6 +17,10 @@ var configuration = {
   mouseMovementScaleFactorY: 5, //
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
+  mousePositionSequence: [{ x: 0, y: 0 }], // must be reset everytime trackingStatus is toggled on
 };
 
-export { devMode, configuration, TRACKING_STATUS };
+function updateConfiguration(newConfiguration: typeof configuration) {
+  configuration = { ...configuration, ...newConfiguration };
+}
+export { devMode, configuration, updateConfiguration, TRACKING_STATUS };

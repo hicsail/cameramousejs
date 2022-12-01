@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { configuration, TRACKING_STATUS } from "../../config/config";
-import { click, moveTo } from "../../controlApis/mouseCommands";
+import { click, detectClick, moveTo } from "../../controlApis/mouseCommands";
 
 let router = Router();
 const { handleUnknownError } = require("../utils");
@@ -14,6 +14,8 @@ router.route(MOVEMENT_PATH).post(async (req, res) => {
     if (req.body.x && req.body.y) {
       if (configuration.trackingStatus == TRACKING_STATUS.ON) {
         moveTo(req.body);
+        //TODO move to client side
+        detectClick();
       } else {
         console.log("tracking is turned off");
       }
