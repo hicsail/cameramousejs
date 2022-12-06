@@ -1,15 +1,3 @@
-/**
- * Specified overall app configuration ;
- 
-available trackers
-selected tracker
-selected tracker settings
-available mouse commands
-available keyboard commands
-how to begin/end tracking
- 
- */
-
 const enum TRACKING_STATUS {
   OFF,
   ON,
@@ -18,7 +6,6 @@ const enum TRACKING_STATUS {
 const devMode = true;
 
 //TODO define appConfiguration interface
-
 var configuration = {
   mouseSpeed: 50,
   availableTrackers: {
@@ -26,6 +13,14 @@ var configuration = {
     internal: false,
   },
   trackingStatus: TRACKING_STATUS.OFF,
+  mouseMovementScaleFactor: 5, //ranges from 1-10
+  mouseMovementScaleFactorY: 5, //
+  screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
+  screenHeight: 720,
+  mousePositionSequence: [{ x: 0, y: 0 }], // must be reset everytime trackingStatus is toggled on
 };
 
-export { devMode, configuration, TRACKING_STATUS };
+function updateConfiguration(newConfiguration: typeof configuration) {
+  configuration = { ...configuration, ...newConfiguration };
+}
+export { devMode, configuration, updateConfiguration, TRACKING_STATUS };

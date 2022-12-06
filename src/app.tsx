@@ -5,9 +5,9 @@ import Home from "./screens/Home";
 import Settings from "./screens/Settings";
 import { createRoot } from "react-dom/client";
 import { AppConfigContext } from "./store/AppConfigContext";
-import { configuration } from "./config/config";
 import { useEffect } from "react";
 import { APP_CONFIGURATION } from "./constants/storageKeys";
+import { configuration } from "./config/config";
 
 const TAG = "App.tsx ";
 
@@ -16,6 +16,7 @@ const App = (): JSX.Element => {
   const configFromStorage = JSON.parse(configFromStorageObject);
   console.log("configFromStorage", configFromStorage);
 
+  //TODO initialize appConfig to configFromStorage if it's not null
   const [appConfig, setAppConfig] = React.useState(configuration);
 
   // listen to config changes from main
