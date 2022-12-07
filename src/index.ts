@@ -104,6 +104,7 @@ app.whenReady().then(() => {
 
   configuration.screenWidth = width;
   configuration.screenHeight = height;
+
   createWindow();
   startServer();
 });

@@ -1,4 +1,4 @@
-import { Slider, Stack, Typography } from "@mui/material";
+import { Slider, Stack, Switch, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import {
   SCALE_FACTOR_LOWERBOUND,
@@ -19,6 +19,7 @@ const Settings: React.FC<Props> = (props) => {
   const [mouseSpeed, setMouseSpeed] = useState<number>(0);
   const [scaleFactor, setScaleFactor] = useState<number>(0);
   const [scaleFactorY, setScaleFactorY] = useState<number>(0);
+  const [clickEnabled, setClickEnabled] = useState(true);
 
   useEffect(() => {
     setMouseSpeed(appConfig.mouseSpeed);
@@ -56,6 +57,17 @@ const Settings: React.FC<Props> = (props) => {
     }
   };
 
+  const handleToggleClickEnabled = (
+    _: React.ChangeEvent<HTMLInputElement>,
+    value: boolean
+  ) => {
+    setClickEnabled(value);
+    const newAppConfig = {
+      ...appConfig,
+      mouseCommands: { ...appConfig.mouseCommands, leftClick: value },
+    };
+    window.electronAPI.updateConfiguration(newAppConfig);
+  };
   return (
     <Stack width={"100%"} spacing={5}>
       <Stack>
@@ -67,6 +79,16 @@ const Settings: React.FC<Props> = (props) => {
           onChangeCommitted={handleMouseSliderChange}
           aria-label="mouse speed slider"
           min={1} //ensures mouse speed never gets to zero
+        />
+      </Stack>
+      <Stack>
+        <Typography variant="h6" gutterBottom>
+          {clickEnabled ? "Disable" : "Enable"} left click
+        </Typography>
+        <Switch
+          checked={clickEnabled}
+          onChange={handleToggleClickEnabled}
+          inputProps={{ "aria-label": "controlled" }}
         />
       </Stack>
       <Stack>

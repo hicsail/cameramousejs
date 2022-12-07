@@ -12,6 +12,9 @@ var configuration = {
     thirdParty: true,
     internal: false,
   },
+  mouseCommands: {
+    leftClick: true,
+  },
   trackingStatus: TRACKING_STATUS.OFF,
   mouseMovementScaleFactor: 5, //ranges from 1-10
   mouseMovementScaleFactorY: 5, //
@@ -23,4 +26,5 @@ var configuration = {
 function updateConfiguration(newConfiguration: typeof configuration) {
   configuration = { ...configuration, ...newConfiguration };
 }
+
 export { devMode, configuration, updateConfiguration, TRACKING_STATUS };

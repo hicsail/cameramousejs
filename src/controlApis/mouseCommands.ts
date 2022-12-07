@@ -1,4 +1,5 @@
 import { Button } from "@nut-tree/nut-js";
+import { lowPassFilter } from "../utils/filters";
 import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
@@ -68,10 +69,25 @@ async function moveTo(position: { x: number; y: number }) {
   position.x = position.x * configuration.screenWidth;
   position.y = position.y * configuration.screenHeight;
 
-  console.log("moving to position", position);
-
   configuration.mousePositionSequence.push(position);
   console.log("position", configuration.mousePositionSequence.length);
+
+  //show filtered sequence
+  // if (configuration.mousePositionSequence.length > 15) {
+  //   console.log(
+  //     "filter input",
+  //     configuration.mousePositionSequence.map((p) => p.x)
+  //   );
+
+  //   console.log(
+  //     "filter output",
+  //     lowPassFilter(
+  //       configuration.mousePositionSequence.map((p) => p.x),
+  //       100,
+  //       30
+  //     )
+  //   );
+  // }
 
   // TODO smoothing
   /*
@@ -93,7 +109,7 @@ async function moveTo(position: { x: number; y: number }) {
 }
 
 //TODO do not consider last HOVER_TO_CLICK_MIN_POINTS all over again if distance threshold was broken
-function detectClick() {
+function detectHoverToClickGesture() {
   if (configuration.mousePositionSequence.length > HOVER_TO_CLICK_MIN_POINTS) {
     const cluster = configuration.mousePositionSequence.slice(
       -HOVER_TO_CLICK_MIN_POINTS
@@ -117,4 +133,4 @@ async function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
 
-export { moveTo, click, setMouseSpeed, detectClick };
+export { moveTo, click, setMouseSpeed, detectHoverToClickGesture };
