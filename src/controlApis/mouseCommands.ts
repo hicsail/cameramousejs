@@ -64,6 +64,17 @@ function applyScaleFactor(position: { x: number; y: number }) {
   position.y = scale(position.y, configuration.mouseMovementScaleFactorY);
 }
 
+// https://easings.net/#easeOutQuint
+function easeOutQuint(x: number): number {
+  return 1 - Math.pow(1 - x, 5);
+}
+
+function customEasing(progressPercentage: number): number {
+  // TODO link speedMultiplier to mouseSpeed
+  const speedMultiplier = 10000;
+  return easeOutQuint(progressPercentage) * speedMultiplier;
+}
+
 async function moveTo(position: { x: number; y: number }) {
   applyScaleFactor(position);
   position.x = position.x * configuration.screenWidth;
@@ -90,22 +101,11 @@ async function moveTo(position: { x: number; y: number }) {
   // }
 
   // TODO smoothing
-  /*
-
-  Add position to current Sequence of positions
-
-  function getNewFilteredPosition(currentSequence):Position{
-
-  }
-  const newSequence = oldSequence.append(position)
-  //get last N values in sequence
-  //store last N values in sequence
-  const filteredPosition = getNewFilteredPosition(newSequence)
-  mouse.move(filteredPosition)
-  */
 
   //TODO figure out how to forcibly terminate previous move command before beginning new one
-  mouse.move(straightTo(position));
+  // (_:any) => 100 is a simplistic easing function that takes cursor to the point directly
+  // mouse.move([position], (_: any) => 100);
+  mouse.move(straightTo(position), customEasing);
 }
 
 //TODO do not consider last HOVER_TO_CLICK_MIN_POINTS all over again if distance threshold was broken
