@@ -1,5 +1,5 @@
 import { Button } from "@nut-tree/nut-js";
-import { lowPassFilter } from "../utils/filters";
+import { lowPassFilter, LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
@@ -9,6 +9,10 @@ import {
   HOVER_TO_CLICK_MIN_POINTS,
   HOVER_TO_CLICK_DISTANCE_THRESHOLD,
 } from "../config/mouseConfigs";
+
+const smoothingFactor = 0.3;
+const lPFStreamX = new LPFStream(15, smoothingFactor);
+const lPFStreamY = new LPFStream(15, smoothingFactor);
 
 /**
  * normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
@@ -75,13 +79,31 @@ function customEasing(progressPercentage: number): number {
   return easeOutQuint(progressPercentage) * speedMultiplier;
 }
 
+// const smoothArray = function (values: number[]) {
+//   var value = values[0];
+//   for (var i = 1; i < values.length; i++) {
+//     var currentValue = values[i];
+//     value += (currentValue - value) * 0.5;
+//     values[i] = Math.round(value);
+//   }
+//   return values;
+// };
+
 async function moveTo(position: { x: number; y: number }) {
   applyScaleFactor(position);
   position.x = position.x * configuration.screenWidth;
   position.y = position.y * configuration.screenHeight;
 
   configuration.mousePositionSequence.push(position);
-  console.log("position", configuration.mousePositionSequence.length);
+  //Apply simple smoothing
+  if (configuration.mousePositionSequence.length == 15) {
+    lPFStreamX.init(configuration.mousePositionSequence.map((p) => p.x));
+    lPFStreamY.init(configuration.mousePositionSequence.map((p) => p.y));
+  } else if (configuration.mousePositionSequence.length > 15) {
+    position.x = lPFStreamX.next(position.x);
+    position.y = lPFStreamY.next(position.y);
+  }
+  console.log(position.x, ",");
 
   //show filtered sequence
   // if (configuration.mousePositionSequence.length > 15) {
@@ -100,11 +122,8 @@ async function moveTo(position: { x: number; y: number }) {
   //   );
   // }
 
-  // TODO smoothing
+  // TODO apply filter to smoothen movement
 
-  //TODO figure out how to forcibly terminate previous move command before beginning new one
-  // (_:any) => 100 is a simplistic easing function that takes cursor to the point directly
-  // mouse.move([position], (_: any) => 100);
   mouse.move(straightTo(position), customEasing);
 }
 

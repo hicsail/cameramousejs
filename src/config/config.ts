@@ -21,6 +21,7 @@ var configuration = {
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
   mousePositionSequence: [{ x: 0, y: 0 }], // must be reset everytime trackingStatus is toggled on
+  // treat as a FIF0 queue. used for determining hover to click
 };
 
 function updateConfiguration(newConfiguration: typeof configuration) {
