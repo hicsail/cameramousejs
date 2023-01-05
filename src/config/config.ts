@@ -13,7 +13,8 @@ var configuration = {
     internal: false,
   },
   mouseCommands: {
-    rightClick: false, //when true, click commands are interpreted as right clicks
+    rightClick: false, //when true, the next click command is interpreted as a right click
+    doubleClick: false, //when true, the next click command is interpreted as a double click
   },
   trackingStatus: TRACKING_STATUS.OFF,
   mouseMovementScaleFactor: 5, //ranges from 1-10

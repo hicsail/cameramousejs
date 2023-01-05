@@ -89,10 +89,6 @@ app.whenReady().then(async () => {
   ipcMain.on(
     IPC_FUNCTION_KEYS.UPDATE_APP_CONFIGURATION,
     (_, newConfiguration: typeof configuration) => {
-      console.log(
-        'main received renderer"s request to change config: ',
-        newConfiguration
-      );
       updateConfiguration(newConfiguration);
     }
   );

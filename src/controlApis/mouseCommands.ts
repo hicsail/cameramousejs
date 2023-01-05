@@ -103,8 +103,12 @@ function detectHoverToClickGesture() {
   }
 }
 
-async function click(direction: "left" | "right") {
+function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
 
-export { moveTo, click, detectHoverToClickGesture };
+function doubleClick() {
+  mouse.doubleClick(Button.LEFT);
+}
+
+export { moveTo, click, doubleClick, detectHoverToClickGesture };

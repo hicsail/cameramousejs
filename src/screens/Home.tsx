@@ -10,10 +10,10 @@ const TAG = "Home.tsx ";
 const Home: React.FC<Props> = (props) => {
   const { appConfig, setAppConfig } = useContext(AppConfigContext);
 
-  const [numClicks, setNumClicks] = useState();
+  const [numClicks, setNumClicks] = useState(false);
   const [clickDirection, setClickDirection] = useState(false);
 
-  const handleToggleClickEnabled = (
+  const handleToggleClickDirection = (
     _: React.ChangeEvent<HTMLInputElement>,
     value: boolean
   ) => {
@@ -25,8 +25,21 @@ const Home: React.FC<Props> = (props) => {
     window.electronAPI.updateConfiguration(newAppConfig);
   };
 
+  const handleToggleNumClicks = (
+    _: React.ChangeEvent<HTMLInputElement>,
+    value: boolean
+  ) => {
+    setNumClicks(value);
+    const newAppConfig = {
+      ...appConfig,
+      mouseCommands: { ...appConfig.mouseCommands, doubleClick: value },
+    };
+    window.electronAPI.updateConfiguration(newAppConfig);
+  };
+
   useEffect(() => {
     setClickDirection(appConfig.mouseCommands.rightClick);
+    setNumClicks(appConfig.mouseCommands.doubleClick);
   }, [appConfig]);
 
   return (
@@ -51,7 +64,17 @@ const Home: React.FC<Props> = (props) => {
           </Typography>
           <Switch
             checked={clickDirection}
-            onChange={handleToggleClickEnabled}
+            onChange={handleToggleClickDirection}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </Stack>
+        <Stack>
+          <Typography variant="h6" gutterBottom>
+            {numClicks ? "Disable" : "Enable"} double click
+          </Typography>
+          <Switch
+            checked={numClicks}
+            onChange={handleToggleNumClicks}
             inputProps={{ "aria-label": "controlled" }}
           />
         </Stack>
