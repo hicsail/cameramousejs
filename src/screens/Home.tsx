@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Stack, Switch, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { TRACKING_STATUS } from "../config/config";
 import { AppConfigContext } from "../store/AppConfigContext";
@@ -9,6 +9,25 @@ const TAG = "Home.tsx ";
 
 const Home: React.FC<Props> = (props) => {
   const { appConfig, setAppConfig } = useContext(AppConfigContext);
+
+  const [numClicks, setNumClicks] = useState();
+  const [clickDirection, setClickDirection] = useState(false);
+
+  const handleToggleClickEnabled = (
+    _: React.ChangeEvent<HTMLInputElement>,
+    value: boolean
+  ) => {
+    setClickDirection(value);
+    const newAppConfig = {
+      ...appConfig,
+      mouseCommands: { ...appConfig.mouseCommands, rightClick: value },
+    };
+    window.electronAPI.updateConfiguration(newAppConfig);
+  };
+
+  useEffect(() => {
+    setClickDirection(appConfig.mouseCommands.rightClick);
+  }, [appConfig]);
 
   return (
     <Stack
@@ -26,6 +45,16 @@ const Home: React.FC<Props> = (props) => {
             <Typography>Press ESC to stop tracking</Typography>
           </Stack>
         )}
+        <Stack>
+          <Typography variant="h6" gutterBottom>
+            {clickDirection ? "Disable" : "Enable"} right click
+          </Typography>
+          <Switch
+            checked={clickDirection}
+            onChange={handleToggleClickEnabled}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </Stack>
       </Box>
 
       <Stack alignItems={"center"}>

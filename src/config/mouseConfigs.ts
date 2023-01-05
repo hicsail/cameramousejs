@@ -1,8 +1,8 @@
 /**
  * Specifies mouse configuration. Speed, available commands
  */
-const MOUSE_SPEED_UPPERBOUND = 1000;
-const MOUSE_SPEED_LOWERBOUND = 200;
+const MOUSE_SPEED_UPPERBOUND = 14000;
+const MOUSE_SPEED_LOWERBOUND = 7000;
 const SCALE_FACTOR_LOWERBOUND = 1;
 const SCALE_FACTOR_UPPERBOUND = 10;
 const SCALE_FACTOR_Y_LOWERBOUND = 1;

@@ -13,7 +13,7 @@ var configuration = {
     internal: false,
   },
   mouseCommands: {
-    leftClick: true,
+    rightClick: false, //when true, click commands are interpreted as right clicks
   },
   trackingStatus: TRACKING_STATUS.OFF,
   mouseMovementScaleFactor: 5, //ranges from 1-10

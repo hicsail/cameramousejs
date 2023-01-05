@@ -1,28 +1,3 @@
-export function lowPassFilter(
-  samples: number[],
-  cutoff: number,
-  sampleRate: number,
-  numChannels = 1
-) {
-  let rc = 1.0 / (cutoff * 2 * Math.PI);
-  let dt = 1.0 / sampleRate;
-  let alpha = dt / (rc + dt);
-  let last_val = [];
-  let offset;
-  for (let i = 0; i < numChannels; i++) {
-    last_val[i] = samples[i];
-  }
-  for (let i = 0; i < samples.length; i++) {
-    for (let j = 0; j < numChannels; j++) {
-      offset = i * numChannels + j;
-      last_val[j] = last_val[j] + alpha * (samples[offset] - last_val[j]);
-      samples[offset] = last_val[j];
-    }
-  }
-
-  return samples;
-}
-
 export class LPFStream {
   smoothing: number = 0.5; // must be smaller than 1
   buffer: number[] = []; // FIFO queue
@@ -39,9 +14,6 @@ export class LPFStream {
     }
     return this.buffer;
   }
-  // keep init . instantiate with global FIFO( wh has same length as bifferSize)
-  //addtoBuffer
-  //isBufferFull()
 
   __push(value: number) {
     var removed =

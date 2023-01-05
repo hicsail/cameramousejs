@@ -1,4 +1,3 @@
-import { EasingFunction, mouse, straightTo } from "@nut-tree/nut-js";
 import { app, BrowserWindow, ipcMain, Menu, MenuItem, screen } from "electron";
 import {
   configuration,
@@ -21,7 +20,7 @@ if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
   app.quit();
 }
-let mainWindow: BrowserWindow;
+export let mainWindow: BrowserWindow;
 
 const createWindow = (): void => {
   // Create the browser window.
@@ -82,17 +81,6 @@ const createMenu = (): void => {
 };
 createMenu();
 
-// https://easings.net/#easeOutQuint
-function easeOutQuint(x: number): number {
-  return 1 - Math.pow(1 - x, 5);
-}
-
-function customEasing(progressPercentage: number): number {
-  // TODO link speedMultiplier to mouseSpeed
-  const speedMultiplier = 10000;
-  return easeOutQuint(progressPercentage) * speedMultiplier;
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -114,8 +102,6 @@ app.whenReady().then(async () => {
 
   configuration.screenWidth = width;
   configuration.screenHeight = height;
-
-  // mouse.move(straightTo({ x: 600, y: 600 }), customEasing);
 
   createWindow();
   startServer();

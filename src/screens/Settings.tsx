@@ -1,6 +1,8 @@
 import { Slider, Stack, Switch, Typography } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  MOUSE_SPEED_LOWERBOUND,
+  MOUSE_SPEED_UPPERBOUND,
   SCALE_FACTOR_LOWERBOUND,
   SCALE_FACTOR_UPPERBOUND,
   SCALE_FACTOR_Y_LOWERBOUND,
@@ -10,6 +12,18 @@ import { AppConfigContext } from "../store/AppConfigContext";
 
 export interface Props {}
 const TAG = "Settings.tsx ";
+
+/**
+ * normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
+ * @param mouseSpeed ranges from 1-100
+ */
+function normalizeMouseSpeed(mouseSpeed: number) {
+  const newSpeed =
+    MOUSE_SPEED_LOWERBOUND +
+    ((MOUSE_SPEED_UPPERBOUND - MOUSE_SPEED_LOWERBOUND) * mouseSpeed) / 100;
+  console.log("New mouse speed after normalizing", newSpeed);
+  return newSpeed;
+}
 
 //TODO create custom hook to update config
 // update  AppConfigContext
@@ -31,7 +45,10 @@ const Settings: React.FC<Props> = (props) => {
     if (typeof newValue == "number") {
       setMouseSpeed(newValue);
 
-      const newAppConfig = { ...appConfig, mouseSpeed: newValue };
+      const newAppConfig = {
+        ...appConfig,
+        mouseSpeed: normalizeMouseSpeed(newValue),
+      };
       window.electronAPI.updateConfiguration(newAppConfig);
     }
   };
@@ -68,6 +85,7 @@ const Settings: React.FC<Props> = (props) => {
     };
     window.electronAPI.updateConfiguration(newAppConfig);
   };
+
   return (
     <Stack width={"100%"} spacing={5}>
       <Stack>

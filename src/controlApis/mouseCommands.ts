@@ -1,11 +1,9 @@
 import { Button } from "@nut-tree/nut-js";
-import { lowPassFilter, LPFStream } from "../utils/filters";
+import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 import {
-  MOUSE_SPEED_UPPERBOUND,
-  MOUSE_SPEED_LOWERBOUND,
   HOVER_TO_CLICK_MIN_POINTS,
   HOVER_TO_CLICK_DISTANCE_THRESHOLD,
 } from "../config/mouseConfigs";
@@ -13,18 +11,6 @@ import {
 const smoothingFactor = 0.3;
 const lPFStreamX = new LPFStream(15, smoothingFactor);
 const lPFStreamY = new LPFStream(15, smoothingFactor);
-
-/**
- * normalize mouseSpeed to fall in range MOUSE_SPEED_LOWERBOUND - MOUSE_SPEED_UPPERBOUND
- * @param mouseSpeed ranges from 1-100
- */
-function setMouseSpeed(mouseSpeed: number) {
-  const newSpeed =
-    MOUSE_SPEED_LOWERBOUND +
-    ((MOUSE_SPEED_UPPERBOUND - MOUSE_SPEED_LOWERBOUND) * mouseSpeed) / 100;
-  console.log("New mouse speed after normalizing", newSpeed);
-  mouse.config.mouseSpeed = newSpeed;
-}
 
 /**
  * adjust the position ratios based on configuration.mouseMovementScaleFactor
@@ -74,20 +60,9 @@ function easeOutQuint(x: number): number {
 }
 
 function customEasing(progressPercentage: number): number {
-  // TODO link speedMultiplier to mouseSpeed
-  const speedMultiplier = 10000;
+  const speedMultiplier = 10000; // TODO: test to find best range. there seem to be no difference in perceived mouse speed when number is between 1000 and 100,000.
   return easeOutQuint(progressPercentage) * speedMultiplier;
 }
-
-// const smoothArray = function (values: number[]) {
-//   var value = values[0];
-//   for (var i = 1; i < values.length; i++) {
-//     var currentValue = values[i];
-//     value += (currentValue - value) * 0.5;
-//     values[i] = Math.round(value);
-//   }
-//   return values;
-// };
 
 async function moveTo(position: { x: number; y: number }) {
   applyScaleFactor(position);
@@ -95,6 +70,7 @@ async function moveTo(position: { x: number; y: number }) {
   position.y = position.y * configuration.screenHeight;
 
   configuration.mousePositionSequence.push(position);
+
   //Apply simple smoothing
   if (configuration.mousePositionSequence.length == 15) {
     lPFStreamX.init(configuration.mousePositionSequence.map((p) => p.x));
@@ -103,31 +79,10 @@ async function moveTo(position: { x: number; y: number }) {
     position.x = lPFStreamX.next(position.x);
     position.y = lPFStreamY.next(position.y);
   }
-  console.log(position.x, ",");
-
-  //show filtered sequence
-  // if (configuration.mousePositionSequence.length > 15) {
-  //   console.log(
-  //     "filter input",
-  //     configuration.mousePositionSequence.map((p) => p.x)
-  //   );
-
-  //   console.log(
-  //     "filter output",
-  //     lowPassFilter(
-  //       configuration.mousePositionSequence.map((p) => p.x),
-  //       100,
-  //       30
-  //     )
-  //   );
-  // }
-
-  // TODO apply filter to smoothen movement
 
   mouse.move(straightTo(position), customEasing);
 }
 
-//TODO do not consider last HOVER_TO_CLICK_MIN_POINTS all over again if distance threshold was broken
 function detectHoverToClickGesture() {
   if (configuration.mousePositionSequence.length > HOVER_TO_CLICK_MIN_POINTS) {
     const cluster = configuration.mousePositionSequence.slice(
@@ -152,4 +107,4 @@ async function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
 
-export { moveTo, click, setMouseSpeed, detectHoverToClickGesture };
+export { moveTo, click, detectHoverToClickGesture };
