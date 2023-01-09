@@ -46,37 +46,40 @@ const Home: React.FC<Props> = (props) => {
     <Stack
       flex={1}
       divider={<Divider flexItem />}
-      spacing={10}
+      spacing={5}
       alignItems={"center"}
     >
       <Box flex={1}>
         {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
-          <Typography>Press ENTER to begin tracking</Typography>
+          <Typography variant="h6">Press ENTER to begin tracking</Typography>
         ) : (
           <Stack alignItems={"center"} spacing={2}>
             <Chip label="Tracking" color="success" />
             <Typography>Press ESC to stop tracking</Typography>
           </Stack>
         )}
-        <Stack>
-          <Typography variant="h6" gutterBottom>
-            {clickDirection ? "Disable" : "Enable"} right click
-          </Typography>
-          <Switch
-            checked={clickDirection}
-            onChange={handleToggleClickDirection}
-            inputProps={{ "aria-label": "controlled" }}
-          />
-        </Stack>
-        <Stack>
-          <Typography variant="h6" gutterBottom>
-            {numClicks ? "Disable" : "Enable"} double click
-          </Typography>
-          <Switch
-            checked={numClicks}
-            onChange={handleToggleNumClicks}
-            inputProps={{ "aria-label": "controlled" }}
-          />
+        <Stack style={{ flexDirection: "row", marginTop: 30 }}>
+          <Stack style={{ alignItems: "center" }}>
+            <Typography gutterBottom>
+              {clickDirection ? "Disable" : "Enable"} right click
+            </Typography>
+            <Switch
+              checked={clickDirection}
+              onChange={handleToggleClickDirection}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </Stack>
+          <Stack style={{ width: 30 }}></Stack>
+          <Stack style={{ alignItems: "center" }}>
+            <Typography gutterBottom>
+              {numClicks ? "Disable" : "Enable"} double click
+            </Typography>
+            <Switch
+              checked={numClicks}
+              onChange={handleToggleNumClicks}
+              inputProps={{ "aria-label": "controlled" }}
+            />
+          </Stack>
         </Stack>
       </Box>
 

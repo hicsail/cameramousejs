@@ -3,10 +3,6 @@ import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
-import {
-  HOVER_TO_CLICK_MIN_POINTS,
-  HOVER_TO_CLICK_DISTANCE_THRESHOLD,
-} from "../config/mouseConfigs";
 
 const smoothingFactor = 0.3;
 const lPFStreamX = new LPFStream(15, smoothingFactor);
@@ -70,8 +66,9 @@ async function moveTo(position: { x: number; y: number }) {
   position.y = position.y * configuration.screenHeight;
 
   configuration.mousePositionSequence.push(position);
+  console.log(position.y + ",");
 
-  //Apply simple smoothing
+  // Apply simple smoothing
   if (configuration.mousePositionSequence.length == 15) {
     lPFStreamX.init(configuration.mousePositionSequence.map((p) => p.x));
     lPFStreamY.init(configuration.mousePositionSequence.map((p) => p.y));
@@ -83,26 +80,6 @@ async function moveTo(position: { x: number; y: number }) {
   mouse.move(straightTo(position), customEasing);
 }
 
-function detectHoverToClickGesture() {
-  if (configuration.mousePositionSequence.length > HOVER_TO_CLICK_MIN_POINTS) {
-    const cluster = configuration.mousePositionSequence.slice(
-      -HOVER_TO_CLICK_MIN_POINTS
-    );
-    const longestDistanceX =
-      Math.max(...cluster.map((p) => p.x)) -
-      Math.min(...cluster.map((p) => p.x));
-    const longestDistanceY =
-      Math.max(...cluster.map((p) => p.y)) -
-      Math.min(...cluster.map((p) => p.y));
-    if (
-      longestDistanceX < HOVER_TO_CLICK_DISTANCE_THRESHOLD &&
-      longestDistanceY < HOVER_TO_CLICK_DISTANCE_THRESHOLD
-    ) {
-      click("left");
-    }
-  }
-}
-
 function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
@@ -111,4 +88,4 @@ function doubleClick() {
   mouse.doubleClick(Button.LEFT);
 }
 
-export { moveTo, click, doubleClick, detectHoverToClickGesture };
+export { moveTo, click, doubleClick };

@@ -17,10 +17,6 @@ router.route(MOVEMENT_PATH).post(async (req, res) => {
       if (configuration.trackingStatus == TRACKING_STATUS.ON) {
         //TODO create handleMoveRequest, which updates mouse pos queue, move and detects click
         moveTo(req.body);
-        //TODO move to client side
-        // if (configuration.mouseCommands.leftClick) {
-        //   detectHoverToClickGesture();
-        // }
       }
     }
     res.send({ status: "ok" });
