@@ -4,9 +4,14 @@ import { configuration } from "../config/config";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 
-const smoothingFactor = 0.3;
-const lPFStreamX = new LPFStream(15, smoothingFactor);
-const lPFStreamY = new LPFStream(15, smoothingFactor);
+const lPFStreamX = new LPFStream(
+  configuration.smoothingBufferSize,
+  configuration.smoothingFactor
+);
+const lPFStreamY = new LPFStream(
+  configuration.smoothingBufferSize,
+  configuration.smoothingFactor
+);
 
 /**
  * adjust the position ratios based on configuration.mouseMovementScaleFactor
