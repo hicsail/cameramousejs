@@ -1,7 +1,6 @@
 import { Button, down, left, right, up } from "@nut-tree/nut-js";
 import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
-import { positions } from "@mui/system";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 
@@ -107,8 +106,6 @@ async function moveTo(position: { x: number; y: number }) {
 }
 
 async function moveByYawAndPitch(yaw: number, pitch: number) {
-  console.log("yaw", yaw, " pitch", pitch);
-
   const yawThreshold = 17;
   const pitchThreshold = 8;
   yaw < -yawThreshold && (await mouse.move(right(10)));

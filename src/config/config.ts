@@ -17,7 +17,7 @@ var configuration = {
     doubleClick: false, //when true, the next click command is interpreted as a double click
   },
   trackingStatus: TRACKING_STATUS.OFF,
-  trackingMode: "joystick", // valid values => "position",  "joystick"
+  trackingMode: "joystick", // valid values => "position",  "joystick", "hybrid"
   mouseMovementScaleFactor: 27, //ranges from 1-10
   mouseMovementScaleFactorY: 20, //
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
