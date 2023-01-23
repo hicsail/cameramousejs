@@ -1,6 +1,7 @@
-import { Button } from "@nut-tree/nut-js";
+import { Button, down, left, right, up } from "@nut-tree/nut-js";
 import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
+import { positions } from "@mui/system";
 
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 
@@ -65,13 +66,33 @@ function customEasing(progressPercentage: number): number {
   return easeOutQuint(progressPercentage) * speedMultiplier;
 }
 
+/**
+ * takes request from client and converts it into mouse movement, based on the trackMode setting
+ * @param request request body from client
+ */
+function moveMouse(requestBody: {
+  x: number;
+  y: number;
+  yaw?: number;
+  pitch?: number;
+}) {
+  if (configuration.trackingMode == "position") {
+    moveTo({ x: requestBody.x, y: requestBody.y });
+  } else if (configuration.trackingMode == "joystick") {
+    moveByYawAndPitch(requestBody.yaw, requestBody.pitch);
+  }
+}
+
+/**
+ * moves mouse to x,y postion postion on screen given a ration coordinate (eg: x:0.4, y:0.2)
+ * @param position ratio coordinate
+ */
 async function moveTo(position: { x: number; y: number }) {
   applyScaleFactor(position);
   position.x = position.x * configuration.screenWidth;
   position.y = position.y * configuration.screenHeight;
 
   configuration.mousePositionSequence.push(position);
-  console.log(position.y + ",");
 
   // Apply simple smoothing
   if (configuration.mousePositionSequence.length == 15) {
@@ -85,6 +106,17 @@ async function moveTo(position: { x: number; y: number }) {
   mouse.move(straightTo(position), customEasing);
 }
 
+async function moveByYawAndPitch(yaw: number, pitch: number) {
+  console.log("yaw", yaw, " pitch", pitch);
+
+  const yawThreshold = 17;
+  const pitchThreshold = 8;
+  yaw < -yawThreshold && (await mouse.move(right(10)));
+  yaw > yawThreshold && (await mouse.move(left(10)));
+  pitch < -pitchThreshold && (await mouse.move(down(10)));
+  pitch > pitchThreshold && (await mouse.move(up(10)));
+}
+
 function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
@@ -93,4 +125,4 @@ function doubleClick() {
   mouse.doubleClick(Button.LEFT);
 }
 
-export { moveTo, click, doubleClick };
+export { moveTo, click, doubleClick, moveMouse };
