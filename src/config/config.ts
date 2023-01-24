@@ -17,13 +17,13 @@ var configuration = {
     doubleClick: false, //when true, the next click command is interpreted as a double click
   },
   trackingStatus: TRACKING_STATUS.OFF,
-  trackingMode: "joystick", // valid values => "position",  "joystick", "hybrid"
-  mouseMovementScaleFactor: 27, //ranges from 1-10
-  mouseMovementScaleFactorY: 20, //
+  trackingMode: "position", // valid values => "position",  "joystick", "hybrid"
+  joystickStepSize: 30, // how many pixels mouse should move per step when in joystick mode
+  mouseMovementScaleFactor: 15, //27,
+  mouseMovementScaleFactorY: 17, // 20, //
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
-  mousePositionSequence: [{ x: 0, y: 0 }], // must be reset everytime trackingStatus is toggled on
-  // treat as a FIF0 queue. used for determining hover to click
+  mousePositionSequence: [{ x: 0, y: 0 }], // FIF0 queue of past mouse positions. reset everytime trackingStatus is toggled on
   smoothingBufferSize: 200,
   smoothingFactor: 0.3,
 };
