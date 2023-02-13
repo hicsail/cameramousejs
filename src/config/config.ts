@@ -24,7 +24,7 @@ var configuration = {
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
   mousePositionSequence: [{ x: 0, y: 0 }], // FIF0 queue of past mouse positions. reset everytime trackingStatus is toggled on
-  smoothingBufferSize: 200,
+  smoothingBufferSize: 5,
   smoothingFactor: 0.3,
 };
 

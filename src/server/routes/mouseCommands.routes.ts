@@ -1,12 +1,7 @@
 import { Router } from "express";
 import { mainWindow } from "../../index";
 import { configuration, TRACKING_STATUS } from "../../config/config";
-import {
-  click,
-  doubleClick,
-  moveMouse,
-  moveTo,
-} from "../../controlApis/mouseCommands";
+import { click, doubleClick, moveMouse } from "../../controlApis/mouseCommands";
 import { IPC_FUNCTION_KEYS } from "../../constants/ipcFunctionKeys";
 
 let router = Router();

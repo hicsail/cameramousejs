@@ -92,7 +92,6 @@ const Settings: React.FC<Props> = (props) => {
           >
             <MenuItem value={"position"}>Position</MenuItem>
             <MenuItem value={"joystick"}>Joystick</MenuItem>
-            <MenuItem value={"hybrid"}>Hybrid</MenuItem>
           </Select>
         </FormControl>
       </Box>

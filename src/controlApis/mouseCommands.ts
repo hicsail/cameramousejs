@@ -104,12 +104,6 @@ async function moveMouse(requestBody: {
     });
   } else if (configuration.trackingMode == "joystick") {
     newPosition = await moveByYawAndPitch(requestBody.yaw, requestBody.pitch);
-  } else {
-    // hybrid mode
-    newPosition = await moveByRotationAndPosition(
-      { x: requestBody.x, y: requestBody.y },
-      { yaw: requestBody.yaw, pitch: requestBody.pitch }
-    );
   }
 
   configuration.mousePositionSequence.push(newPosition);
@@ -126,6 +120,9 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
     y: position.y * configuration.screenHeight,
   };
   newPosition = getNextSmoothPosition(newPosition);
+
+  //TODO
+  console.log("straightTo(newPosition).length", await straightTo(newPosition));
 
   mouse.move(straightTo(newPosition), customEasing);
   return newPosition;
@@ -163,59 +160,6 @@ async function moveByYawAndPitch(yaw: number, pitch: number) {
   return newPosition;
 }
 
-/**
- *
- * @param position move mouse considering both facial rotation and facial movement. ie consider
- * both yaw and pitch and ratio coordinates
- */
-async function moveByRotationAndPosition(
-  position: { x: number; y: number }, // coordinate ratio
-  rotation: { yaw: number; pitch: number }
-) {
-  //move by position only if new position is significantly different from last one
-  //this allows user to pause movement and use rotation for precise control
-
-  /**
-   *
-   * ensure that mouse is not reset too far from where it currently is
-   * ie when mouse is moved by yawAndPitch to some arbitrary position, moveTo shouldn't move mouse
-   *
-   * solution: store new yawAndPitch positions
-   */
-  let newPosition: {
-    x: number;
-    y: number;
-  };
-
-  if (configuration.mousePositionSequence.length > 0) {
-    // determine whether mouse should be moved by position, depending the most recent position
-    applyScaleFactor(position);
-    newPosition = {
-      x: position.x * configuration.screenWidth,
-      y: position.y * configuration.screenHeight,
-    };
-    newPosition = getNextSmoothPosition(newPosition);
-
-    const threshold = 15;
-    const lastPosition = configuration.mousePositionSequence.at(-1);
-    console.log("lastposition", lastPosition);
-
-    if (
-      Math.abs(lastPosition.x - newPosition.x) > threshold ||
-      Math.abs(lastPosition.y - newPosition.y) > threshold
-    ) {
-      mouse.move(straightTo(newPosition), customEasing);
-    } else {
-      newPosition = await moveByYawAndPitch(rotation.yaw, rotation.pitch);
-    }
-  } else {
-    //no past positions yet. simply move by position
-    newPosition = await moveByRatioCoordinates(position);
-  }
-
-  return newPosition;
-}
-
 function click(direction: "left" | "right") {
   mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
@@ -224,4 +168,4 @@ function doubleClick() {
   mouse.doubleClick(Button.LEFT);
 }
 
-export { moveByRatioCoordinates as moveTo, click, doubleClick, moveMouse };
+export { moveByRatioCoordinates, click, doubleClick, moveMouse };
