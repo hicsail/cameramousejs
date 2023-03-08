@@ -3,5 +3,6 @@ node_modules
 out
 dist
 build
-venv*
+.venv*
 .DS_Store
+__pycache__
