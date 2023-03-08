@@ -43,7 +43,7 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
             configuration
           );
         } else {
-          // click("left");
+          click("left");
         }
       } else {
         console.log("tracking is turned off");

@@ -48,6 +48,25 @@ function applyScaleFactor(position: { x: number; y: number }) {
         scaledPositionRatio = Math.min((positionRatio - 0.5) / band + 0.5, 1);
       }
     }
+
+    //*********************** */
+    if (scaleFactor == configuration.mouseMovementScaleFactorY)
+      if (scaledPositionRatio == 0) {
+        console.log("positionRatio: ", positionRatio, "yields 0");
+      } else {
+        console.log(
+          "positionRatio: ",
+          positionRatio,
+          "yields ",
+          scaledPositionRatio
+        );
+      }
+    // else if (scaledPositionRatio == 0) {
+    //   console.log("positionRatio: ", positionRatio, "yields 1");
+    // }
+
+    //*********************** */
+
     return scaledPositionRatio;
   };
 
@@ -115,6 +134,7 @@ async function moveMouse(requestBody: {
  */
 async function moveByRatioCoordinates(position: { x: number; y: number }) {
   applyScaleFactor(position);
+
   let newPosition = {
     x: position.x * configuration.screenWidth,
     y: position.y * configuration.screenHeight,
@@ -122,9 +142,17 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
   newPosition = getNextSmoothPosition(newPosition);
 
   //TODO
-  console.log("straightTo(newPosition).length", await straightTo(newPosition));
+  function getDistance(x1: number, y1: number, x2: number, y2: number) {
+    let y = x2 - x1;
+    let x = y2 - y1;
+
+    return Math.sqrt(x * x + y * y);
+  }
+
+  const oldPos = configuration.mousePositionSequence.at(-1);
 
   mouse.move(straightTo(newPosition), customEasing);
+
   return newPosition;
 }
 
@@ -168,4 +196,11 @@ function doubleClick() {
   mouse.doubleClick(Button.LEFT);
 }
 
-export { moveByRatioCoordinates, click, doubleClick, moveMouse };
+const demoMove = async () => {
+  await mouse.move(left(500));
+  await mouse.move(up(500));
+  await mouse.move(right(500));
+  await mouse.move(down(500));
+};
+
+export { moveByRatioCoordinates, click, doubleClick, moveMouse, demoMove };

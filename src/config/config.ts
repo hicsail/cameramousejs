@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const devMode = true;
+const devMode = false;
 
 //TODO define appConfiguration interface
 var configuration = {
@@ -19,13 +19,13 @@ var configuration = {
   trackingStatus: TRACKING_STATUS.OFF,
   trackingMode: "position", // valid values => "position",  "joystick", "hybrid"
   joystickStepSize: 30, // how many pixels mouse should move per step when in joystick mode
-  mouseMovementScaleFactor: 15, //27,
-  mouseMovementScaleFactorY: 17, // 20, //
+  mouseMovementScaleFactor: 10, //15, //27,
+  mouseMovementScaleFactorY: 12, //17, // 20, //
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts
   screenHeight: 720,
   mousePositionSequence: [{ x: 0, y: 0 }], // FIF0 queue of past mouse positions. reset everytime trackingStatus is toggled on
-  smoothingBufferSize: 5,
-  smoothingFactor: 0.3,
+  smoothingBufferSize: 2,
+  smoothingFactor: 0.5,
 };
 
 function updateConfiguration(newConfiguration: typeof configuration) {
