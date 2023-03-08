@@ -4,3 +4,4 @@ out
 dist
 build
 venv*
+.DS_Store

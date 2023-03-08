@@ -16,7 +16,21 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "all": true,
+      "packagerConfig": {
+        "extraResource": [
+          "./src/pyTracker/dist/main"
+        ],
+        "osxSign": {
+          "hardenedRuntime": true
+        },
+        "osxNotarize": {
+          "tool": "legacy",
+          "appleId": "drich.ios544@gmail.com",
+          "appleIdPassword": "osws-rnvh-cdum-quau",
+          "teamId": "6CKDC8PF59"
+        }
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",

@@ -196,4 +196,11 @@ function doubleClick() {
   mouse.doubleClick(Button.LEFT);
 }
 
-export { moveByRatioCoordinates, click, doubleClick, moveMouse };
+const demoMove = async () => {
+  await mouse.move(left(500));
+  await mouse.move(up(500));
+  await mouse.move(right(500));
+  await mouse.move(down(500));
+};
+
+export { moveByRatioCoordinates, click, doubleClick, moveMouse, demoMove };
