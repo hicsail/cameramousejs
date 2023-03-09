@@ -30,20 +30,20 @@ jobs:
         with:
           name: Camera Mouse Python Package
           path: src/pyTracker/dist/main
-    electron:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Set up Node.js 18.x
-            uses: actions/setup-node@v3
-            with:
-              node-version: 18
-          - name: Install dependencies
-            run: npm install
-          - name: Package
-            run: npm run make
-          - name: Upload
-            uses: actions/upload-artifact@v2
-            with:
-              name: Camera Mouse Package
-              path: dist
+  electron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+      - name: Package
+        run: npm run make
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Camera Mouse Package
+          path: dist
