@@ -21,7 +21,7 @@
       "all": true,
       "packagerConfig": {
         "extraResource": [
-          "./src/pyTracker/dist/main"
+          "/home/runner/work/cameramousejs/cameramousejs/src/pyTracker/dist/main"
         ]
       },
       "makers": [
