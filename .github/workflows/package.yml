@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Camera Mouse Package
-          path: out
+          path: out/make
