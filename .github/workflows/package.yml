@@ -8,7 +8,7 @@ on:
     branches:
       - main
 jobs:
-  python-job:
+  python:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,14 +25,14 @@ jobs:
           pip install -r requirements.txt
       - name: Package
         run: pyinstaller --onefile --windowed src/main.py
-     - name: Upload
+      - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: Camera Mouse Python Package
-          path: src/pyTracker/dist/main 
-  electron-job:
+          path: src/pyTracker/dist/main
+  electron:
     runs-on: ubuntu-latest
-    needs: python-job
+    needs: python
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node.js 18.x
@@ -46,8 +46,6 @@ jobs:
         with:
           name: Camera Mouse Python Package
           path: src/pyTracker/dist
-      - name: Check directory content
-        run: ls -l src/pyTracker
       - name: Package
         run: npm run make
       - name: Upload
