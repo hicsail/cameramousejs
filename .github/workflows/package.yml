@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Check directory content
-        run: ls -l src/PyTracker
+        run: ls -l src/pyTracker
       - name: Package
         run: npm run make
       - name: Upload
