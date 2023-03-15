@@ -21,7 +21,7 @@
       "all": true,
       "packagerConfig": {
         "extraResource": [
-          "src/pyTracker"
+          "src/pyTracker/dist"
         ]
       },
       "makers": [
