@@ -41,6 +41,8 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm install
+      - name: Check directory content
+        run: ls -l .
       - name: Package
         run: npm run make
       - name: Upload
