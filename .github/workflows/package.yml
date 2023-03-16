@@ -26,12 +26,12 @@ jobs:
       - name: Package
         run: pyinstaller --onefile --windowed src/main.py
       - name: Check dist folder content
-        run: dir
+        run: dir \dist /s
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: Camera Mouse Python Package
-          path: src/pyTracker/dist/main/main.exe.notanexecutable
+          path: src/pyTracker/dist/main.exe.notanexecutable
   electronWindows:
     runs-on: windows-latest
     needs: python
