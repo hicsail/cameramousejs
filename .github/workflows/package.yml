@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Camera Mouse Python Package
-          path: src/pyTracker/dist/main.exe.notanexecutable
+          path: src/pyTracker/dist
   electronWindows:
     runs-on: windows-latest
     needs: python
