@@ -105,7 +105,15 @@ function startPyTracker() {
       "../../src/pyTracker",
       ".venv/bin/python"
     );
-    const scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
+    var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
+    // script to start python from code on windows
+
+    //  if windows
+    const scriptToExecTrackerWindows =
+      path.join(__dirname, "../../src/pyTracker", ".venv/Scripts/python.exe") +
+      " " +
+      pathToPyMain;
+    scriptToExecTracker = scriptToExecTrackerWindows;
     console.log("scriptToExecTracker", scriptToExecTracker);
 
     pyProc = exec(
@@ -157,11 +165,18 @@ app.whenReady().then(async () => {
     }
   );
   const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
-  console.log(TAG, "setting screen size to width:", width, "height:", height);
 
-  configuration.screenWidth = width;
-  configuration.screenHeight = height;
+  const { width, height } = primaryDisplay.workAreaSize;
+
+  configuration.screenWidth = width * primaryDisplay.scaleFactor;
+  configuration.screenHeight = height * primaryDisplay.scaleFactor;
+  console.log(
+    TAG,
+    "set screen size to width:",
+    configuration.screenWidth,
+    "height:",
+    configuration.screenHeight
+  );
 
   createWindow();
   startServer();

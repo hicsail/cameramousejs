@@ -49,18 +49,18 @@ function applyScaleFactor(position: { x: number; y: number }) {
       }
     }
 
-    //*********************** */
-    if (scaleFactor == configuration.mouseMovementScaleFactorY)
-      if (scaledPositionRatio == 0) {
-        console.log("positionRatio: ", positionRatio, "yields 0");
-      } else {
-        console.log(
-          "positionRatio: ",
-          positionRatio,
-          "yields ",
-          scaledPositionRatio
-        );
-      }
+    //*********************** */ FOR DEBUGGING scaling
+    // if (scaleFactor == configuration.mouseMovementScaleFactorY)
+    //   if (scaledPositionRatio == 0) {
+    //     console.log("positionRatio: ", positionRatio, "yields 0");
+    //   } else {
+    //     console.log(
+    //       "positionRatio: ",
+    //       positionRatio,
+    //       "yields ",
+    //       scaledPositionRatio
+    //     );
+    //   }
     // else if (scaledPositionRatio == 0) {
     //   console.log("positionRatio: ", positionRatio, "yields 1");
     // }
@@ -141,17 +141,8 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
   };
   newPosition = getNextSmoothPosition(newPosition);
 
-  //TODO
-  function getDistance(x1: number, y1: number, x2: number, y2: number) {
-    let y = x2 - x1;
-    let x = y2 - y1;
-
-    return Math.sqrt(x * x + y * y);
-  }
-
-  const oldPos = configuration.mousePositionSequence.at(-1);
-
   mouse.move(straightTo(newPosition), customEasing);
+  console.log("newPosition", newPosition);
 
   return newPosition;
 }
