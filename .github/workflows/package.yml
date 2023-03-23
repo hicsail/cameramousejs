@@ -8,92 +8,52 @@ on:
     branches:
       - main
 jobs:
-  certGeneratonWindows:
+  python:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/pyTracker
     steps:
-      - name: Create self signed cert
-        run: New-SelfSignedCertificate -Type Custom -Subject "CN=SAIL Software, O=Boston University, C=US" -KeyUsage DigitalSignature -FriendlyName "Sail cameramouse" -CertStoreLocation "." -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")
-      - name: View cert
-        run: dir
-      - name: Export certificate (PFX) file
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+          cache: "pip"
+      - name: Install dependencies
         run: |
-          $password = ConvertTo-SecureString -String osws-rnvh-cdum-quau -Force -AsPlainText 
-          Export-PfxCertificate -cert ".\0E815E6B86DA60CE38A323862AC4592D48C674EB" -FilePath windowsapp.pfx -Password $password
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Package
+        run: pyinstaller main.spec
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
-          name: windows self signed cert
-          path: .
-  # python:
-  #   runs-on: windows-latest
-  #   defaults:
-  #     run:
-  #       working-directory: src/pyTracker
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Set up Python 3.8
-  #       uses: actions/setup-python@v3
-  #       with:
-  #         python-version: 3.8
-  #         cache: "pip"
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install -r requirements.txt
-  #     - name: Package
-  #       run: pyinstaller main.spec
-  #     - name: Upload
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Camera Mouse Python Package
-  #         path: src/pyTracker/dist
-  #     - name: Check dist folder content
-  #       run: dir -s
-  # electronWindows:
-  #   runs-on: windows-latest
-  #   needs: python
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Set up Node.js 18.x
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-  #         cache: "npm"
-  #     - name: Install dependencies
-  #       run: npm install
-  #     - name: Download python build artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: Camera Mouse Python Package
-  #         path: src/pyTracker/dist
-  #     - name: Package
-  #       run: npm run make
-  #     - name: Upload
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Camera Mouse Package Exe
-  #         path: out/make
-  # electronMacSilicone:
-  #   runs-on: macos-latest
-  #   needs: python
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Set up Node.js 18.x
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18
-  #         cache: "npm"
-  #     - name: Install dependencies
-  #       run: npm install
-  #     - name: Download python build artifact
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: Camera Mouse Python Package
-  #         path: src/pyTracker/dist
-  #     - name: Package
-  #       run: npm run make
-  #     - name: Upload
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: Camera Mouse Package App
-  #         path: out/make
+          name: Camera Mouse Python Package
+          path: src/pyTracker/dist
+      - name: Check dist folder content
+        run: dir -s
+  electronWindows:
+    runs-on: windows-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies
+        run: npm install
+      - name: Download python build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Camera Mouse Python Package
+          path: src/pyTracker/dist
+      - name: Package
+        run: npm run make
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Camera Mouse Package Exe
+          path: out/make

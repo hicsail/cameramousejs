@@ -135,8 +135,10 @@ function startPyTracker() {
     //comment out when running locally (path to py exec file is at a different path in prod vs local)
     pythonExecutablePath = pythonExecutablePathInProd;
 
+    console.log("path to python .exe", pythonExecutablePath);
+
     //run tracker from python executable
-    pyProc = execFile(
+    pyProc = exec(
       pythonExecutablePath,
 
       (error: any, stdout: any, stderr: any) => {
