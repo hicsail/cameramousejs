@@ -99,21 +99,26 @@ function startPyTracker() {
   if (devMode) {
     // run tracker from python code
     console.log("pythonExecutablePath", pythonExecutablePath);
-
+    //note that the name of the virtual environment (.venv) is hardcoded here
     const pathToPyVenv = path.join(
       __dirname,
       "../../src/pyTracker",
       ".venv/bin/python"
     );
     var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
-    // script to start python from code on windows
 
-    //  if windows
-    const scriptToExecTrackerWindows =
-      path.join(__dirname, "../../src/pyTracker", ".venv/Scripts/python.exe") +
-      " " +
-      pathToPyMain;
-    scriptToExecTracker = scriptToExecTrackerWindows;
+    if (process.platform === "win32") {
+      // script to start python from code on windows
+      const scriptToExecTrackerWindows =
+        path.join(
+          __dirname,
+          "../../src/pyTracker",
+          ".venv/Scripts/python.exe"
+        ) +
+        " " +
+        pathToPyMain;
+      scriptToExecTracker = scriptToExecTrackerWindows;
+    }
     console.log("scriptToExecTracker", scriptToExecTracker);
 
     pyProc = exec(
