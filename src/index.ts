@@ -89,7 +89,7 @@ let pyProc: any = null;
 //spawns python tracker as a sub process
 console.log("process.resourcesPath", process.resourcesPath);
 
-log.info("Hello, log");
+log.info("New session. Devmode= ", devMode);
 log.info("process.resourcesPath", path.join(process.resourcesPath, "main.exe"));
 log.info("dirname path", path.join(__dirname, "../../../main"));
 function startPyTracker() {

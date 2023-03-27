@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const devMode = false;
+const devMode = true;
 
 //TODO define appConfiguration interface
 var configuration = {

@@ -6,3 +6,5 @@ build
 .venv*
 .DS_Store
 __pycache__
+.env
+*.pfx
