@@ -30,9 +30,7 @@
           "config": {
             "name": "cameramouse",
             "authors": "Manny and Hao",
-            "description": "Rewrite of cameramouse.org",
-            "certificateFile": "./certificate.pfx",
-            "certificatePassword": "NBD7tzW1gVM"
+            "description": "Rewrite of cameramouse.org"
           }
         },
         {
