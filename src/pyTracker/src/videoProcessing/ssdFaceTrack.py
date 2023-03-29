@@ -289,8 +289,7 @@ def trackFaces():
 	# 	for (x, y) in shape[-1:]:
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
-	drawScalingBox(cv2, frame)
-	cv2.imshow("Frame", frame)
+	cv2.imshow("Face Tracker", frame)
 	return faces, poses, pos
 
 def trackFace():

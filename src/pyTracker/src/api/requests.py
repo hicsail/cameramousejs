@@ -26,6 +26,9 @@ Examples:
 
 """
 def sendRequest(requestPath, requestData):
-    url = CAMERMOUSE_SERVER_URL+":"+str(PORT)+"/"+requestPath
-    requests.post(url, json=requestData)
+    try:
+        url = CAMERMOUSE_SERVER_URL+":"+str(PORT)+"/"+requestPath
+        requests.post(url, json=requestData)
+    except Exception:
+        pass 
 

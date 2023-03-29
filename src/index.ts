@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem, screen } from "electron";
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  Menu,
+  MenuItem,
+  screen,
+} from "electron";
 import {
   configuration,
   devMode,
@@ -46,11 +54,19 @@ const createWindow = (): void => {
   }
 };
 
+const turnOffTracking = () => {
+  console.log("Turned off tracking!");
+  configuration.trackingStatus = TRACKING_STATUS.OFF;
+  mainWindow.webContents.send(
+    IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
+    configuration
+  );
+};
 const createMenu = (): void => {
   const menu = new Menu();
   menu.append(
     new MenuItem({
-      label: "New Menu",
+      label: "Start/Stop",
       submenu: [
         {
           label: "Start tracking",
@@ -69,12 +85,7 @@ const createMenu = (): void => {
           label: "Stop tracking",
           accelerator: "Escape",
           click: () => {
-            console.log("Turned off tracking!");
-            configuration.trackingStatus = TRACKING_STATUS.OFF;
-            mainWindow.webContents.send(
-              IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
-              configuration
-            );
+            turnOffTracking();
           },
         },
       ],
@@ -190,10 +201,15 @@ app.whenReady().then(async () => {
       updateConfiguration(newConfiguration);
     }
   );
+
+  //register global short cut to exit tracking
+  globalShortcut.register("Alt+CommandOrControl+S", () => {
+    turnOffTracking();
+  });
+
+  //detect and set screen size
   const primaryDisplay = screen.getPrimaryDisplay();
-
   const { width, height } = primaryDisplay.workAreaSize;
-
   configuration.screenWidth = width * primaryDisplay.scaleFactor;
   configuration.screenHeight = height * primaryDisplay.scaleFactor;
   console.log(
