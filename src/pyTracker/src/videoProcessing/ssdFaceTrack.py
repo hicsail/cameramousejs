@@ -40,6 +40,7 @@ pose_model.load_weights(weight_file)
 template_size = 0.03
 search_size = 0.5
 prev_pos = []
+prev_match_template_res = np.array([[]])
 template = []
 method = cv2.TM_CCORR_NORMED
 dist_threshold = 0.3
@@ -112,7 +113,7 @@ def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size = 50):
 
 def templateTrack(frame, face):
 	# tracking using template matching
-	global template, prev_pos, search_size, dist_threshold
+	global template, prev_pos, prev_match_template_res, search_size, dist_threshold
 
 	if len(face) > 0:
 		rect = dlib.rectangle(left=face[0], top=face[1], 
@@ -144,7 +145,13 @@ def templateTrack(frame, face):
 	# start_x, start_y, end_x, end_y = face[0], face[1], face[0]+face[2], face[1]+face[3]
 	img = frame[start_y:end_y, start_x:end_x, :]
 
-	res = cv2.matchTemplate(img, template, method)
+	
+	try:
+		res = cv2.matchTemplate(img, template, method)
+		prev_match_template_res = res
+		# print("prev_match_template_res", prev_match_template_res)
+	except Exception:
+		res = prev_match_template_res
 	min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 	# If the method is TM_SQDIFF or TM_SQDIFF_NORMED, take minimum
 	if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
@@ -161,6 +168,8 @@ def templateTrack(frame, face):
 	template = frame[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0], :]
 
 	return top_left, bottom_right
+
+
 
 def opticalFlow(frame, face):
 	frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

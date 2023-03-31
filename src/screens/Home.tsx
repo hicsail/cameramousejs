@@ -23,6 +23,7 @@ const Home: React.FC<Props> = (props) => {
       mouseCommands: { ...appConfig.mouseCommands, rightClick: value },
     };
     window.electronAPI.updateConfiguration(newAppConfig);
+    setAppConfig(newAppConfig)
   };
 
   const handleToggleNumClicks = (
@@ -35,6 +36,7 @@ const Home: React.FC<Props> = (props) => {
       mouseCommands: { ...appConfig.mouseCommands, doubleClick: value },
     };
     window.electronAPI.updateConfiguration(newAppConfig);
+    setAppConfig(newAppConfig)
   };
 
   useEffect(() => {

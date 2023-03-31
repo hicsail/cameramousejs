@@ -12,9 +12,9 @@ import { configuration } from "./config/config";
 const TAG = "App.tsx ";
 
 const App = (): JSX.Element => {
-  const configFromStorageObject = localStorage.getItem(APP_CONFIGURATION);
-  const configFromStorage = JSON.parse(configFromStorageObject);
-  console.log("configFromStorage", configFromStorage);
+  // const configFromStorageObject = localStorage.getItem(APP_CONFIGURATION);
+  // const configFromStorage = JSON.parse(configFromStorageObject);
+  // console.log("configFromStorage", configFromStorage);
 
   //TODO initialize appConfig to configFromStorage if it's not null
   const [appConfig, setAppConfig] = React.useState(configuration);

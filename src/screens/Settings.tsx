@@ -20,7 +20,6 @@ import { AppConfigContext } from "../store/AppConfigContext";
 
 export interface Props {}
 const TAG = "Settings.tsx ";
-
 //TODO create custom hook to update config
 // update  AppConfigContext
 // send update to main
@@ -43,6 +42,7 @@ const Settings: React.FC<Props> = (props) => {
 
     const newAppConfig = { ...appConfig, trackingMode: event.target.value };
     window.electronAPI.updateConfiguration(newAppConfig);
+    setAppConfig(newAppConfig);
   };
 
   const handleScaleSliderChange = (_: Event, newValue: number | number[]) => {
@@ -51,6 +51,7 @@ const Settings: React.FC<Props> = (props) => {
 
       const newAppConfig = { ...appConfig, mouseMovementScaleFactor: newValue };
       window.electronAPI.updateConfiguration(newAppConfig);
+      setAppConfig(newAppConfig);
     }
   };
 
@@ -63,6 +64,7 @@ const Settings: React.FC<Props> = (props) => {
         mouseMovementScaleFactorY: newValue,
       };
       window.electronAPI.updateConfiguration(newAppConfig);
+      setAppConfig(newAppConfig);
     }
   };
 
@@ -75,6 +77,7 @@ const Settings: React.FC<Props> = (props) => {
         joystickStepSize: newValue,
       };
       window.electronAPI.updateConfiguration(newAppConfig);
+      setAppConfig(newAppConfig);
     }
   };
 

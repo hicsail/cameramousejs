@@ -12,6 +12,8 @@ const ACTION_PATH = "/action";
 // move mouse to position
 router.route(MOVEMENT_PATH).post(async (req, res) => {
   try {
+    // console.log("received", req.body);
+
     if (configuration.trackingStatus == TRACKING_STATUS.ON) {
       moveMouse(req.body);
     }
@@ -45,8 +47,6 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
         } else {
           click("left");
         }
-      } else {
-        console.log("tracking is turned off");
       }
     }
     res.send({ status: "ok" });

@@ -64,7 +64,10 @@ function applyScaleFactor(position: { x: number; y: number }) {
     // else if (scaledPositionRatio == 0) {
     //   console.log("positionRatio: ", positionRatio, "yields 1");
     // }
-
+    console.log(
+      " mouseMovementScaleFactor in scaling",
+      configuration.mouseMovementScaleFactor
+    );
     //*********************** */
 
     return scaledPositionRatio;
@@ -142,7 +145,6 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
   newPosition = getNextSmoothPosition(newPosition);
 
   mouse.move(straightTo(newPosition), customEasing);
-  console.log("newPosition", newPosition);
 
   return newPosition;
 }

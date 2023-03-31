@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const devMode = true;
+const devMode = false;
 
 //TODO define appConfiguration interface
 var configuration = {
@@ -29,7 +29,7 @@ var configuration = {
 };
 
 function updateConfiguration(newConfiguration: typeof configuration) {
-  configuration = { ...configuration, ...newConfiguration };
+  configuration = newConfiguration;
 }
 
 export { devMode, configuration, updateConfiguration, TRACKING_STATUS };
