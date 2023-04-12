@@ -6,10 +6,10 @@ def drawScalingBox(cvObject, frame):
     templateMatchBoxLength = 11
     boundingBox = getBoundingCoordinatesOfScalingBox()
     # 2 is the width of the boxes (template matching box, scaling box) drawn
-    startX = int(boundingBox["x"][0] * FRAME_WIDTH) - 4
-    endX = int(boundingBox["x"][1] * FRAME_WIDTH) + templateMatchBoxLength + 4
-    startY = int(boundingBox["y"][0] * FRAME_HEIGHT) - 4
-    endY = int(boundingBox["y"][1] * FRAME_HEIGHT) + templateMatchBoxLength + 4
+    startX = int(boundingBox["x"][0] * FRAME_WIDTH) #- 4
+    endX = int(boundingBox["x"][1] * FRAME_WIDTH) #+ templateMatchBoxLength + 4
+    startY = int(boundingBox["y"][0] * FRAME_HEIGHT) #- 4
+    endY = int(boundingBox["y"][1] * FRAME_HEIGHT) #+ templateMatchBoxLength + 4
     cvObject.rectangle(frame, (startX, startY), (endX, endY),
 				(0, 255, 0 ), 2)
     y = startY - 10 if startY - 10 > 10 else startY + 10

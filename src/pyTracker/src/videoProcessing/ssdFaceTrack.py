@@ -67,7 +67,7 @@ time.sleep(2.0)
 """
 returns the size of the frame on which faces are detected.
 Note that config.FRAME_WIDTH and config.FRAME_HEIGHT can't be used directly because the 
-final width and heiht of the frame might change depending on the aspect ratio of the camera
+final width and height of the frame might change depending on the aspect ratio of the camera
 
 for eg: when config.FRAME_WIDTH and config.FRAME_HEIGHT are both 300 and aspect ratio of camera is 1920/1080,
         eventual height of the frame is 168 (not 300) ,after resizing
@@ -76,6 +76,7 @@ def getFrameSize():
 	frame = vs.read()
 	frame = imutils.resize(frame, width=config.FRAME_WIDTH, height=config.FRAME_HEIGHT)
 	(h, w) = frame.shape[:2]
+	print("(h, w)",(h, w) )
 	return (w,h)
 
 from math import cos, sin, hypot
@@ -298,6 +299,7 @@ def trackFaces():
 	# 	for (x, y) in shape[-1:]:
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
+	drawScalingBox(cv2, frame)
 	cv2.imshow("Face Tracker", frame)
 	return faces, poses, pos
 

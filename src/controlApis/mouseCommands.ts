@@ -64,10 +64,10 @@ function applyScaleFactor(position: { x: number; y: number }) {
     // else if (scaledPositionRatio == 0) {
     //   console.log("positionRatio: ", positionRatio, "yields 1");
     // }
-    console.log(
-      " mouseMovementScaleFactor in scaling",
-      configuration.mouseMovementScaleFactor
-    );
+    // console.log(
+    //   " mouseMovementScaleFactor in scaling",
+    //   configuration.mouseMovementScaleFactor
+    // );
     //*********************** */
 
     return scaledPositionRatio;
