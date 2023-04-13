@@ -8,12 +8,22 @@ let router = Router();
 const { handleUnknownError } = require("../utils");
 const MOVEMENT_PATH = "/moveto";
 const ACTION_PATH = "/action";
+const SETTINGS_PATH = "/settings"
+
+
+// get current app configuration
+router.route(SETTINGS_PATH).get(async (req, res) => {
+  try {
+    res.send(JSON.stringify(configuration));
+  } catch (error) {
+    handleUnknownError(res, error);
+  }
+});
+
 
 // move mouse to position
 router.route(MOVEMENT_PATH).post(async (req, res) => {
-  try {
-    // console.log("received", req.body);
-
+  try {    
     if (configuration.trackingStatus == TRACKING_STATUS.ON) {
       moveMouse(req.body);
     }

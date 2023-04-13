@@ -103,9 +103,8 @@ const Settings: React.FC<Props> = (props) => {
           <Typography variant="h6" gutterBottom>
             Settings
           </Typography>
-          {/* TODO add track mode selector */}
           <Stack>
-            <Typography gutterBottom>Scale factor X</Typography>
+            <Typography gutterBottom>Horizontal sensitivity</Typography>
             <Slider
               aria-label="mouse movement scale slider"
               value={scaleFactor}
@@ -119,7 +118,7 @@ const Settings: React.FC<Props> = (props) => {
             />
           </Stack>
           <Stack>
-            <Typography gutterBottom>Scale factor Y</Typography>
+            <Typography gutterBottom>Vertical sensitivity</Typography>
             <Slider
               aria-label="mouse movement scale slider y"
               value={scaleFactorY}

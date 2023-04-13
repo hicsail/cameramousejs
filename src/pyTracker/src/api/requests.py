@@ -1,11 +1,13 @@
 # TODO Add type to all method parameters
 
 import requests
+from videoProcessing.trackerState import trackerState
 
 PORT = 3001
 CAMERMOUSE_SERVER_URL = "http://localhost"
 MOUSE_MOVEMENT_PATH = "mouse/moveto"
 MOUSE_ACTION_PATH = "mouse/action"
+SETTINGS_PATH = "mouse/settings"
 
 class MOUSE_ACTIONS:
     LEFT_CLICK = {"action": "leftClick"}
@@ -25,10 +27,19 @@ Examples:
     sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.LEFT_CLICK))
 
 """
-def sendRequest(requestPath, requestData):
+def sendRequest(requestPath, requestData, httpMethod="post"):
     try:
         url = CAMERMOUSE_SERVER_URL+":"+str(PORT)+"/"+requestPath
-        requests.post(url, json=requestData)
+        if httpMethod=="post":
+            response = requests.post(url, json=requestData)
+        else:
+            response = requests.get(url)
+        return response
     except Exception:
         pass 
 
+
+def getLatestAppSettingsFromServer():
+    response = sendRequest(SETTINGS_PATH, None, httpMethod="get")
+    config = response.json()
+    trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])

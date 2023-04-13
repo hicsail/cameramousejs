@@ -4,12 +4,10 @@ contains methods that converts tracking data to mouse and keyboard commands
 from collections import deque
 import itertools
 from api.requests import MOUSE_ACTION_PATH, MOUSE_ACTIONS, MOUSE_MOVEMENT_PATH, sendRequest
-from videoProcessing.trackerState import TrackerState
+from videoProcessing.trackerState import trackerState
 from videoProcessing.config import config
 
 NEW_POSITION_THRESHOLD = 0.001 # minimum difference between two consecutive positions required for the latter to be considered a legit new position
-
-trackerState = TrackerState()
 
 def getCenterOfFace(face):
     x, y, w, h = face

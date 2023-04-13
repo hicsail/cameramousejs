@@ -212,15 +212,19 @@ app.whenReady().then(async () => {
   const taskBarHeight = 90;
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
-  configuration.screenWidth = width * primaryDisplay.scaleFactor;
+  let scaleFactor = 1
+  if (process.platform !== "darwin") {
+    scaleFactor = primaryDisplay.scaleFactor
+  }
+  configuration.screenWidth = width * scaleFactor;
   configuration.screenHeight =
-    height * primaryDisplay.scaleFactor + taskBarHeight;
+    height * scaleFactor + taskBarHeight;
   console.log(
     TAG,
     "set screen size to width:",
     configuration.screenWidth,
     "height:",
-    configuration.screenHeight
+    configuration.screenHeight, "used scalefactor of", scaleFactor
   );
 
   createWindow();
