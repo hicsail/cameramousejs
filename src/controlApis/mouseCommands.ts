@@ -49,27 +49,6 @@ function applyScaleFactor(position: { x: number; y: number }) {
       }
     }
 
-    //*********************** */ FOR DEBUGGING scaling
-    // if (scaleFactor == configuration.mouseMovementScaleFactorY)
-    //   if (scaledPositionRatio == 0) {
-    //     console.log("positionRatio: ", positionRatio, "yields 0");
-    //   } else {
-    //     console.log(
-    //       "positionRatio: ",
-    //       positionRatio,
-    //       "yields ",
-    //       scaledPositionRatio
-    //     );
-    //   }
-    // else if (scaledPositionRatio == 0) {
-    //   console.log("positionRatio: ", positionRatio, "yields 1");
-    // }
-    // console.log(
-    //   " mouseMovementScaleFactor in scaling",
-    //   configuration.mouseMovementScaleFactor
-    // );
-    //*********************** */
-
     return scaledPositionRatio;
   };
 
@@ -103,6 +82,27 @@ function easeOutQuint(x: number): number {
 function customEasing(progressPercentage: number): number {
   const speedMultiplier = 10000;
   return easeOutQuint(progressPercentage) * speedMultiplier;
+}
+
+/**
+ * ensures new position is not beyond the boundaries set by user
+ */
+function clipToBoundary(position: { x: number; y: number }) {
+  const bep = configuration.boundaryExclusionPercentage
+  const leftBoundary =
+  bep.left * configuration.screenWidth;
+  const rightBoundary = configuration.screenWidth - (
+  bep.right * configuration.screenWidth);
+  const topBoundary =
+  bep.top * configuration.screenHeight;
+  const bottomBoundary = configuration.screenHeight - (
+  bep.bottom *
+    configuration.screenHeight);
+  
+  position.x = Math.max(position.x, leftBoundary);
+  position.x = Math.min(position.x, rightBoundary);
+  position.y = Math.max(position.y, topBoundary);
+  position.y = Math.min(position.y, bottomBoundary);
 }
 
 /**
@@ -143,7 +143,7 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
     y: position.y * configuration.screenHeight,
   };
   newPosition = getNextSmoothPosition(newPosition);
-
+  clipToBoundary(newPosition);
   mouse.move(straightTo(newPosition), customEasing);
 
   return newPosition;

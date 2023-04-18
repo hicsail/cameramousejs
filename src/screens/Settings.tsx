@@ -7,9 +7,11 @@ import {
   SelectChangeEvent,
   Slider,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import ScreenExclusionForm from "../components/ScreenExclusionForm";
 import {
   SCALE_FACTOR_X_LOWERBOUND,
   SCALE_FACTOR_X_UPPERBOUND,
@@ -21,8 +23,6 @@ import { AppConfigContext } from "../store/AppConfigContext";
 export interface Props {}
 const TAG = "Settings.tsx ";
 //TODO create custom hook to update config
-// update  AppConfigContext
-// send update to main
 const Settings: React.FC<Props> = (props) => {
   const { appConfig, setAppConfig } = useContext(AppConfigContext);
   const [scaleFactor, setScaleFactor] = useState<number>(0);
@@ -131,6 +131,7 @@ const Settings: React.FC<Props> = (props) => {
               valueLabelDisplay="auto"
             />
           </Stack>
+          <ScreenExclusionForm />
         </>
       ) : (
         <Stack>
