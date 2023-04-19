@@ -183,7 +183,7 @@ function startPyTracker() {
   }
 
   //TODO log successful tracker exec
-  // promisy exec and execFile, await response
+  //promisy exec and execFile, await response
 }
 
 const exitPyProc = () => {
@@ -212,19 +212,20 @@ app.whenReady().then(async () => {
   const taskBarHeight = 90;
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
-  let scaleFactor = 1
+  let scaleFactor = 1;
   if (process.platform !== "darwin") {
-    scaleFactor = primaryDisplay.scaleFactor
+    scaleFactor = primaryDisplay.scaleFactor;
   }
   configuration.screenWidth = width * scaleFactor;
-  configuration.screenHeight =
-    height * scaleFactor + taskBarHeight;
+  configuration.screenHeight = height * scaleFactor + taskBarHeight;
   console.log(
     TAG,
     "set screen size to width:",
     configuration.screenWidth,
     "height:",
-    configuration.screenHeight, "used scalefactor of", scaleFactor
+    configuration.screenHeight,
+    "used scalefactor of",
+    scaleFactor
   );
 
   createWindow();
