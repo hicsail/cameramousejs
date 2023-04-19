@@ -57,3 +57,7 @@ jobs:
         with:
           name: Camera Mouse Package Exe
           path: out/make
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: out/make/*
