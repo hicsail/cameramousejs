@@ -62,4 +62,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: 'out\make\squirrel.windows\x64\cameramouse-1.0.0 Setup.exe'
+          files: 'D:\a\cameramousejs\cameramousejs\out\make\squirrel.windows\x64\cameramouse-1.0.0 Setup.exe'
