@@ -62,4 +62,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: out/make
+          files: out/make/zip/darwin/arm64/cameramouse-darwin-arm64-1.0.0.zip
