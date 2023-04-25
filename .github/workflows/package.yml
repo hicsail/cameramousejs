@@ -19,10 +19,10 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
-      - name: Add windows certifcate password 
+      - name: Add windows certifcate password
         run: npm run add-wincert-pass
-      - name: Show windows certifcate password 
-        run: npm pkg get 'config.forge.makers[0].config.certificatePassword'
+      - name: Show windows certifcate password
+        run: npm pkg get 'config.forge.makers[0].config'
       - name: Install dependencies
         run: npm install
       - name: Download python build artifact
