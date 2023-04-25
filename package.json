@@ -32,7 +32,7 @@
             "name": "cameramouse",
             "authors": "Manny and Hao",
             "description": "Rewrite of cameramouse.org",
-            "certificateFile": "certificate.pfx",
+            "certificateFile": "certificate.pfx"
           }
         },
         {
