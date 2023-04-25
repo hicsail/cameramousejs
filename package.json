@@ -12,7 +12,7 @@
     "lint": "eslint --ext .ts,.tsx .",
     "sign": "electron-osx-sign out/cameramouse-darwin-arm64/cameramouse.app",
     "sign-python-excutable": "electron-osx-sign src/pyTracker/dist/main.app",
-    "add-wincert-pass": "npm pkg set 'config.forge.makers[0].config.certificatePassword'=$WINDOWS_CERTIFICATE_PASSWORD"
+    "add-wincert-pass": "npm pkg set 'config.forge.makers[0].config.certificatePassword'=WINDOWS_CERTIFICATE_PASSWORD"
   },
   "keywords": [],
   "author": "mannysa",
