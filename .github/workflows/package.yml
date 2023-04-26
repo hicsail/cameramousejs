@@ -20,9 +20,7 @@ jobs:
           node-version: 18
           cache: "npm"
       - name: Add windows certifcate password
-        env:
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-        run: npm pkg set config.forge.makers[0].config.certificatePassword=$WINDOWS_CERTIFICATE_PASSWORD
+        run: npm pkg set config.forge.makers[0].config.certificatePassword=${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
       - name: Show windows certifcate password
         run: npm pkg get 'config.forge.makers[0].config'
       - name: Install dependencies
