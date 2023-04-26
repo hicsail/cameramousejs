@@ -10,6 +10,29 @@ on:
     branches:
       - main
 jobs:
+  python:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/pyTracker
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Package
+        run: pyinstaller main.spec
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Camera Mouse Python Package
+          path: src/pyTracker/dist
   electronWindows:
     runs-on: windows-latest
     steps:
@@ -21,8 +44,6 @@ jobs:
           cache: "npm"
       - name: Add windows certifcate password
         run: npm pkg set config.forge.makers[0].config.certificatePassword=${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-      - name: Show windows certifcate password
-        run: npm pkg get 'config.forge.makers[0].config'
       - name: Install dependencies
         run: npm install
       - name: Download python build artifact
@@ -37,7 +58,7 @@ jobs:
         with:
           name: Camera Mouse Package Exe
           path: out/make
-      - name: Release
+      - name: Release (with exe .file)
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
