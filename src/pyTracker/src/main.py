@@ -1,10 +1,13 @@
 from api.requests import getLatestAppSettingsFromServer
 from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
+from videoProcessing.trackerState import trackerState
+
 import cv2
 
 if __name__ == "__main__":
     frameSize = getFrameSize()
+    trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
     while True:
         face, pose, pos = trackFace()
