@@ -35,6 +35,7 @@ jobs:
           path: src/pyTracker/dist
   electronWindows:
     runs-on: windows-latest
+    needs: python
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node.js 18.x
