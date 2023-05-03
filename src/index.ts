@@ -96,14 +96,15 @@ const createMenu = (): void => {
 };
 
 createMenu();
-let pyProc: any = null;
 
-//spawns python tracker as a sub process
-console.log("process.resourcesPath", process.resourcesPath);
-
+//Log session
 log.info("New session. Devmode= ", devMode);
 log.info("process.resourcesPath", path.join(process.resourcesPath, "main.exe"));
 log.info("dirname path", path.join(__dirname, "../../../main"));
+
+let pyProc: any = null;
+
+//spawns python tracker as a sub process
 function startPyTracker() {
   let pathToPyMain = path.join(__dirname, "../../src/pyTracker/src", "main.py");
   console.log("script path", pathToPyMain);

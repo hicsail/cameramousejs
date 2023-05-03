@@ -157,10 +157,11 @@ async function moveByRatioCoordinates(position: { x: number; y: number }) {
  */
 async function moveByYawAndPitch(yaw: number, pitch: number) {
   const joystickStep = configuration.joystickStepSize;
-  const yawThreshold = 17;
-  const pitchThreshold = 8;
+  const yawThreshold = configuration.joystickYawThreshold; 
+  const pitchThreshold = configuration.joystickPitchThreshold ; 
   const lastPosition = configuration.mousePositionSequence.at(-1);
-
+  console.log('"yaw: ', yaw);
+  
   let newPosition = { ...lastPosition };
   if (yaw < -yawThreshold) {
     await mouse.move(right(joystickStep));

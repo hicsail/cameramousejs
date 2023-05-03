@@ -13,10 +13,14 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import ScreenExclusionForm from "../components/ScreenExclusionForm";
 import {
+  PITCH_LOWERBOUND,
+  PITCH_UPPERBOUND,
   SCALE_FACTOR_X_LOWERBOUND,
   SCALE_FACTOR_X_UPPERBOUND,
   SCALE_FACTOR_Y_LOWERBOUND,
   SCALE_FACTOR_Y_UPPERBOUND,
+  YAW_LOWERBOUND,
+  YAW_UPPERBOUND,
 } from "../config/mouseConfigs";
 import { AppConfigContext } from "../store/AppConfigContext";
 
@@ -27,6 +31,8 @@ const Settings: React.FC<Props> = (props) => {
   const { appConfig, setAppConfig } = useContext(AppConfigContext);
   const [scaleFactor, setScaleFactor] = useState<number>(0);
   const [scaleFactorY, setScaleFactorY] = useState<number>(0);
+  const [yawThreshold, setYawThreshold] = useState<number>(0);
+  const [pitchThreshold, setPitchThreshold] = useState<number>(0);
   const [joystickStepSize, setJoystickStepSize] = useState<number>(5);
   const [trackingMode, setTrackingMode] = useState(appConfig.trackingMode);
 
@@ -34,6 +40,8 @@ const Settings: React.FC<Props> = (props) => {
     setScaleFactor(appConfig.mouseMovementScaleFactor);
     setScaleFactorY(appConfig.mouseMovementScaleFactorY);
     setJoystickStepSize(appConfig.joystickStepSize);
+    setYawThreshold(appConfig.joystickYawThreshold);
+    setPitchThreshold(appConfig.joystickPitchThreshold);
     setTrackingMode(appConfig.trackingMode);
   }, []);
 
@@ -81,6 +89,26 @@ const Settings: React.FC<Props> = (props) => {
     }
   };
 
+  const handleYawSliderChange = (_: Event, newValue: number | number[]) => {
+    if (typeof newValue == "number") {
+      setYawThreshold(newValue);
+
+      const newAppConfig = { ...appConfig, joystickYawThreshold: newValue };
+      window.electronAPI.updateConfiguration(newAppConfig);
+      setAppConfig(newAppConfig);
+    }
+  };
+
+  const handlePitchSliderChange = (_: Event, newValue: number | number[]) => {
+    if (typeof newValue == "number") {
+      setPitchThreshold(newValue);
+
+      const newAppConfig = { ...appConfig, joystickPitchThreshold: newValue };
+      window.electronAPI.updateConfiguration(newAppConfig);
+      setAppConfig(newAppConfig);
+    }
+  };
+
   return (
     <Stack width={"100%"} spacing={5}>
       <Box sx={{ minWidth: 150 }}>
@@ -98,11 +126,11 @@ const Settings: React.FC<Props> = (props) => {
           </Select>
         </FormControl>
       </Box>
+      <Typography variant="h6" gutterBottom>
+        Settings
+      </Typography>
       {trackingMode == "position" ? (
         <>
-          <Typography variant="h6" gutterBottom>
-            Settings
-          </Typography>
           <Stack>
             <Typography gutterBottom>Horizontal sensitivity</Typography>
             <Slider
@@ -134,7 +162,7 @@ const Settings: React.FC<Props> = (props) => {
           <ScreenExclusionForm />
         </>
       ) : (
-        <Stack>
+        <>
           <Stack>
             <Typography gutterBottom>Step size</Typography>
             <Slider
@@ -147,7 +175,33 @@ const Settings: React.FC<Props> = (props) => {
               valueLabelDisplay="auto"
             />
           </Stack>
-        </Stack>
+          <Stack>
+            <Typography gutterBottom>Horizontal sensitivity</Typography>
+            <Slider
+              value={yawThreshold}
+              onChangeCommitted={handleYawSliderChange}
+              getAriaValueText={(value) => value.toString()}
+              step={1}
+              marks
+              min={YAW_LOWERBOUND}
+              max={YAW_UPPERBOUND}
+              valueLabelDisplay="auto"
+            />
+          </Stack>
+          <Stack>
+            <Typography gutterBottom>Vertical sensitivity</Typography>
+            <Slider
+              value={pitchThreshold}
+              onChangeCommitted={handlePitchSliderChange}
+              getAriaValueText={(value) => value.toString()}
+              step={1}
+              marks
+              min={PITCH_LOWERBOUND}
+              max={PITCH_UPPERBOUND}
+              valueLabelDisplay="auto"
+            />
+          </Stack>
+        </>
       )}
     </Stack>
   );
