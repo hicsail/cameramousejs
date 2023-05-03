@@ -25,6 +25,7 @@
     "forge": {
       "all": true,
       "packagerConfig": {
+        "icon": "src/assets/bu",
         "extraResource": [
           "src/pyTracker/dist"
         ]

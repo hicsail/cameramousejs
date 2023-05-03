@@ -132,8 +132,7 @@ function startPyTracker() {
     //   "../../src/pyTracker",
     //   ".venv/bin/python"
     // );
-    // var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
-
+    // var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;0ccbe0032d61d9494cd852a48bc97d9c759bcb
     // if (process.platform === "win32") {
     //   // script to start python from code on windows
     //   const scriptToExecTrackerWindows =
@@ -147,7 +146,6 @@ function startPyTracker() {
     //   scriptToExecTracker = scriptToExecTrackerWindows;
     // }
     // console.log("scriptToExecTracker", scriptToExecTracker);
-
     // pyProc = exec(
     //   scriptToExecTracker,
     //   (error: any, stdout: any, stderr: any) => {
