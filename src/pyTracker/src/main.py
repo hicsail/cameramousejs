@@ -3,9 +3,22 @@ from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
 
+
 import cv2
 
 if __name__ == "__main__":
+
+    # close splash screen
+    try:  
+        # pyi_splash may not be resolved in some environments.
+        import pyi_splash
+        # Update the text on the splash screen
+        pyi_splash.update_text("App is ready. You can start tracking now.")
+
+        pyi_splash.close()
+    except:
+        pass
+
     frameSize = getFrameSize()
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
