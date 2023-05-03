@@ -41,5 +41,6 @@ def sendRequest(requestPath, requestData, httpMethod="post"):
 
 def getLatestAppSettingsFromServer():
     response = sendRequest(SETTINGS_PATH, None, httpMethod="get")
-    config = response.json()
-    trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
+    if response != None:
+        config = response.json()
+        trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
