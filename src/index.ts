@@ -124,40 +124,38 @@ function startPyTracker() {
   );
 
   if (devMode) {
-    // run tracker from python code
-    console.log("pythonExecutablePath", pythonExecutablePath);
-    //note that the name of the virtual environment (.venv) is hardcoded here
-    const pathToPyVenv = path.join(
-      __dirname,
-      "../../src/pyTracker",
-      ".venv/bin/python"
-    );
-    var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
-
-    if (process.platform === "win32") {
-      // script to start python from code on windows
-      const scriptToExecTrackerWindows =
-        path.join(
-          __dirname,
-          "../../src/pyTracker",
-          ".venv/Scripts/python.exe"
-        ) +
-        " " +
-        pathToPyMain;
-      scriptToExecTracker = scriptToExecTrackerWindows;
-    }
-    console.log("scriptToExecTracker", scriptToExecTracker);
-
-    pyProc = exec(
-      scriptToExecTracker,
-      (error: any, stdout: any, stderr: any) => {
-        if (error) {
-          console.log(" Could not run python code. Error", error);
-        }
-        console.log("\nstdout", stdout);
-        console.log("\nstderr", stderr);
-      }
-    );
+    // // run tracker from python code
+    // console.log("pythonExecutablePath", pythonExecutablePath);
+    // //note that the name of the virtual environment (.venv) is hardcoded here
+    // const pathToPyVenv = path.join(
+    //   __dirname,
+    //   "../../src/pyTracker",
+    //   ".venv/bin/python"
+    // );
+    // var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
+    // if (process.platform === "win32") {
+    //   // script to start python from code on windows
+    //   const scriptToExecTrackerWindows =
+    //     path.join(
+    //       __dirname,
+    //       "../../src/pyTracker",
+    //       ".venv/Scripts/python.exe"
+    //     ) +
+    //     " " +
+    //     pathToPyMain;
+    //   scriptToExecTracker = scriptToExecTrackerWindows;
+    // }
+    // console.log("scriptToExecTracker", scriptToExecTracker);
+    // pyProc = exec(
+    //   scriptToExecTracker,
+    //   (error: any, stdout: any, stderr: any) => {
+    //     if (error) {
+    //       console.log(" Could not run python code. Error", error);
+    //     }
+    //     console.log("\nstdout", stdout);
+    //     console.log("\nstderr", stderr);
+    //   }
+    // );
   } else {
     //comment out when running locally (path to py exec file is at a different path in prod vs local)
     pythonExecutablePath = pythonExecutablePathInProd;
