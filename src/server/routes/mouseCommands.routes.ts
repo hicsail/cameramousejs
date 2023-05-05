@@ -34,6 +34,13 @@ router.route(SETTINGS_PATH).get(async (req, res) => {
 // move mouse to position
 router.route(MOVEMENT_PATH).post(async (req, res) => {
   try {
+    if (!configuration.trackerLiveness) {
+      configuration.trackerLiveness = true;
+      mainWindow.webContents.send(
+        IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
+        configuration
+      );
+    }
     if (configuration.trackingStatus == TRACKING_STATUS.ON) {
       moveMouse(req.body);
     }

@@ -24,8 +24,6 @@ const Home: React.FC<Props> = (props) => {
     appConfig.trackerLiveness
   );
 
-  console.log("appConfig.trackerLiveness", appConfig.trackerLiveness);
-
   const handleToggleClickDirection = (
     _: React.ChangeEvent<HTMLInputElement>,
     value: boolean
