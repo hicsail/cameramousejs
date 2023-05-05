@@ -186,6 +186,7 @@ function startPyTracker() {
 }
 
 const exitPyProc = () => {
+  console.log("Exiting python process", pyProc);
   pyProc.kill();
   pyProc = null;
 };
