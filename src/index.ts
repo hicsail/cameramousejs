@@ -48,6 +48,7 @@ const createWindow = (): void => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
+  mainWindow.webContents.openDevTools();
   if (devMode) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
@@ -110,10 +111,7 @@ function startPyTracker() {
   console.log("script path", pathToPyMain);
 
   //Finds python exe in macOS build. looks into Contents/Resources folder in macOS .app file
-  // const pythonExecutablePathInProd = path.join(
-  //   __dirname,
-  //   "..\\..\\..\\main"
-  // );
+  // const pythonExecutablePathInProd = path.join(__dirname, "..\\..\\..\\main");
   //Finds python exe in a squirrel windows build
   const pythonExecutablePathInProd = path.join(
     process.resourcesPath,
@@ -159,7 +157,7 @@ function startPyTracker() {
     );
   } else {
     //comment out when running locally (path to py exec file is at a different path in prod vs local)
-    pythonExecutablePath = pythonExecutablePathInProd;
+    // pythonExecutablePath = pythonExecutablePathInProd;
 
     console.log("path to python .exe", pythonExecutablePath);
     log.info("path to python .exe", pythonExecutablePath);

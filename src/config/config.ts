@@ -18,9 +18,10 @@ var configuration = {
   },
   trackingStatus: TRACKING_STATUS.OFF,
   trackingMode: "position", // valid values => "position",  "joystick",
+  trackerLiveness: false, // true only after a command is received from a tracker (client)
   joystickStepSize: 30, // how many pixels mouse should move per step when in joystick mode
-  joystickYawThreshold: 9, // 10 14 18
-  joystickPitchThreshold: 5, //3  5  8
+  joystickYawThreshold: 9,
+  joystickPitchThreshold: 5,
   mouseMovementScaleFactor: 10,
   mouseMovementScaleFactorY: 12,
   screenWidth: 1080, //default val, overwritten with primary screen's size when app starts

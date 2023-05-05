@@ -1,4 +1,12 @@
-import { Box, Chip, Divider, Stack, Switch, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Divider,
+  Stack,
+  Switch,
+  Typography,
+} from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { TRACKING_STATUS } from "../config/config";
 import { AppConfigContext } from "../store/AppConfigContext";
@@ -12,6 +20,11 @@ const Home: React.FC<Props> = (props) => {
 
   const [numClicks, setNumClicks] = useState(false);
   const [clickDirection, setClickDirection] = useState(false);
+  const [trackerLiveness, setTrackerLiveness] = useState(
+    appConfig.trackerLiveness
+  );
+
+  console.log("appConfig.trackerLiveness", appConfig.trackerLiveness);
 
   const handleToggleClickDirection = (
     _: React.ChangeEvent<HTMLInputElement>,
@@ -23,7 +36,7 @@ const Home: React.FC<Props> = (props) => {
       mouseCommands: { ...appConfig.mouseCommands, rightClick: value },
     };
     window.electronAPI.updateConfiguration(newAppConfig);
-    setAppConfig(newAppConfig)
+    setAppConfig(newAppConfig);
   };
 
   const handleToggleNumClicks = (
@@ -36,12 +49,13 @@ const Home: React.FC<Props> = (props) => {
       mouseCommands: { ...appConfig.mouseCommands, doubleClick: value },
     };
     window.electronAPI.updateConfiguration(newAppConfig);
-    setAppConfig(newAppConfig)
+    setAppConfig(newAppConfig);
   };
 
   useEffect(() => {
     setClickDirection(appConfig.mouseCommands.rightClick);
     setNumClicks(appConfig.mouseCommands.doubleClick);
+    setTrackerLiveness(appConfig.trackerLiveness);
   }, [appConfig]);
 
   return (
@@ -52,12 +66,23 @@ const Home: React.FC<Props> = (props) => {
       alignItems={"center"}
     >
       <Box flex={1}>
-        {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
-          <Typography variant="h6">Press ENTER to begin tracking</Typography>
+        {trackerLiveness ? (
+          <>
+            {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
+              <Typography variant="h6">
+                Press ENTER to begin tracking
+              </Typography>
+            ) : (
+              <Stack alignItems={"center"} spacing={2}>
+                <Chip label="Tracking" color="success" />
+                <Typography>Press ESC to stop tracking</Typography>
+              </Stack>
+            )}
+          </>
         ) : (
           <Stack alignItems={"center"} spacing={2}>
-            <Chip label="Tracking" color="success" />
-            <Typography>Press ESC to stop tracking</Typography>
+            <CircularProgress />
+            <Typography variant="h6">Tracker is initializing...</Typography>
           </Stack>
         )}
         <Stack style={{ flexDirection: "row", marginTop: 30 }}>
