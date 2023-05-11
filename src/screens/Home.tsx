@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import StyledSwitch from "../components/StyledSwitch";
 import { TRACKING_STATUS } from "../config/config";
 import { AppConfigContext } from "../store/AppConfigContext";
 import Settings from "./Settings";
@@ -90,10 +91,11 @@ const Home: React.FC<Props> = (props) => {
             <Typography gutterBottom>
               {clickDirection ? "Disable" : "Enable"} right click
             </Typography>
-            <Switch
+
+            <StyledSwitch
               checked={clickDirection}
               onChange={handleToggleClickDirection}
-              inputProps={{ "aria-label": "controlled" }}
+              inputProps={{ "aria-label": "right click swtich" }}
             />
           </Stack>
           <Stack style={{ width: 30 }}></Stack>
@@ -101,10 +103,11 @@ const Home: React.FC<Props> = (props) => {
             <Typography gutterBottom>
               {numClicks ? "Disable" : "Enable"} double click
             </Typography>
-            <Switch
+
+            <StyledSwitch
               checked={numClicks}
               onChange={handleToggleNumClicks}
-              inputProps={{ "aria-label": "controlled" }}
+              inputProps={{ "aria-label": "left click swtich" }}
             />
           </Stack>
         </Stack>

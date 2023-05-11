@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import StyledSlider from "../components/StyledSlider";
 import ScreenExclusionForm from "../components/ScreenExclusionForm";
 import {
   PITCH_LOWERBOUND,
@@ -110,22 +111,24 @@ const Settings: React.FC<Props> = (props) => {
   };
 
   return (
-    <Stack width={"100%"} spacing={5}>
-      <Box sx={{ minWidth: 150 }}>
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Track Mode</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={trackingMode}
-            label="Age"
-            onChange={handleTrackModeChange}
-          >
-            <MenuItem value={"position"}>Position</MenuItem>
-            <MenuItem value={"joystick"}>Joystick</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+    <Stack minWidth={350} width={"100%"} spacing={5}>
+      {!appConfig.monoTrackingMode && (
+        <Box sx={{ minWidth: 150 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Track Mode</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={trackingMode}
+              label="Age"
+              onChange={handleTrackModeChange}
+            >
+              <MenuItem value={"position"}>Position</MenuItem>
+              <MenuItem value={"joystick"}>Joystick</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      )}
       <Typography variant="h6" gutterBottom>
         Settings
       </Typography>
@@ -133,11 +136,11 @@ const Settings: React.FC<Props> = (props) => {
         <>
           <Stack>
             <Typography gutterBottom>Horizontal sensitivity</Typography>
-            <Slider
+            <StyledSlider
               aria-label="mouse movement scale slider"
               value={scaleFactor}
               onChangeCommitted={handleScaleSliderChange}
-              getAriaValueText={(value) => value.toString()}
+              getAriaValueText={(value: string) => value.toString()}
               step={1}
               marks
               min={SCALE_FACTOR_X_LOWERBOUND}
@@ -147,11 +150,11 @@ const Settings: React.FC<Props> = (props) => {
           </Stack>
           <Stack>
             <Typography gutterBottom>Vertical sensitivity</Typography>
-            <Slider
+            <StyledSlider
               aria-label="mouse movement scale slider y"
               value={scaleFactorY}
               onChangeCommitted={handleScaleYSliderChange}
-              getAriaValueText={(value) => value.toString()}
+              getAriaValueText={(value: string) => value.toString()}
               step={1}
               marks
               min={SCALE_FACTOR_Y_LOWERBOUND}
@@ -165,10 +168,10 @@ const Settings: React.FC<Props> = (props) => {
         <>
           <Stack>
             <Typography gutterBottom>Step size</Typography>
-            <Slider
+            <StyledSlider
               value={joystickStepSize}
               onChangeCommitted={handleJoystickStepChange}
-              getAriaValueText={(value) => value.toString()}
+              getAriaValueText={(value: string) => value.toString()}
               step={1}
               min={5}
               max={50}
@@ -177,10 +180,10 @@ const Settings: React.FC<Props> = (props) => {
           </Stack>
           <Stack>
             <Typography gutterBottom>Horizontal sensitivity</Typography>
-            <Slider
+            <StyledSlider
               value={yawThreshold}
               onChangeCommitted={handleYawSliderChange}
-              getAriaValueText={(value) => value.toString()}
+              getAriaValueText={(value: string) => value.toString()}
               step={1}
               marks
               min={YAW_LOWERBOUND}
@@ -190,10 +193,10 @@ const Settings: React.FC<Props> = (props) => {
           </Stack>
           <Stack>
             <Typography gutterBottom>Vertical sensitivity</Typography>
-            <Slider
+            <StyledSlider
               value={pitchThreshold}
               onChangeCommitted={handlePitchSliderChange}
-              getAriaValueText={(value) => value.toString()}
+              getAriaValueText={(value: string) => value.toString()}
               step={1}
               marks
               min={PITCH_LOWERBOUND}

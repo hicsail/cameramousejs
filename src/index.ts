@@ -36,8 +36,8 @@ export let mainWindow: BrowserWindow;
 const createWindow = (): void => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    height: 400,
+    width: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
@@ -184,6 +184,7 @@ function startPyTracker() {
 }
 
 const exitPyProc = () => {
+  console.log("exitPyProc", exitPyProc);
   pyProc.kill();
   pyProc = null;
 };

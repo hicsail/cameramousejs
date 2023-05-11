@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const devMode = false;
+const devMode = true;
 
 //TODO define appConfiguration interface
 var configuration = {
@@ -18,6 +18,7 @@ var configuration = {
   },
   trackingStatus: TRACKING_STATUS.OFF,
   trackingMode: "position", // valid values => "position",  "joystick",
+  monoTrackingMode: true, //if true, option to switch tracking modes is removed
   trackerLiveness: false, // true only after a command is received from a tracker (client)
   joystickStepSize: 30, // how many pixels mouse should move per step when in joystick mode
   joystickYawThreshold: 9,
