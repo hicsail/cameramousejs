@@ -48,7 +48,6 @@ const createWindow = (): void => {
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  mainWindow.webContents.openDevTools();
   if (devMode) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
