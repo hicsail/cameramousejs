@@ -4,6 +4,7 @@ export interface Props {}
 
 import { AppConfigContext } from "../store/AppConfigContext";
 import React, { useContext } from "react";
+import StyledSlider from "./StyledSlider";
 
 function ScreenExclusionSlider(props: {
   direction: string;
@@ -12,7 +13,7 @@ function ScreenExclusionSlider(props: {
   return (
     <Stack style={{ alignItems: "center", width: 80 }}>
       <Typography>{props.direction}</Typography>
-      <Slider
+      <StyledSlider
         aria-label={props.direction + "exclusion slider y"}
         onChangeCommitted={(_: Event, newValue: number | number[]) => {
           if (typeof newValue == "number") {
@@ -59,7 +60,7 @@ const ScreenExclusionForm: React.FC<Props> = (props) => {
           direction="left"
           onUpdate={updateScreenExclusionBoundaries}
         />
-        <Stack style={{ width: 40 }} />
+        <Stack style={{ width: 150 }} />
         <ScreenExclusionSlider
           direction="right"
           onUpdate={updateScreenExclusionBoundaries}

@@ -14,8 +14,6 @@ const SETTINGS_PATH = "/settings";
 router.route(SETTINGS_PATH).get(async (req, res) => {
   //client (tracker) must request app configuration. therefore, a call to this route is a good test for trackerLiveness
   //turn on liveness
-  console.log("received SETTINGS_PATH command");
-
   try {
     if (!configuration.trackerLiveness) {
       configuration.trackerLiveness = true;

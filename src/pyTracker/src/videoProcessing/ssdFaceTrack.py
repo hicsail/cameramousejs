@@ -205,6 +205,11 @@ def opticalFlow(frame, face):
 def trackFaces():
 	# grab the frame from the threaded video stream and resize it to the global frame size 
 	frame = vs.read()
+
+	# return if frame is None
+	if frame is None:
+		return
+	
 	frame = imutils.resize(frame, width=config.FRAME_WIDTH, height=config.FRAME_HEIGHT)
 
 	# flip image
@@ -304,7 +309,7 @@ def trackFaces():
 	return faces, poses, pos
 
 def trackFace():
-	faces, poses, pos = trackFaces()
+	faces, poses, pos = trackFaces() or (None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
