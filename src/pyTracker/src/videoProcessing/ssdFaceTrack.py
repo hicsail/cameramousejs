@@ -74,6 +74,8 @@ for eg: when config.FRAME_WIDTH and config.FRAME_HEIGHT are both 300 and aspect 
 """
 def getFrameSize():
 	frame = vs.read()
+	if frame is None:
+		return (300,168)
 	frame = imutils.resize(frame, width=config.FRAME_WIDTH, height=config.FRAME_HEIGHT)
 	(h, w) = frame.shape[:2]
 	print("Webcam size (h, w)",(h, w) )

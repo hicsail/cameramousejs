@@ -3,8 +3,22 @@ from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
 
-
 import cv2
+import signal
+
+class GracefulKiller:
+  kill_now = False
+  def __init__(self):
+    print("init graceful killer")
+    signal.signal(signal.SIGINT, self.exit_gracefully)
+    signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+  def exit_gracefully(self, *args):
+    print("exiting gracefully called")
+    self.kill_now = True
+    # end python process immediately
+    exit(0)
+
 
 if __name__ == "__main__":
 
@@ -22,7 +36,9 @@ if __name__ == "__main__":
     frameSize = getFrameSize()
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
-    while True:
+    killer = GracefulKiller()
+    while not killer.kill_now:
+        # while True:
         face, pose, pos = trackFace()
         convertFaceTrackingToMouseMovement(face, frameSize, pose, pos)
         
@@ -34,5 +50,9 @@ if __name__ == "__main__":
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break
+        if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
+            break 
         # reset to prevent overflow
         count = 0 if count > 100 else count + 1
+
+    cv2.destroyAllWindows()

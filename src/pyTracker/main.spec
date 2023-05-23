@@ -32,7 +32,7 @@ splash = Splash('src/assets/bu.png',
                 datas=a.datas,
                 text_pos=(35, 50),
                 text_size=15,
-                text_color='blue')
+                text_color='white')
 
 exe = EXE(
     pyz,
