@@ -2,36 +2,9 @@ from api.requests import getLatestAppSettingsFromServer
 from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
-
 import cv2
-# import signal
-
-# class GracefulKiller:
-#   kill_now = False
-#   def __init__(self):
-#     print("init graceful killer")
-#     signal.signal(signal.SIGINT, self.exit_gracefully)
-#     signal.signal(signal.SIGTERM, self.exit_gracefully)
-
-#   def exit_gracefully(self, *args):
-#     print("exiting gracefully called")
-#     self.kill_now = True
-#     # end python process immediately
-#     exit(0)
-
 
 if __name__ == "__main__":
-
-    # close splash screen
-    try:  
-        # pyi_splash may not be resolved in some environments.
-        import pyi_splash
-        # Update the text on the splash screen
-        pyi_splash.update_text("App is ready. You can start tracking now.")
-
-        pyi_splash.close()
-    except:
-        pass
 
     frameSize = getFrameSize()
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
