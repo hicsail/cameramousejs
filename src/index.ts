@@ -233,8 +233,17 @@ app.on("activate", () => {
 
 // close python sub process before app is closed
 app.on("before-quit", (event) => {
-  event.preventDefault();
-  configuration.isShuttingDown = true;
+  console.log(
+    "before-quit configuration.isShuttingDown",
+    configuration.isShuttingDown
+  );
+  if (!configuration.isShuttingDown) {
+    event.preventDefault();
+    configuration.isShuttingDown = true;
+    setTimeout(() => {
+      app.quit();
+    }, 700);
+  }
 });
 
 //required for ts to recognize ipc functions in react code
