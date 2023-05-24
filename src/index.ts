@@ -156,7 +156,7 @@ function startPyTracker() {
     );
   } else {
     //comment out when running locally (path to py exec file is at a different path in prod vs local)
-    //pythonExecutablePath = pythonExecutablePathInProd;
+    pythonExecutablePath = pythonExecutablePathInProd;
 
     console.log("path to python .exe", pythonExecutablePath);
     log.info("path to python .exe", pythonExecutablePath);
