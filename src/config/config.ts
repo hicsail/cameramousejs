@@ -36,6 +36,7 @@ var configuration = {
     top: 0,
     bottom: 0,
   },
+  isShuttingDown: false, //used to send shutdown signal to client. when true, all client requests are responded with a command to shutdown
 };
 
 function updateConfiguration(newConfiguration: typeof configuration) {

@@ -131,29 +131,29 @@ function startPyTracker() {
       ".venv/bin/python"
     );
     var scriptToExecTracker = pathToPyVenv + " " + pathToPyMain;
-    // if (process.platform === "win32") {
-    //   // script to start python from code on windows
-    //   const scriptToExecTrackerWindows =
-    //     path.join(
-    //       __dirname,
-    //       "../../src/pyTracker",
-    //       ".venv/Scripts/python.exe"
-    //     ) +
-    //     " " +
-    //     pathToPyMain;
-    //   scriptToExecTracker = scriptToExecTrackerWindows;
-    // }
-    // console.log("scriptToExecTracker", scriptToExecTracker);
-    // pyProc = exec(
-    //   scriptToExecTracker,
-    //   (error: any, stdout: any, stderr: any) => {
-    //     if (error) {
-    //       console.log(" Could not run python code. Error", error);
-    //     }
-    //     console.log("\nstdout", stdout);
-    //     console.log("\nstderr", stderr);
-    //   }
-    // );
+    if (process.platform === "win32") {
+      // script to start python from code on windows
+      const scriptToExecTrackerWindows =
+        path.join(
+          __dirname,
+          "../../src/pyTracker",
+          ".venv/Scripts/python.exe"
+        ) +
+        " " +
+        pathToPyMain;
+      scriptToExecTracker = scriptToExecTrackerWindows;
+    }
+    console.log("scriptToExecTracker", scriptToExecTracker);
+    pyProc = exec(
+      scriptToExecTracker,
+      (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          console.log(" Could not run python code. Error", error);
+        }
+        console.log("\nstdout", stdout);
+        console.log("\nstderr", stderr);
+      }
+    );
   } else {
     //comment out when running locally (path to py exec file is at a different path in prod vs local)
     //pythonExecutablePath = pythonExecutablePathInProd;
@@ -168,41 +168,9 @@ function startPyTracker() {
       pythonExecutablePath;
     scriptToExecTracker = scriptToExecTrackerWindows;
 
-    pyProc = spawn(
-      pythonExecutablePath,
-      { detached: true, setsid: true }
-      // path.join(__dirname, "../../src/pyTracker", ".venv/Scripts/python.exe"),
-      // [pathToPyMain]
-    );
-
-    //run tracker from python executable
-    // pyProc = exec(
-    //   pythonExecutablePath,
-
-    //   (error: any, stdout: any, stderr: any) => {
-    //     if (error) {
-    //       log.info("Could not open python executable. Error ", error);
-    //       console.log("Could not open python executable. Error ", error);
-    //     }
-    //     log.info("\nstdout", stdout);
-    //     log.info("\nstderr", stderr);
-    //     console.log("\nstdout", stdout);
-    //     console.log("\nstderr", stderr);
-    //   }
-    // );
+    pyProc = spawn(pythonExecutablePath);
   }
-
-  //TODO log successful tracker exec
-  //promisy exec and execFile, await response
 }
-
-const exitPyProc = () => {
-  console.log("Exiting python process", pyProc.pid);
-  const killResults = pyProc.kill();
-  console.log("killResults", killResults);
-  // spawn("taskkill", ["/pid", pyProc.pid, "/f", "/t"]);
-  // pyProc = null;
-};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -251,7 +219,6 @@ app.whenReady().then(async () => {
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    exitPyProc();
     app.quit();
   }
 });
@@ -264,13 +231,11 @@ app.on("activate", () => {
   }
 });
 
-// close python sub process
-// app.on("will-quit", exitPyProc);
-// app.on("before-quit", (event) => {
-//   event.preventDefault();
-//   console.log("before quit");
-//   exitPyProc();
-// });
+// close python sub process before app is closed
+app.on("before-quit", (event) => {
+  event.preventDefault();
+  configuration.isShuttingDown = true;
+});
 
 //required for ts to recognize ipc functions in react code
 declare global {

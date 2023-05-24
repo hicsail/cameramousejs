@@ -2,6 +2,7 @@
 
 import requests
 from videoProcessing.trackerState import trackerState
+import cv2
 
 PORT = 3001
 CAMERMOUSE_SERVER_URL = "http://localhost"
@@ -34,13 +35,26 @@ def sendRequest(requestPath, requestData, httpMethod="post"):
             response = requests.post(url, json=requestData)
         else:
             response = requests.get(url)
+        processShutDownCommand(response)
         return response
     except Exception:
-        pass 
+        return None 
 
 
 def getLatestAppSettingsFromServer():
     response = sendRequest(SETTINGS_PATH, None, httpMethod="get")
-    if response != None:
-        config = response.json()
+    if  response and 'config' in response.json():
+        config = response.json()['config']
         trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
+
+
+# detect shutdown command from server and end python process immediately
+def processShutDownCommand(response):
+    try:
+      if response and 'status' in response.json() and response.json()['status'] == "shutdown":
+        # end python process immediately
+        cv2.destroyAllWindows()
+        exit(0)
+    except Exception:
+        return None 
+   

@@ -22,8 +22,9 @@ router.route(SETTINGS_PATH).get(async (req, res) => {
         configuration
       );
     }
-
-    res.send(JSON.stringify(configuration));
+    if (!handleShutDownStatus(res)) {
+      res.send(JSON.stringify({ status: "ok" , configuration: configuration}));
+    }
   } catch (error) {
     handleUnknownError(res, error);
   }
@@ -80,4 +81,15 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
   }
 });
 
+/**
+ * detects if app is shutting down and responds with shutdown status
+ * @param httpResponse
+ */
+function handleShutDownStatus(httpResponse: any) {
+  if (configuration.isShuttingDown == true) {
+    httpResponse.send({ status: "shutdown" });
+    return true;
+  }
+  return false;
+}
 export { router };
