@@ -168,7 +168,20 @@ function startPyTracker() {
       pythonExecutablePath;
     scriptToExecTracker = scriptToExecTrackerWindows;
 
-    pyProc = spawn(pythonExecutablePath);
+    //run tracker from python executable
+    pyProc = exec(
+      pythonExecutablePath,
+      (error: any, stdout: any, stderr: any) => {
+        if (error) {
+          log.info("Could not open python executable. Error ", error);
+          console.log("Could not open python executable. Error ", error);
+        }
+        log.info("\nstdout", stdout);
+        log.info("\nstderr", stderr);
+        console.log("\nstdout", stdout);
+        console.log("\nstderr", stderr);
+      }
+    );
   }
 }
 
@@ -233,10 +246,6 @@ app.on("activate", () => {
 
 // close python sub process before app is closed
 app.on("before-quit", (event) => {
-  console.log(
-    "before-quit configuration.isShuttingDown",
-    configuration.isShuttingDown
-  );
   if (!configuration.isShuttingDown) {
     event.preventDefault();
     configuration.isShuttingDown = true;
