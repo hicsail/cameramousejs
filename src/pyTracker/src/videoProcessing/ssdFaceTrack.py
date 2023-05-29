@@ -59,6 +59,17 @@ p0 = []
 
 # facial landmark detection
 landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
+landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
+
+# define two constants, one for the eye aspect ratio to indicate
+# blink and then a second constant for the number of consecutive
+# frames the eye must be below the threshold
+EYE_AR_THRESH = 0.2
+EYE_AR_CONSEC_FRAMES = config.BLINK_LENGTH * config.FACE_FREQ
+# initialize the frame counters for blink detection
+COUNTER = 0
+(lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
+(rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
 num_frames = -1
 vs = VideoStream(src=0).start()
@@ -203,6 +214,50 @@ def opticalFlow(frame, face):
 				return new	
 	return []
 
+from scipy.spatial import distance as dist
+def eye_aspect_ratio(eye):
+	# compute the euclidean distances between the two sets of
+	# vertical eye landmarks (x, y)-coordinates
+	A = dist.euclidean(eye[1], eye[5])
+	B = dist.euclidean(eye[2], eye[4])
+	# compute the euclidean distance between the horizontal
+	# eye landmark (x, y)-coordinates
+	C = dist.euclidean(eye[0], eye[3])
+	# compute the eye aspect ratio
+	ear = (A + B) / (2.0 * C)
+	# return the eye aspect ratio
+	return ear
+
+def blink_detect(face, frame):
+	global COUNTER
+	rect = dlib.rectangle(left=face[0], top=face[1], 
+	right=face[0]+face[2], bottom=face[1]+face[3])
+	shape = landmark_predictor_68(frame, rect)
+	shape = face_utils.shape_to_np(shape)
+	leftEye = shape[lStart:lEnd]
+	rightEye = shape[rStart:rEnd]
+	leftEAR = eye_aspect_ratio(leftEye)
+	rightEAR = eye_aspect_ratio(rightEye)
+	# average the eye aspect ratio together for both eyes
+	ear = (leftEAR + rightEAR) / 2.0
+	print(ear)
+
+	# check to see if the eye aspect ratio is below the blink
+	# threshold, and if so, increment the blink frame counter
+	if ear < EYE_AR_THRESH:
+		COUNTER += 1
+	# otherwise, the eye aspect ratio is not below the blink
+	# threshold
+	else:
+		# if the eyes were closed for a sufficient number of
+		# then increment the total number of blinks
+		if COUNTER >= EYE_AR_CONSEC_FRAMES:
+			# reset the eye frame counter
+			COUNTER = 0
+			return True
+		COUNTER = 0
+	return False
+
 
 def trackFaces():
 	# grab the frame from the threaded video stream and resize it to the global frame size 
@@ -222,6 +277,7 @@ def trackFaces():
 
 	faces = []
 	poses = []
+	is_blink = False
 
 	global num_frames
 	num_frames += 1
@@ -263,6 +319,14 @@ def trackFaces():
 				# draw pose
 				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], p_result[0][0], p_result[0][1], p_result[0][2])
 				frame[yw1:yw2 + 1, xw1:xw2 + 1, :] = draw_pose_result
+			
+			# blink detection
+			is_blink = blink_detect(face, ori_frame)
+			if is_blink:
+				print(is_blink)
+				cv2.putText(frame, "blink", (startX, startY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
+
 
 			# draw the bounding box of the face along with the associated probability
 			text = "{:.2f}%".format(confidence * 100)
@@ -308,16 +372,16 @@ def trackFaces():
 	# 	pos = shape[-1]
 	drawScalingBox(cv2, frame)
 	cv2.imshow("Face Tracker", frame)
-	return faces, poses, pos
+	return faces, poses, pos, is_blink
 
 def trackFace():
-	faces, poses, pos = trackFaces() or (None,None,None)
+	faces, poses, pos, is_blink = trackFaces() or (None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos
+			return faces[0], poses[0], pos, is_blink
 		else:
-			return faces[0], [], pos
+			return faces[0], [], pos, is_blink
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos
+		return [], [], pos, is_blink
