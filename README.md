@@ -26,8 +26,10 @@ Steps:
          python3 -m venv .venv
 
     b. activate environment
-
-         source .venv/bin/activate
+    for mac/linux
+    source .venv/bin/activate
+    for windows
+    .venv/Scripts/Activate
 
     c. install python packages into virtual environment
 
@@ -35,33 +37,30 @@ Steps:
 
     Note: On windows, install tensorflow instead of tensorflow-macos
 
-3.  modify code to run in dev mode. in dev mode, electron runs a command to start python code
-    a. in src/config/config.ts change, set devMode to true
-
-4.  Run project
+3.  Run project
     in root folder, run
 
          npm run start
+
+4.  Note that in dev mode, you may continue to see "tracker initializing" message even after tracker is initialized. Ingore the message and press Enter (with the Electron app in focus) to begin moving your mouse with head movements.
 
 # Packaging
 
 a. Build python exe file with pyinstaller. First, cd into src/pyTracker , activate virtual environment and run
 
-    pyinstaller --onefile --windowed src/main.py
+    pyinstaller main.spec
 
 b. Build electron app.
 
-Set devMode to false in src/config/config.ts change, before building electron app.
+Set runPythonExeInDevMode to false in src/config/config.ts change, before building electron app.
 
     npm run make
 
 # Debugging
 
-After modifying python code and building a new executable, you might want to make the sure the new executable works as intended. To ensure the built python executable works fine, modify code to start the executable instead of running python code. To do this, comment out line 123
+After modifying python code and building a new executable, you might want to make the sure the new executable works as intended. To ensure the built python executable works fine, modify code to start the executable instead of running python code. To do this, set line 6 in src/config/config.js to
 
-    pythonExecutablePath = pythonExecutablePathInProd;
-
-in src/index.ts. Also remember to set devMode to false (otherwise, python code will be run instead) in src/config/config.js.
+    const runPythonExeInDevMode = true;
 
 # Permissions
 

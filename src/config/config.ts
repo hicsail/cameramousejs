@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const devMode = false;
+const runPythonExeInDevMode = true;
 
 //TODO define appConfiguration interface
 var configuration = {
@@ -43,4 +43,9 @@ function updateConfiguration(newConfiguration: typeof configuration) {
   configuration = newConfiguration;
 }
 
-export { devMode, configuration, updateConfiguration, TRACKING_STATUS };
+export {
+  runPythonExeInDevMode,
+  configuration,
+  updateConfiguration,
+  TRACKING_STATUS,
+};
