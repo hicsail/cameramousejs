@@ -258,10 +258,11 @@ def trackFaces():
 				face_img = cv2.resize(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], (image_size, image_size))
 				face_img = cv2.normalize(face_img, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)        
 				face_img = np.expand_dims(face_img, axis=0)
-				p_result = pose_model.predict(face_img)
-				poses.append((p_result[0][0], p_result[0][1], p_result[0][2]))
+				p_result = pose_model(face_img)
+				yaw, pitch, roll = p_result[0][0], p_result[0][1], p_result[0][2]
+				poses.append((yaw, pitch, roll))
 				# draw pose
-				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], p_result[0][0], p_result[0][1], p_result[0][2])
+				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], yaw, pitch, roll)
 				frame[yw1:yw2 + 1, xw1:xw2 + 1, :] = draw_pose_result
 
 			# draw the bounding box of the face along with the associated probability
