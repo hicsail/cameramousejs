@@ -25,11 +25,15 @@ Steps:
 
          python3 -m venv .venv
 
-    b. activate environment
+    b. activate environment.
+
     for mac/linux
-    source .venv/bin/activate
+
+        source .venv/bin/activate
+
     for windows
-    .venv/Scripts/Activate
+
+        .venv/Scripts/Activate
 
     c. install python packages into virtual environment
 
@@ -52,13 +56,13 @@ a. Build python exe file with pyinstaller. First, cd into src/pyTracker , activa
 
 b. Build electron app.
 
-Set runPythonExeInDevMode to false in src/config/config.ts change, before building electron app.
+Set runPythonExeInDevMode to false in src/config/config.ts before building electron app.
 
     npm run make
 
 # Debugging
 
-After modifying python code and building a new executable, you might want to make the sure the new executable works as intended. To ensure the built python executable works fine, modify code to start the executable instead of running python code. To do this, set line 6 in src/config/config.js to
+After modifying python code and building a new executable, you might want to make the sure the new executable works as intended. To ensure the built python executable works fine, modify electron code to start the python executable instead of running python code. To do this, set line 6 in src/config/config.js to
 
     const runPythonExeInDevMode = true;
 
