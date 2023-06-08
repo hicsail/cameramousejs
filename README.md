@@ -36,6 +36,8 @@ Steps:
         .venv/Scripts/Activate
 
     c. install python packages into virtual environment
+    
+    The current frozen package versions were installed and worked on a Python 3.8 virtual environment. If you are using a Python version other than 3.8 and are experiencing dependency conflicts, remove     the specific versions of the following packages from 'requirements.txt': protobuf, dlib, tensorboard, tensorboard-data-server, tensorboard-estimator, keras, google-auth-oauthlib. Then run the           following command. 
 
          pip install -r requirements.txt
 
@@ -68,4 +70,4 @@ After modifying python code and building a new executable, you might want to mak
 
 # Permissions
 
-Built cameramouse app requires accessibility permissions to actually move mouse. On mac, go to System Preferences -> Privacy and Security -> Privacy. Check the box next Cameramouse.
+Built cameramouse app requires accessibility permissions to actually move mouse. On Mac, go to System Preferences -> Privacy and Security -> Privacy -> Accessibility and check the box either to CameraMouse. If you are in development mode, you will most likely see your IDE instead. 
