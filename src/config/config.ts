@@ -3,7 +3,7 @@ const enum TRACKING_STATUS {
   ON,
 }
 
-const runPythonExeInDevMode = true;
+const runPythonExeInDevMode = false;
 
 //TODO define appConfiguration interface
 var configuration = {
