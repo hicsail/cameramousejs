@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>CameraMouse.js</title>
-  </head>
-  <body>
-    <div id="root">
-      <script src="./renderer.ts"></script>
-    </div>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>CameraMouse.js</title>
+  <style>
+    video {
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="camera-div">
+    <video id="camera" autoplay allow="camera *" height="400" width="400"> </video>
+  </div>
+
+  <div id="root">
+    <script src="./renderer.ts"></script>
+  </div>
+
+  <script>
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(function (stream) {
+        document.getElementById('camera').srcObject = stream;
+      }).catch(function () {
+        alert('could not connect stream');
+      });
+
+  </script>
+
+</body>
+
 </html>

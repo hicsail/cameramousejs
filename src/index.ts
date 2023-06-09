@@ -41,6 +41,7 @@ const createWindow = (): void => {
     width: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      webviewTag: true,
     },
   });
 
@@ -89,6 +90,10 @@ const createMenu = (): void => {
           click: () => {
             turnOffTracking();
           },
+        },
+        {
+          label: "Global stop tracking",
+          accelerator: "Alt+CommandOrControl+S",
         },
       ],
     })
