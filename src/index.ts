@@ -95,6 +95,16 @@ const createMenu = (): void => {
           label: "Global stop tracking",
           accelerator: "Alt+CommandOrControl+S",
         },
+         {
+          label: "Quit",
+          accelerator: "CommandOrControl+Q",
+          click: () => {
+            if (process.platform == "darwin") {
+              app.quit();
+            }
+            
+          },
+        },
       ],
     })
   );

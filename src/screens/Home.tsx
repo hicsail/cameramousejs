@@ -105,7 +105,7 @@ const Home: React.FC<Props> = (props) => {
                 )}
               </>
             ) : (
-              <Stack alignItems={"center"} spacing={2}>
+              <Stack alignItems={"center"} spacing={2} justifyContent={"center"}>
                 <CircularProgress />
                 <Typography variant="h6">Tracker is initializing...</Typography>
               </Stack>

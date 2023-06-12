@@ -25,7 +25,7 @@ import {
 } from "../config/mouseConfigs";
 import { AppConfigContext } from "../store/AppConfigContext";
 
-export interface Props {}
+export interface Props { }
 const TAG = "Settings.tsx ";
 //TODO create custom hook to update config
 const Settings: React.FC<Props> = (props) => {
@@ -129,84 +129,103 @@ const Settings: React.FC<Props> = (props) => {
           </FormControl>
         </Box>
       )}
-      <Typography variant="h6" gutterBottom>
-        Settings
-      </Typography>
-      {trackingMode == "position" ? (
-        <>
-          <Stack>
-            <Typography gutterBottom>Horizontal sensitivity</Typography>
-            <StyledSlider
-              aria-label="mouse movement scale slider"
-              value={scaleFactor}
-              onChangeCommitted={handleScaleSliderChange}
-              getAriaValueText={(value: string) => value.toString()}
-              step={1}
-              marks
-              min={SCALE_FACTOR_X_LOWERBOUND}
-              max={SCALE_FACTOR_X_UPPERBOUND}
-              valueLabelDisplay="auto"
-            />
-          </Stack>
-          <Stack>
-            <Typography gutterBottom>Vertical sensitivity</Typography>
-            <StyledSlider
-              aria-label="mouse movement scale slider y"
-              value={scaleFactorY}
-              onChangeCommitted={handleScaleYSliderChange}
-              getAriaValueText={(value: string) => value.toString()}
-              step={1}
-              marks
-              min={SCALE_FACTOR_Y_LOWERBOUND}
-              max={SCALE_FACTOR_Y_UPPERBOUND}
-              valueLabelDisplay="auto"
-            />
-          </Stack>
-          <ScreenExclusionForm />
-        </>
-      ) : (
-        <>
-          <Stack>
-            <Typography gutterBottom>Step size</Typography>
-            <StyledSlider
-              value={joystickStepSize}
-              onChangeCommitted={handleJoystickStepChange}
-              getAriaValueText={(value: string) => value.toString()}
-              step={1}
-              min={5}
-              max={50}
-              valueLabelDisplay="auto"
-            />
-          </Stack>
-          <Stack>
-            <Typography gutterBottom>Horizontal sensitivity</Typography>
-            <StyledSlider
-              value={yawThreshold}
-              onChangeCommitted={handleYawSliderChange}
-              getAriaValueText={(value: string) => value.toString()}
-              step={1}
-              marks
-              min={YAW_LOWERBOUND}
-              max={YAW_UPPERBOUND}
-              valueLabelDisplay="auto"
-            />
-          </Stack>
-          <Stack>
-            <Typography gutterBottom>Vertical sensitivity</Typography>
-            <StyledSlider
-              value={pitchThreshold}
-              onChangeCommitted={handlePitchSliderChange}
-              getAriaValueText={(value: string) => value.toString()}
-              step={1}
-              marks
-              min={PITCH_LOWERBOUND}
-              max={PITCH_UPPERBOUND}
-              valueLabelDisplay="auto"
-            />
-          </Stack>
-        </>
-      )}
-    </Stack>
+
+      <Stack justifyContent={"center"} alignItems={"center"}>
+
+
+        <Typography variant="h6" gutterBottom>
+          Settings
+        </Typography>
+
+        {trackingMode == "position" ? (
+          <>
+            <Stack flexDirection={"row"} justifyContent={"space-between"} spacing={5}>
+              <Stack spacing={5}>
+
+
+                <Stack>
+                  <Typography gutterBottom>Horizontal sensitivity</Typography>
+                  <StyledSlider
+                    aria-label="mouse movement scale slider"
+                    value={scaleFactor}
+                    onChangeCommitted={handleScaleSliderChange}
+                    getAriaValueText={(value: string) => value.toString()}
+                    step={1}
+                    marks
+                    min={SCALE_FACTOR_X_LOWERBOUND}
+                    max={SCALE_FACTOR_X_UPPERBOUND}
+                    valueLabelDisplay="auto"
+                  />
+                </Stack>
+                <Stack>
+                  <Typography gutterBottom>Vertical sensitivity</Typography>
+                  <StyledSlider
+                    aria-label="mouse movement scale slider y"
+                    value={scaleFactorY}
+                    onChangeCommitted={handleScaleYSliderChange}
+                    getAriaValueText={(value: string) => value.toString()}
+                    step={1}
+                    marks
+                    min={SCALE_FACTOR_Y_LOWERBOUND}
+                    max={SCALE_FACTOR_Y_UPPERBOUND}
+                    valueLabelDisplay="auto"
+                  />
+                </Stack>
+
+              </Stack>
+
+              <Stack style={{ marginLeft: 50 }}>
+                <ScreenExclusionForm />
+              </Stack>
+
+            </Stack>
+          </>
+        ) : (
+          <>
+            <Stack>
+              <Typography gutterBottom>Step size</Typography>
+              <StyledSlider
+                value={joystickStepSize}
+                onChangeCommitted={handleJoystickStepChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                min={5}
+                max={50}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+            <Stack>
+              <Typography gutterBottom>Horizontal sensitivity</Typography>
+              <StyledSlider
+                value={yawThreshold}
+                onChangeCommitted={handleYawSliderChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                marks
+                min={YAW_LOWERBOUND}
+                max={YAW_UPPERBOUND}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+            <Stack>
+              <Typography gutterBottom>Vertical sensitivity</Typography>
+              <StyledSlider
+                value={pitchThreshold}
+                onChangeCommitted={handlePitchSliderChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                marks
+                min={PITCH_LOWERBOUND}
+                max={PITCH_UPPERBOUND}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+          </>
+        )
+
+        }
+      </Stack>
+    </Stack >
   );
 };
 
