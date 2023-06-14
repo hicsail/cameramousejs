@@ -37,7 +37,7 @@ weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
 pose_model.load_weights(weight_file)
 
 # parameters for template matching
-template_size = 0.03
+template_size = 0.04
 search_size = 0.5
 prev_pos = []
 prev_match_template_res = np.array([[]])
