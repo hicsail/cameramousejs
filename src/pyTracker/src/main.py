@@ -20,8 +20,8 @@ if __name__ == "__main__":
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
     while True:
-        face, pose, pos = trackFace()
-        convertFaceTrackingToMouseMovement(face, frameSize, pose, pos)
+        face, pose, pos, is_blink = trackFace()
+        convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, is_blink)
         
         # get config every now and then
         if count % 20 == 0:
