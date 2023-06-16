@@ -242,6 +242,21 @@ app.whenReady().then(async () => {
   createWindow();
   startServer();
   startPyTracker();
+
+  const fs = require('fs/promises');
+
+  /* Create log files */
+  async function createFile(filename: string) {
+    try {
+      const content = '';
+      await fs.writeFile(filename, content);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  createFile("movement_log.txt");
+ 
+
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

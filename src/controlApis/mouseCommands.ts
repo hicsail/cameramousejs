@@ -119,6 +119,18 @@ async function moveMouse(requestBody: {
     x: number;
     y: number;
   };
+
+  const content = "Movement to " + requestBody.x + " " + requestBody.y + "\n";
+  const fs = require('fs/promises');
+
+  async function example() {
+  try {
+    await fs.appendFile('movement_log.txt',{ flag: 'a+' }, content);
+  } catch (err) {
+    console.log(err);
+  }
+}
+example();
   if (configuration.trackingMode == "position") {
     newPosition = await moveByRatioCoordinates({
       x: requestBody.x,
@@ -183,11 +195,35 @@ async function moveByYawAndPitch(yaw: number, pitch: number) {
 }
 
 function click(direction: "left" | "right") {
-  mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
+  const content = direction + " click \n";
+
+  const fs = require('fs/promises');
+
+  async function example() {
+  try {
+    await fs.writeFile('movement_log.txt', { flag: 'a+' }, content);
+  } catch (err) {
+    console.log(err);
+  }
+}
+example();
+mouse.click(direction == "left" ? Button.LEFT : Button.RIGHT);
 }
 
 function doubleClick() {
-  mouse.doubleClick(Button.LEFT);
+  const content = "Double click \n";
+
+  const fs = require('fs/promises');
+
+  async function example() {
+  try {
+    await fs.writeFile('movement_log.txt', content);
+  } catch (err) {
+    console.log(err);
+  }
+}
+example();
+mouse.doubleClick(Button.LEFT);
 }
 
 const demoMove = async () => {
@@ -198,3 +234,4 @@ const demoMove = async () => {
 };
 
 export { moveByRatioCoordinates, click, doubleClick, moveMouse, demoMove };
+
