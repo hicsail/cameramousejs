@@ -15,12 +15,20 @@
 <body>
 
   <div id="camera-div">
-    <video id="camera" autoplay allow="camera *" height="400" width="400"> </video>
+    <video id="camera" autoplay allow="camera *" height="100" width="100" display="none"> </video>
+    <img id="image">
   </div>
 
   <div id="root">
     <script src="./renderer.ts"></script>
   </div>
+
+
+
+
+  <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+
+
 
   <script>
     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -30,6 +38,48 @@
         alert('could not connect stream');
       });
 
+
+    function capture(video, scaleFactor) {
+      if (scaleFactor == null) {
+        scaleFactor = 1;
+      }
+      var w = video.videoWidth * scaleFactor;
+      var h = video.videoHeight * scaleFactor;
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, w, h);
+      return canvas;
+    }
+
+    var socket = io('http://localhost:5000');
+
+    socket.on('connect', function () {
+      console.log("Connected...!", socket.connected)
+    });
+
+    const video = document.querySelector("#camera");
+
+    video.width = 500;
+    video.height = 375;
+
+    const FPS = 60;
+
+    setInterval(() => {
+      var type = "image/png"
+      var video_element = document.getElementById("camera")
+      var frame = capture(video_element, 1)
+      var data = frame.toDataURL(type);
+
+      socket.emit('image', data);
+    }, 10000 / FPS);
+
+
+    socket.on('response_back', function (image) {
+      const image_id = document.getElementById('image');
+      image_id.src = image;
+    }); 
   </script>
 
 </body>

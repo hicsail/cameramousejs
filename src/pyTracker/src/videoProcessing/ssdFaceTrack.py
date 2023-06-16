@@ -204,9 +204,10 @@ def opticalFlow(frame, face):
 	return []
 
 
-def trackFaces():
+def trackFaces(frame=None):
 	# grab the frame from the threaded video stream and resize it to the global frame size 
-	frame = vs.read()
+	if frame is None:
+		frame = vs.read()
 
 	# return if frame is None
 	if frame is None:
@@ -308,17 +309,17 @@ def trackFaces():
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
 	drawScalingBox(cv2, frame)
-	cv2.imshow("Face Tracker", frame)
-	return faces, poses, pos
+	# cv2.imshow("Face Tracker", frame)
+	return faces, poses, pos, frame
 
-def trackFace():
-	faces, poses, pos = trackFaces() or (None,None,None)
+def trackFace(frame=None):
+	faces, poses, pos, new_frame = trackFaces(frame) or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos
+			return faces[0], poses[0], pos, new_frame
 		else:
-			return faces[0], [], pos
+			return faces[0], [], pos, new_frame
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos
+		return [], [], pos, new_frame
