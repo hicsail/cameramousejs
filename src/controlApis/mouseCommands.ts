@@ -125,7 +125,7 @@ async function moveMouse(requestBody: {
 
   async function example() {
   try {
-    await fs.appendFile('movement_log.txt',{ flag: 'a+' }, content);
+    await fs.appendFile('movement_log.txt', content);
   } catch (err) {
     console.log(err);
   }
@@ -201,7 +201,7 @@ function click(direction: "left" | "right") {
 
   async function example() {
   try {
-    await fs.writeFile('movement_log.txt', { flag: 'a+' }, content);
+    await fs.writeFile('movement_log.txt', content);
   } catch (err) {
     console.log(err);
   }
@@ -217,7 +217,7 @@ function doubleClick() {
 
   async function example() {
   try {
-    await fs.writeFile('movement_log.txt', content);
+    await fs.appendFile('movement_log.txt', content);
   } catch (err) {
     console.log(err);
   }
