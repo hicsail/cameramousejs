@@ -41,6 +41,7 @@ const createWindow = (): void => {
     width: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      webviewTag: true,
     },
   });
 
@@ -88,6 +89,20 @@ const createMenu = (): void => {
           accelerator: "Escape",
           click: () => {
             turnOffTracking();
+          },
+        },
+        {
+          label: "Global stop tracking",
+          accelerator: "Alt+CommandOrControl+S",
+        },
+         {
+          label: "Quit",
+          accelerator: "CommandOrControl+Q",
+          click: () => {
+            if (process.platform == "darwin") {
+              app.quit();
+            }
+            
           },
         },
       ],

@@ -13,7 +13,7 @@ import { TRACKING_STATUS } from "../config/config";
 import { AppConfigContext } from "../store/AppConfigContext";
 import Settings from "./Settings";
 
-export interface Props {}
+export interface Props { }
 const TAG = "Home.tsx ";
 
 const Home: React.FC<Props> = (props) => {
@@ -25,6 +25,7 @@ const Home: React.FC<Props> = (props) => {
     appConfig.trackerLiveness
   );
 
+  const [homeToggle, setHomeToggle] = useState(true);
   const handleToggleClickDirection = (
     _: React.ChangeEvent<HTMLInputElement>,
     value: boolean
@@ -57,63 +58,90 @@ const Home: React.FC<Props> = (props) => {
     setTrackerLiveness(appConfig.trackerLiveness);
   }, [appConfig]);
 
+  const toggleHomeOrSettings = (home: boolean) => {
+    if (home) {
+      setHomeToggle(true);
+    } else {
+      setHomeToggle(false);
+    }
+  }
+
+
   return (
     <Stack
       flex={1}
       divider={<Divider flexItem />}
-      spacing={5}
-      alignItems={"center"}
-    >
-      <Box flex={1}>
-        {trackerLiveness ? (
-          <>
-            {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
-              <Typography variant="h6">
-                Press ENTER to begin tracking
-              </Typography>
+      spacing={5}>
+      <nav className="tabs">
+        <button onClick={() => toggleHomeOrSettings(true)}>
+          Home
+        </button>
+        <button onClick={() => toggleHomeOrSettings(false)}>
+          Settings
+        </button>
+      </nav>
+
+      <Stack
+        flex={1}
+        spacing={5}
+        alignItems={"row"}
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+      >
+
+        {homeToggle ? (
+          <Box flex={1}>
+            {trackerLiveness ? (
+              <>
+                {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
+                  <Typography variant="h6">
+                    Press ENTER to begin tracking
+                  </Typography>
+                ) : (
+                  <Stack alignItems={"center"} spacing={2}>
+                    <Chip label="Tracking" color="success" />
+                    <Typography>Press ESC to stop tracking</Typography>
+                  </Stack>
+                )}
+              </>
             ) : (
-              <Stack alignItems={"center"} spacing={2}>
-                <Chip label="Tracking" color="success" />
-                <Typography>Press ESC to stop tracking</Typography>
+              <Stack alignItems={"center"} spacing={2} justifyContent={"center"}>
+                <CircularProgress />
+                <Typography variant="h6">Tracker is initializing...</Typography>
               </Stack>
             )}
-          </>
-        ) : (
-          <Stack alignItems={"center"} spacing={2}>
-            <CircularProgress />
-            <Typography variant="h6">Tracker is initializing...</Typography>
-          </Stack>
-        )}
-        <Stack style={{ flexDirection: "row", marginTop: 30 }}>
-          <Stack style={{ alignItems: "center" }}>
-            <Typography gutterBottom>
-              {clickDirection ? "Disable" : "Enable"} right click
-            </Typography>
+            <Stack style={{ flexDirection: "row", marginTop: 30 }} alignItems={"center"} justifyContent={"center"}>
+              <Stack style={{ alignItems: "center" }}>
+                <Typography gutterBottom>
+                  {clickDirection ? "Disable" : "Enable"} right click
+                </Typography>
 
-            <StyledSwitch
-              checked={clickDirection}
-              onChange={handleToggleClickDirection}
-              inputProps={{ "aria-label": "right click swtich" }}
-            />
-          </Stack>
-          <Stack style={{ width: 30 }}></Stack>
-          <Stack style={{ alignItems: "center" }}>
-            <Typography gutterBottom>
-              {numClicks ? "Disable" : "Enable"} double click
-            </Typography>
+                <StyledSwitch
+                  checked={clickDirection}
+                  onChange={handleToggleClickDirection}
+                  inputProps={{ "aria-label": "right click swtich" }}
+                />
+              </Stack>
+              <Stack style={{ width: 30 }}></Stack>
+              <Stack style={{ alignItems: "center" }}>
+                <Typography gutterBottom>
+                  {numClicks ? "Disable" : "Enable"} double click
+                </Typography>
 
-            <StyledSwitch
-              checked={numClicks}
-              onChange={handleToggleNumClicks}
-              inputProps={{ "aria-label": "left click swtich" }}
-            />
-          </Stack>
-        </Stack>
-      </Box>
+                <StyledSwitch
+                  checked={numClicks}
+                  onChange={handleToggleNumClicks}
+                  inputProps={{ "aria-label": "left click swtich" }}
+                />
+              </Stack>
+            </Stack>
+          </Box>) : (
 
-      <Stack alignItems={"center"}>
-        <Settings />
+          <Stack alignItems={"center"}>
+            <Settings />
+          </Stack>)}
       </Stack>
+
     </Stack>
   );
 };
