@@ -201,7 +201,7 @@ function click(direction: "left" | "right") {
 
   async function example() {
   try {
-    await fs.writeFile('movement_log.txt', content);
+    await fs.appendFile('movement_log.txt', content);
   } catch (err) {
     console.log(err);
   }
