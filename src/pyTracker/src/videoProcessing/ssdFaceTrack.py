@@ -37,7 +37,7 @@ weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
 pose_model.load_weights(weight_file)
 
 # parameters for template matching
-template_size = 0.03
+template_size = 0.04
 search_size = 0.5
 prev_pos = []
 prev_match_template_res = np.array([[]])
@@ -75,7 +75,7 @@ for eg: when config.FRAME_WIDTH and config.FRAME_HEIGHT are both 300 and aspect 
 def getFrameSize():
 	frame = vs.read()
 	if frame is None:
-		return (300,168)
+		return (config.FRAME_WIDTH,config.FRAME_HEIGHT)
 	frame = imutils.resize(frame, width=config.FRAME_WIDTH, height=config.FRAME_HEIGHT)
 	(h, w) = frame.shape[:2]
 	print("Webcam size (h, w)",(h, w) )
@@ -123,7 +123,8 @@ def templateTrack(frame, face):
 			right=face[0]+face[2], bottom=face[1]+face[3])
 		shape = landmark_predictor(frame, rect)
 		shape = face_utils.shape_to_np(shape)
-		center = (shape[1] + shape[2]) / 2 # middle of eyes
+		# center = (shape[1] + shape[2]) / 2 # middle of eyes
+		center = shape[1] # right eye to make sure enough distinctive feature
 
 		if len(template) == 0 or hypot(center[0]-prev_pos[0], center[1]-prev_pos[1]) > dist_threshold * face[2]:
 			# initialize with eyes
@@ -141,8 +142,8 @@ def templateTrack(frame, face):
 	(th, tw) = template.shape[:2]
 
 	# only search around the previous matching position
-	start_y = prev_pos[1]-int(th*search_size)
-	start_x = prev_pos[0]-int(tw*search_size)
+	start_y = prev_pos[1]-int(th*search_size*2)
+	start_x = prev_pos[0]-int(tw*search_size*2)
 	end_y = prev_pos[1]+int((1 + 2*search_size)*th)
 	end_x = prev_pos[0]+int((1 + 2*search_size)*tw)
 	# start_x, start_y, end_x, end_y = face[0], face[1], face[0]+face[2], face[1]+face[3]
@@ -169,6 +170,8 @@ def templateTrack(frame, face):
 	prev_pos = top_left
 	# update template, use previous best match as the new template
 	template = frame[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0], :]
+
+	# cv2.imshow("Template", template)
 
 	return top_left, bottom_right
 
