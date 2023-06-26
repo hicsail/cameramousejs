@@ -1,7 +1,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
-  margin: auto;
+  margin: 2rem;
   max-width: 38rem;
   padding: 1rem;
 }
@@ -18,4 +18,12 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.moveRight {
+  width: 100%;
 }
