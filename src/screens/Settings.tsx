@@ -139,7 +139,7 @@ const Settings: React.FC<Props> = (props) => {
 
         {trackingMode == "position" ? (
           <>
-            <Stack flexDirection={"row"} justifyContent={"space-between"} spacing={5}>
+            <Stack flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={5}>
               <Stack spacing={5}>
 
 
@@ -174,7 +174,7 @@ const Settings: React.FC<Props> = (props) => {
 
               </Stack>
 
-              <Stack style={{ marginLeft: 50 }}>
+              <Stack style={{ marginLeft: "2rem" }}>
                 <ScreenExclusionForm />
               </Stack>
 

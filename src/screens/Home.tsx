@@ -73,10 +73,10 @@ const Home: React.FC<Props> = (props) => {
       divider={<Divider flexItem />}
       spacing={5}>
       <nav className="tabs">
-        <button onClick={() => toggleHomeOrSettings(true)}>
+        <button className="button-10" onClick={() => toggleHomeOrSettings(true)}>
           Home
         </button>
-        <button onClick={() => toggleHomeOrSettings(false)}>
+        <button className="button-10" onClick={() => toggleHomeOrSettings(false)}>
           Settings
         </button>
       </nav>

@@ -1,6 +1,6 @@
 import { Stack, Typography, Slider } from "@mui/material";
 
-export interface Props {}
+export interface Props { }
 
 import { AppConfigContext } from "../store/AppConfigContext";
 import React, { useContext } from "react";
