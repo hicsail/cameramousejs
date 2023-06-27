@@ -5,11 +5,11 @@ import { styled } from "@mui/material/styles";
 const BigSlider = styled(Slider)<SliderProps>(({ theme }) => ({
   height: 10,
   "& .MuiSlider-thumb": {
-    width: 49,
-    height: 49,
+    width: 20,
+    height: 20,
   },
 }));
 
-export default function StyledSlider(props:any) {
-  return <BigSlider {...props}/>;
+export default function StyledSlider(props: any) {
+  return <BigSlider {...props} />;
 }

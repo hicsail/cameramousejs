@@ -73,10 +73,10 @@ const Home: React.FC<Props> = (props) => {
       divider={<Divider flexItem />}
       spacing={5}>
       <nav className="tabs">
-        <button onClick={() => toggleHomeOrSettings(true)}>
+        <button className="button-10" onClick={() => toggleHomeOrSettings(true)}>
           Home
         </button>
-        <button onClick={() => toggleHomeOrSettings(false)}>
+        <button className="button-10" onClick={() => toggleHomeOrSettings(false)}>
           Settings
         </button>
       </nav>
@@ -84,8 +84,8 @@ const Home: React.FC<Props> = (props) => {
       <Stack
         flex={1}
         spacing={5}
-        alignItems={"row"}
-        flexDirection={"row"}
+        alignItems={"center"}
+        flexDirection={"column"}
         justifyContent={"space-between"}
       >
 
@@ -94,7 +94,7 @@ const Home: React.FC<Props> = (props) => {
             {trackerLiveness ? (
               <>
                 {appConfig.trackingStatus == TRACKING_STATUS.OFF ? (
-                  <Typography variant="h6">
+                  <Typography variant="h6" className="textCenter">
                     Press ENTER to begin tracking
                   </Typography>
                 ) : (
@@ -140,6 +140,9 @@ const Home: React.FC<Props> = (props) => {
           <Stack alignItems={"center"}>
             <Settings />
           </Stack>)}
+
+
+
       </Stack>
 
     </Stack>
