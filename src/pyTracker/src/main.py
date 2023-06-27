@@ -1,13 +1,7 @@
-from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask import Flask, render_template, Response
 import cv2
-from io import StringIO
-import io
-import imutils
-from PIL import Image
-import numpy as np
-
-import base64
+import sys
+import numpy
 
 from api.requests import getLatestAppSettingsFromServer
 from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
@@ -15,51 +9,45 @@ from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins= '*')
+
+def get_frame():
+    camera_port=0
+    camera=cv2.VideoCapture(camera_port) #this makes a web cam object
+
+    while True:
+        retval, frame = camera.read()
+        im = cv2.flip(frame, 1) # Image that will be processed
+
+        try:
+            # This is where researchers would call their own tracker functions
+            face, pose, pos, new_frame = trackFace(frame) # Track face and get new frame
+
+        except KeyboardInterrupt: # If user presses Ctrl-C
+            sys.exit(0) # Exit program
 
 
-@app.route('/', methods=['POST', 'GET'])
-def index():
-    return render_template('index.html')
+        frameSize = getFrameSize() # Get frame size
+        convertFaceTrackingToMouseMovement(face, frameSize, pose, pos) # Convert face tracking data to mouse movement and send 
 
+        cv2.destroyAllWindows() # To make sure that a separate window doesn't open
+        
+        imgencode=cv2.imencode('.jpg',new_frame)[1]
+        stringData=imgencode.tostring()
+        yield (b'--frame\r\n'
+            b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
 
-@socketio.on('image')
-def image(data_image):
-    sbuf = StringIO()
-    headers, image = data_image.split(',', 1)
-    sbuf.write(image)
+    del(camera) #necessary to prevent python kernel from crashing
+ 
+@app.route('/vid')
+def vid():
+     return Response(get_frame(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    # decode and convert into image
-    b = io.BytesIO(base64.b64decode(image))
-    # print(b)
-    pimg = Image.open(b)
+@app.get("/") 
+def index(): 
+    return "<h1> Server running </h1>"
 
-    # converting RGB to BGR, as opencv standards
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
-    # Process the image frame
-    #frame = imutils.resize(frame, width=700)
-    #frame = cv2.flip(frame, 1)
+@app.get("/status")
+def status():
+    return 200
 
-    frameSize = getFrameSize()
-    trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
-    print("Starting tracking...")
-    face, pose, pos, new_frame = trackFace(frame)
-    print("Converting tracking...")
-
-    convertFaceTrackingToMouseMovement(face, frameSize, pose, pos)
-
-    cv2.destroyAllWindows()
-    
-    imgencode = cv2.imencode('.jpg', new_frame)[1]
-
-    # base64 encode
-    stringData = base64.b64encode(imgencode).decode('utf-8')
-    b64_src = 'data:image/jpg;base64,'
-    stringData = b64_src + stringData
-
-    # emit the frame back
-    emit('response_back', stringData)
-
-
-if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1', port=5000, debug=True, allow_unsafe_werkzeug=True)
+app.run(host='localhost',port=8000, debug=True, threaded=True)

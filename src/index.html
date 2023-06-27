@@ -9,29 +9,36 @@
       -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
     }
+
+    #camera-div {
+      margin: 2rem 0;
+    }
   </style>
 </head>
 
 <body>
 
   <div id="camera-div">
-    <video id="camera" autoplay allow="camera *" height="100" width="100" display="none"> </video>
-    <img id="image">
+    <!-- <video id="camera" autoplay allow="camera *" height="100" width="100" display="none"> </video> -->
   </div>
 
   <div id="root">
     <script src="./renderer.ts"></script>
   </div>
 
-
-
-
   <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
-
-
-
   <script>
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+
+    setTimeout(() => {
+      // add img tag to #camera-div
+      const cameraDiv = document.getElementById('camera-div');
+      const img = document.createElement('img');
+      img.id = 'camera';
+      img.src = 'http://localhost:8000/vid';
+      cameraDiv.appendChild(img);
+    }, 5000)
+
+    /* navigator.mediaDevices.getUserMedia({ video: true, audio: false })
       .then(function (stream) {
         document.getElementById('camera').srcObject = stream;
       }).catch(function () {
@@ -61,8 +68,8 @@
 
     const video = document.querySelector("#camera");
 
-    video.width = 500;
-    video.height = 375;
+    video.width = 400;
+    video.height = 275;
 
     const FPS = 60;
 
@@ -74,12 +81,12 @@
 
       socket.emit('image', data);
     }, 10000 / FPS);
+ */
 
-
-    socket.on('response_back', function (image) {
+    /* socket.on('response_back', function (image) {
       const image_id = document.getElementById('image');
-      image_id.src = image;
-    }); 
+      // image_id.src = image;
+    }); */
   </script>
 
 </body>
