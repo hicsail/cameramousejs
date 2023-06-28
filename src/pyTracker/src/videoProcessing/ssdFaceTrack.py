@@ -20,21 +20,22 @@ net = cv2.dnn.readNetFromCaffe(prototxt, model)
 
 # pose tracker
 # load model and weights
-stage_num = [3,3,3]
-num_capsule = 3
-dim_capsule = 16
-routings = 2
-stage_num = [3,3,3]
-lambda_d = 1
-num_classes = 3
-image_size = 64
-num_primcaps = 7*3
-m_dim = 5
-S_set = [num_capsule, dim_capsule, routings, num_primcaps, m_dim]
-ad = 0.6
-pose_model = FSA_net_Capsule(image_size, num_classes, stage_num, lambda_d, S_set)()
-weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
-pose_model.load_weights(weight_file)
+if config.DETECT_POSE:
+	stage_num = [3,3,3]
+	num_capsule = 3
+	dim_capsule = 16
+	routings = 2
+	stage_num = [3,3,3]
+	lambda_d = 1
+	num_classes = 3
+	image_size = 64
+	num_primcaps = 7*3
+	m_dim = 5
+	S_set = [num_capsule, dim_capsule, routings, num_primcaps, m_dim]
+	ad = 0.6
+	pose_model = FSA_net_Capsule(image_size, num_classes, stage_num, lambda_d, S_set)()
+	weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
+	pose_model.load_weights(weight_file)
 
 # parameters for template matching
 template_size = 0.04
@@ -43,7 +44,7 @@ prev_pos = []
 prev_match_template_res = np.array([[]])
 template = []
 method = cv2.TM_CCORR_NORMED
-dist_threshold = 0.3
+dist_threshold = 0.1
 
 # parameters for tracking using optical flow
 # parameters for ShiTomasi corner detection
@@ -124,11 +125,11 @@ def templateTrack(frame, face):
 		shape = landmark_predictor(frame, rect)
 		shape = face_utils.shape_to_np(shape)
 		# center = (shape[1] + shape[2]) / 2 # middle of eyes
-		center = shape[1] # right eye to make sure enough distinctive feature
+		center = (shape[0] + shape[1]) / 2 # center of right eye to make sure enough distinctive feature
 
-		if len(template) == 0 or hypot(center[0]-prev_pos[0], center[1]-prev_pos[1]) > dist_threshold * face[2]:
+		(h, w) = frame.shape[:2]
+		if len(template) == 0 or hypot(center[0]-template_size*h-prev_pos[0], center[1]-template_size*h-prev_pos[1]) > dist_threshold * face[2]:
 			# initialize with eyes
-			(h, w) = frame.shape[:2]
 			template = frame[int(center[1]-template_size*h):int(center[1]+template_size*h), 
 					int(center[0]-template_size*h):int(center[0]+template_size*h), :]
 			prev_pos = [int(center[0]-template_size*h), int(center[1]-template_size*h)]
@@ -169,7 +170,8 @@ def templateTrack(frame, face):
 	# update previous matching position
 	prev_pos = top_left
 	# update template, use previous best match as the new template
-	template = frame[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0], :]
+	if num_frames % config.TEMPLATE_FREQ == 0:
+		template = frame[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0], :]
 
 	# cv2.imshow("Template", template)
 
@@ -307,11 +309,13 @@ def trackFaces():
 	# 		right=target_face[0]+target_face[2], bottom=target_face[1]+target_face[3])
 	# 	shape = landmark_predictor(frame, rect)
 	# 	shape = face_utils.shape_to_np(shape)
-	# 	for (x, y) in shape[-1:]:
+	# 	for (x, y) in shape[:2]:
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
 	drawScalingBox(cv2, frame)
 	cv2.imshow("Face Tracker", frame)
+
+	print(pos)
 	return faces, poses, pos
 
 def trackFace():
