@@ -43,7 +43,7 @@ search_size = 0.5
 prev_pos = []
 prev_match_template_res = np.array([[]])
 template = []
-method = cv2.TM_CCORR_NORMED
+method = cv2.TM_CCOEFF_NORMED
 dist_threshold = 0.1
 
 # parameters for tracking using optical flow
@@ -315,7 +315,7 @@ def trackFaces():
 	drawScalingBox(cv2, frame)
 	cv2.imshow("Face Tracker", frame)
 
-	print(pos)
+	# print(pos)
 	return faces, poses, pos
 
 def trackFace():
