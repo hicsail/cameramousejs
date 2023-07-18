@@ -32,7 +32,7 @@ if __name__ == "__main__":
         if k == 27:
             break
         if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
-            break 
+            break
         # reset to prevent overflow
         count = 0 if count > 100 else count + 1
 
