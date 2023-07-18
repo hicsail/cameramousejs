@@ -37,7 +37,7 @@ weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
 pose_model.load_weights(weight_file)
 
 # parameters for template matching
-template_size = 0.04
+template_size = 0.02
 search_size = 0.5
 prev_pos = []
 prev_match_template_res = np.array([[]])
@@ -207,9 +207,10 @@ def opticalFlow(frame, face):
 	return []
 
 
-def trackFaces():
+def trackFaces(frame=None):
 	# grab the frame from the threaded video stream and resize it to the global frame size 
-	frame = vs.read()
+	if frame is None:
+		frame = vs.read()
 
 	# return if frame is None
 	if frame is None:
@@ -314,8 +315,8 @@ def trackFaces():
 	cv2.imshow("Face Tracker", frame)
 	return faces, poses, pos
 
-def trackFace():
-	faces, poses, pos = trackFaces() or (None,None,None)
+def trackFace(frame=None):
+	faces, poses, pos = trackFaces(frame) or (None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera

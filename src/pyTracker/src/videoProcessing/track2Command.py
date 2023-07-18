@@ -32,7 +32,7 @@ def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos):
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(pose[0]), "pitch":str(pose[1])} })  
             else:
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(0), "pitch":str(0)} })  
-            detectHoverToClickGesture()
+            # detectHoverToClickGesture()
 
 """
 sends a left click command to server if face has been hovering around the same position for a while

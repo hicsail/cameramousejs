@@ -3,6 +3,7 @@ from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
 import cv2
+from videoProcessing.detectGestures import detectOpenMouth, detectEyebrowsRaised
 
 if __name__ == "__main__":
 
@@ -19,8 +20,17 @@ if __name__ == "__main__":
     frameSize = getFrameSize()
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
+
+    camera_port=0
+    camera=cv2.VideoCapture(camera_port)
+
     while True:
-        face, pose, pos = trackFace()
+        retval, frame = camera.read()
+        im = cv2.flip(frame, 1) # Image that will be processed
+
+        face, pose, pos = trackFace(frame)
+        detectOpenMouth(frame)
+
         convertFaceTrackingToMouseMovement(face, frameSize, pose, pos)
         
         # get config every now and then
@@ -31,8 +41,8 @@ if __name__ == "__main__":
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break
-        if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
-            break
+        '''if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
+            break'''
         # reset to prevent overflow
         count = 0 if count > 100 else count + 1
 
