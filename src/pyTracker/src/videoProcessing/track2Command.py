@@ -22,7 +22,7 @@ face : bounding box of face in format (x, y, w, h)
 frameSize: (w, h) 
     width and height of the frame in which the face was tracked
 """
-def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos):
+def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, is_mouth_open):
     w, h = frameSize
     if len(pos) > 0:
         newMousePosition = { "x" : pos[0] / w, "y" : pos[1] / h }

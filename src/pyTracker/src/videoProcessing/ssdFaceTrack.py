@@ -60,6 +60,8 @@ p0 = []
 
 # facial landmark detection
 landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
+landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
+MOUTH_AR_THRESH = 0.79
 
 num_frames = -1
 vs = VideoStream(src=0).start()
@@ -208,6 +210,22 @@ def opticalFlow(frame, face):
 				return new	
 	return []
 
+from scipy.spatial import distance as dist
+def detect_mouth_open(mouth):
+	# compute the euclidean distances between the two sets of
+	# vertical mouth landmarks (x, y)-coordinates
+	A = dist.euclidean(mouth[2], mouth[10]) # 51, 59
+	B = dist.euclidean(mouth[4], mouth[8]) # 53, 57
+
+	# compute the euclidean distance between the horizontal
+	# mouth landmark (x, y)-coordinates
+	C = dist.euclidean(mouth[0], mouth[6]) # 49, 55
+
+	# compute the mouth aspect ratio
+	mar = (A + B) / (2.0 * C)
+
+	return mar > MOUTH_AR_THRESH
+
 
 def trackFaces():
 	# grab the frame from the threaded video stream and resize it to the global frame size 
@@ -227,6 +245,7 @@ def trackFaces():
 
 	faces = []
 	poses = []
+	is_mouth_open = False
 
 	global num_frames
 	num_frames += 1
@@ -269,6 +288,19 @@ def trackFaces():
 				# draw pose
 				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], yaw, pitch, roll)
 				frame[yw1:yw2 + 1, xw1:xw2 + 1, :] = draw_pose_result
+
+			# 68 facial landmarks
+			rect = dlib.rectangle(left=face[0], top=face[1], 
+			right=face[0]+face[2], bottom=face[1]+face[3])
+			shape = landmark_predictor_68(ori_frame, rect)
+			shape = face_utils.shape_to_np(shape)
+			# detect mouth open
+			is_mouth_open = detect_mouth_open(shape[48:68])
+			for (x, y) in shape[48:68]:
+				cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
+			if is_mouth_open:
+				cv2.putText(frame, "Mouth Open", (endX, endY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
 			# draw the bounding box of the face along with the associated probability
 			text = "{:.2f}%".format(confidence * 100)
@@ -316,16 +348,16 @@ def trackFaces():
 	cv2.imshow("Face Tracker", frame)
 
 	# print(pos)
-	return faces, poses, pos
+	return faces, poses, pos, is_mouth_open
 
 def trackFace():
-	faces, poses, pos = trackFaces() or (None,None,None)
+	faces, poses, pos, is_mouth_open = trackFaces() or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos
+			return faces[0], poses[0], pos, is_mouth_open
 		else:
-			return faces[0], [], pos
+			return faces[0], [], pos, is_mouth_open
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos
+		return [], [], pos, is_mouth_open
