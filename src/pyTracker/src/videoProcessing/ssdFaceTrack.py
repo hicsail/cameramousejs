@@ -61,7 +61,8 @@ p0 = []
 # facial landmark detection
 landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
 landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
-MOUTH_AR_THRESH = 0.79
+MOUTH_AR_THRESH = 0.70
+EYEBROW_DIST_THRESHOLD=0.70
 
 num_frames = -1
 vs = VideoStream(src=0).start()
@@ -226,6 +227,22 @@ def detect_mouth_open(mouth):
 
 	return mar > MOUTH_AR_THRESH
 
+def detect_eyebrows_raised(left, right, Y, X):
+	# Get coordinates of eyebrows relative to the face bounding box
+	# print(height, width)
+
+	relative_left = np.array([ [x[0]-X, x[1]-Y] for x in left])
+	relative_right = np.array([ [x[0]-X, x[1]-Y] for x in right])
+
+	print('-------------------')
+	print(Y)
+	print("left", relative_left[:,1])
+	print(Y - relative_left[:,1])
+	print('-------------------')
+
+	return (relative_left[2:4,1] <= 27).all() and (relative_right[2:4,1] <= 27).all()
+
+
 
 def trackFaces():
 	# grab the frame from the threaded video stream and resize it to the global frame size 
@@ -289,7 +306,7 @@ def trackFaces():
 				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], yaw, pitch, roll)
 				frame[yw1:yw2 + 1, xw1:xw2 + 1, :] = draw_pose_result
 
-			# 68 facial landmarks
+			# 68 facial landmarks	
 			rect = dlib.rectangle(left=face[0], top=face[1], 
 			right=face[0]+face[2], bottom=face[1]+face[3])
 			shape = landmark_predictor_68(ori_frame, rect)
@@ -300,6 +317,18 @@ def trackFaces():
 				cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 			if is_mouth_open:
 				cv2.putText(frame, "Mouth Open", (endX, endY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
+
+			# detect if eyebrows are raised
+			face_box_height = endY - startY
+			face_box_width = endX - startX
+			left_eyebrow = shape[17:22]
+			right_eyebrow = shape[22:27]
+
+
+			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, startY, startX)
+			if are_eyebrows_raised:
+				cv2.putText(frame, "Eyebrows raised", (endX, startY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
 			# draw the bounding box of the face along with the associated probability
