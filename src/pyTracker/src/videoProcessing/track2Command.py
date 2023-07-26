@@ -22,7 +22,7 @@ face : bounding box of face in format (x, y, w, h)
 frameSize: (w, h) 
     width and height of the frame in which the face was tracked
 """
-def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, is_mouth_open):
+def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, guesture):
     w, h = frameSize
     if len(pos) > 0:
         newMousePosition = { "x" : pos[0] / w, "y" : pos[1] / h }
@@ -32,7 +32,9 @@ def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, is_mouth_open
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(pose[0]), "pitch":str(pose[1])} })  
             else:
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(0), "pitch":str(0)} })  
-            detectHoverToClickGesture()
+            # detectHoverToClickGesture()
+            if guesture[0]: # mouth open
+                sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.LEFT_CLICK)
 
 """
 sends a left click command to server if face has been hovering around the same position for a while

@@ -227,20 +227,16 @@ def detect_mouth_open(mouth):
 
 	return mar > MOUTH_AR_THRESH
 
-def detect_eyebrows_raised(left, right, Y, X):
-	# Get coordinates of eyebrows relative to the face bounding box
-	# print(height, width)
+def detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye):
+	# y distance between eyebrows and eyes relative to the width of eyebrows
+	relative_left = abs(left_eyebrow[2][1] - left_eye[-1][1]) / dist.euclidean(left_eyebrow[0], left_eyebrow[-1])
+	relative_right = abs(right_eyebrow[2][1] - right_eye[-1][1]) / dist.euclidean(right_eyebrow[0], right_eyebrow[-1])
 
-	relative_left = np.array([ [x[0]-X, x[1]-Y] for x in left])
-	relative_right = np.array([ [x[0]-X, x[1]-Y] for x in right])
+	# print('-------------------')
+	# print("left", relative_left)
+	# print("right", relative_right)
 
-	print('-------------------')
-	print(Y)
-	print("left", relative_left[:,1])
-	print(Y - relative_left[:,1])
-	print('-------------------')
-
-	return (relative_left[2:4,1] <= 27).all() and (relative_right[2:4,1] <= 27).all()
+	return min(relative_left, relative_right) > EYEBROW_DIST_THRESHOLD
 
 
 
@@ -263,6 +259,7 @@ def trackFaces():
 	faces = []
 	poses = []
 	is_mouth_open = False
+	are_eyebrows_raised = False
 
 	global num_frames
 	num_frames += 1
@@ -320,13 +317,13 @@ def trackFaces():
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
 			# detect if eyebrows are raised
-			face_box_height = endY - startY
-			face_box_width = endX - startX
 			left_eyebrow = shape[17:22]
 			right_eyebrow = shape[22:27]
+			left_eye = shape[36:42]
+			right_eye = shape[42:48]
 
 
-			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, startY, startX)
+			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye)
 			if are_eyebrows_raised:
 				cv2.putText(frame, "Eyebrows raised", (endX, startY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
@@ -377,16 +374,16 @@ def trackFaces():
 	cv2.imshow("Face Tracker", frame)
 
 	# print(pos)
-	return faces, poses, pos, is_mouth_open
+	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised]
 
 def trackFace():
-	faces, poses, pos, is_mouth_open = trackFaces() or (None,None,None,None)
+	faces, poses, pos, guesture = trackFaces() or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos, is_mouth_open
+			return faces[0], poses[0], guesture
 		else:
-			return faces[0], [], pos, is_mouth_open
+			return faces[0], [], pos, guesture
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos, is_mouth_open
+		return [], [], pos, guesture
