@@ -74,7 +74,7 @@ Note that config.FRAME_WIDTH and config.FRAME_HEIGHT can't be used directly beca
 final width and height of the frame might change depending on the aspect ratio of the camera
 
 for eg: when config.FRAME_WIDTH and config.FRAME_HEIGHT are both 300 and aspect ratio of camera is 1920/1080,
-        eventual height of the frame is 168 (not 300) ,after resizing
+		eventual height of the frame is 168 (not 300) ,after resizing
 """
 def getFrameSize():
 	frame = vs.read()
@@ -87,36 +87,36 @@ def getFrameSize():
 
 from math import cos, sin, hypot
 def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size = 50):
-    pitch = pitch * np.pi / 180
-    yaw = -(yaw * np.pi / 180)
-    roll = roll * np.pi / 180
+	pitch = pitch * np.pi / 180
+	yaw = -(yaw * np.pi / 180)
+	roll = roll * np.pi / 180
 
-    if tdx != None and tdy != None:
-        tdx = tdx
-        tdy = tdy
-    else:
-        height, width = img.shape[:2]
-        tdx = width / 2
-        tdy = height / 2
+	if tdx != None and tdy != None:
+		tdx = tdx
+		tdy = tdy
+	else:
+		height, width = img.shape[:2]
+		tdx = width / 2
+		tdy = height / 2
 
-    # X-Axis pointing to right. drawn in red
-    x1 = size * (cos(yaw) * cos(roll)) + tdx
-    y1 = size * (cos(pitch) * sin(roll) + cos(roll) * sin(pitch) * sin(yaw)) + tdy
+	# X-Axis pointing to right. drawn in red
+	x1 = size * (cos(yaw) * cos(roll)) + tdx
+	y1 = size * (cos(pitch) * sin(roll) + cos(roll) * sin(pitch) * sin(yaw)) + tdy
 
-    # Y-Axis | drawn in green
-    #        v
-    x2 = size * (-cos(yaw) * sin(roll)) + tdx
-    y2 = size * (cos(pitch) * cos(roll) - sin(pitch) * sin(yaw) * sin(roll)) + tdy
+	# Y-Axis | drawn in green
+	#        v
+	x2 = size * (-cos(yaw) * sin(roll)) + tdx
+	y2 = size * (cos(pitch) * cos(roll) - sin(pitch) * sin(yaw) * sin(roll)) + tdy
 
-    # Z-Axis (out of the screen) drawn in blue
-    x3 = size * (sin(yaw)) + tdx
-    y3 = size * (-cos(yaw) * sin(pitch)) + tdy
+	# Z-Axis (out of the screen) drawn in blue
+	x3 = size * (sin(yaw)) + tdx
+	y3 = size * (-cos(yaw) * sin(pitch)) + tdy
 
-    cv2.line(img, (int(tdx), int(tdy)), (int(x1),int(y1)),(0,0,255),3)
-    cv2.line(img, (int(tdx), int(tdy)), (int(x2),int(y2)),(0,255,0),3)
-    cv2.line(img, (int(tdx), int(tdy)), (int(x3),int(y3)),(255,0,0),2)
+	cv2.line(img, (int(tdx), int(tdy)), (int(x1),int(y1)),(0,0,255),3)
+	cv2.line(img, (int(tdx), int(tdy)), (int(x2),int(y2)),(0,255,0),3)
+	cv2.line(img, (int(tdx), int(tdy)), (int(x3),int(y3)),(255,0,0),2)
 
-    return img
+	return img
 
 def templateTrack(frame, face):
 	# tracking using template matching
@@ -227,18 +227,19 @@ def detect_mouth_open(mouth):
 
 	return mar > MOUTH_AR_THRESH
 
-def detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye):
-	# y distance between eyebrows and eyes relative to the width of eyebrows
-	relative_left = abs(left_eyebrow[2][1] - left_eye[-1][1]) / dist.euclidean(left_eyebrow[0], left_eyebrow[-1])
-	relative_right = abs(right_eyebrow[2][1] - right_eye[-1][1]) / dist.euclidean(right_eyebrow[0], right_eyebrow[-1])
+# get distance between two points
+def get_distance(point1, point2):
+	return np.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
 
-	# print('-------------------')
-	# print("left", relative_left)
-	# print("right", relative_right)
+def detect_eyebrows_raised(eyebrow_left, eyebrow_right, nose):
+    # Get distance between each eyebrow to the nose
+    distance_left = get_distance(eyebrow_left[4], nose[2])
+    distance_right = get_distance(eyebrow_right[0], nose[2])
 
-	return min(relative_left, relative_right) > EYEBROW_DIST_THRESHOLD
+    print("distance_left", distance_left)
+    print("distance_right", distance_right)
 
-
+    return True if distance_left > 90 and distance_right > 90 else False
 
 def trackFaces():
 	# grab the frame from the threaded video stream and resize it to the global frame size 
@@ -259,7 +260,6 @@ def trackFaces():
 	faces = []
 	poses = []
 	is_mouth_open = False
-	are_eyebrows_raised = False
 
 	global num_frames
 	num_frames += 1
@@ -317,13 +317,14 @@ def trackFaces():
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
 			# detect if eyebrows are raised
+			face_box_height = endY - startY
+			face_box_width = endX - startX
 			left_eyebrow = shape[17:22]
 			right_eyebrow = shape[22:27]
-			left_eye = shape[36:42]
-			right_eye = shape[42:48]
+			
+			nose = shape[31:36]
 
-
-			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye)
+			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, nose)
 			if are_eyebrows_raised:
 				cv2.putText(frame, "Eyebrows raised", (endX, startY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
@@ -374,16 +375,16 @@ def trackFaces():
 	cv2.imshow("Face Tracker", frame)
 
 	# print(pos)
-	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised]
+	return faces, poses, pos, is_mouth_open
 
 def trackFace():
-	faces, poses, pos, guesture = trackFaces() or (None,None,None,None)
+	faces, poses, pos, is_mouth_open = trackFaces() or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], guesture
+			return faces[0], poses[0], pos, is_mouth_open
 		else:
-			return faces[0], [], pos, guesture
+			return faces[0], [], pos, is_mouth_open
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos, guesture
+		return [], [], pos, is_mouth_open
