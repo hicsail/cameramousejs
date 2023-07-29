@@ -59,7 +59,7 @@ prev_gray = []
 p0 = []
 
 # facial landmark detection
-landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
+# landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
 landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
 MOUTH_AR_THRESH = 0.70
 EYEBROW_DIST_THRESHOLD=0.70
@@ -118,17 +118,19 @@ def draw_axis(img, yaw, pitch, roll, tdx=None, tdy=None, size = 50):
 
     return img
 
-def templateTrack(frame, face):
+def templateTrack(frame, face, shape):
 	# tracking using template matching
 	global template, prev_pos, prev_match_template_res, search_size, dist_threshold
 
 	if len(face) > 0:
-		rect = dlib.rectangle(left=face[0], top=face[1], 
-			right=face[0]+face[2], bottom=face[1]+face[3])
-		shape = landmark_predictor(frame, rect)
-		shape = face_utils.shape_to_np(shape)
+		# rect = dlib.rectangle(left=face[0], top=face[1], 
+		# 	right=face[0]+face[2], bottom=face[1]+face[3])
+		# shape = landmark_predictor(frame, rect)
+		# shape = face_utils.shape_to_np(shape)
 		# center = (shape[1] + shape[2]) / 2 # middle of eyes
-		center = (shape[0] + shape[1]) / 2 # center of right eye to make sure enough distinctive feature
+		# center = (shape[0] + shape[1]) / 2 # center of right eye to make sure enough distinctive feature
+		center = shape[27] # center of two eyes
+		center = shape[30] # nose
 
 		(h, w) = frame.shape[:2]
 		if len(template) == 0 or hypot(center[0]-template_size*h-prev_pos[0], center[1]-template_size*h-prev_pos[1]) > dist_threshold * face[2]:
@@ -260,6 +262,7 @@ def trackFaces():
 	poses = []
 	is_mouth_open = False
 	are_eyebrows_raised = False
+	shapes = []
 
 	global num_frames
 	num_frames += 1
@@ -328,6 +331,8 @@ def trackFaces():
 				cv2.putText(frame, "Eyebrows raised", (endX, startY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
+			shapes.append(shape)
+
 			# draw the bounding box of the face along with the associated probability
 			text = "{:.2f}%".format(confidence * 100)
 			y = startY - 10 if startY - 10 > 10 else startY + 10
@@ -340,9 +345,12 @@ def trackFaces():
 	# tracking using template matching 
 	if faces or len(template) != 0:
 		# select the largest face
-		sorted_face = sorted(faces, key=lambda x : x[2] * x[3])
-		target_face = sorted_face[0] if sorted_face else []
-		top_left, bottom_right = templateTrack(ori_frame, target_face)
+		# sorted_face = sorted(faces, key=lambda x : x[2] * x[3])
+		# target_face = sorted_face[-1] if sorted_face else []
+		sorted_idx = sorted(range(len(faces)), key=lambda k: faces[k][2] * faces[k][3])
+		target_face = faces[sorted_idx[-1]] if sorted_idx else []
+		target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
+		top_left, bottom_right = templateTrack(ori_frame, target_face, target_shape)
 		# print("template box ", top_left[0] - bottom_right[0])
 		cv2.rectangle(frame, top_left, bottom_right, (0, 0, 0), 2)
 		pos = top_left
@@ -381,7 +389,7 @@ def trackFace():
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], guesture
+			return faces[0], poses[0], pos, guesture
 		else:
 			return faces[0], [], pos, guesture
 	else:
