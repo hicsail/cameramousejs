@@ -12,6 +12,7 @@ def drawScalingBox(cvObject, frame):
     endY = int(boundingBox["y"][1] * trackerState.FRAME_HEIGHT) + templateMatchBoxLength + 4
     cvObject.rectangle(frame, (startX, startY), (endX, endY),
 				(0, 255, 0 ), 2)
+    return startX, startY, endX, endY
   
   
 """

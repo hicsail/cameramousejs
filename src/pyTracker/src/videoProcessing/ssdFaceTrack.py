@@ -377,10 +377,11 @@ def trackFaces():
 	# 	for (x, y) in shape[:2]:
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
-	drawScalingBox(cv2, frame)
+	startX, startY, endX, endY = drawScalingBox(cv2, frame)
 
 	# crop the image
-	cropped = frame.copy()[150:250, 300:450]
+	# cropped = frame.copy()[150:250, 300:450]
+	cropped = frame.copy()[startY-15:endY+15, startX-15:endX+15]
 	
 
 	cv2.imshow("Face Tracker", cropped)
