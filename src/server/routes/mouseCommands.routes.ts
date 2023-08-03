@@ -52,27 +52,14 @@ router.route(MOVEMENT_PATH).post(async (req, res) => {
 // perform mouse click
 router.route(ACTION_PATH).post(async (req: any, res: any) => {
   try {
-    if (req.body.action) {
-      if (configuration.trackingStatus == TRACKING_STATUS.ON) {
-        if (configuration.mouseCommands.rightClick) {
-          click("right");
-          //reset to leftclick
-          configuration.mouseCommands.rightClick = false;
-          mainWindow.webContents.send(
-            IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
-            configuration
-          );
-        } else if (configuration.mouseCommands.doubleClick) {
-          doubleClick();
-          configuration.mouseCommands.doubleClick = false;
-          //reset to single leftclick
-          mainWindow.webContents.send(
-            IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
-            configuration
-          );
-        } else {
-          click("left");
-        }
+    const action = req.body.action;
+    if (action) {
+      if (action == "leftClick") {
+        click("left");
+      } else if (action == "rightClick") {
+        click("right");
+      } else if (action == "doubleClick") {
+        doubleClick();
       }
     }
     res.send({ status: "ok" });

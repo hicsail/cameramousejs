@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Box,
   FormControl,
@@ -9,6 +10,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import StyledSlider from "../components/StyledSlider";
@@ -36,6 +38,10 @@ const Settings: React.FC<Props> = (props) => {
   const [pitchThreshold, setPitchThreshold] = useState<number>(0);
   const [joystickStepSize, setJoystickStepSize] = useState<number>(5);
   const [trackingMode, setTrackingMode] = useState(appConfig.trackingMode);
+  const [leftClickGesture, setLeftClickGesture] = useState(appConfig.leftClickGesture);
+  const [rightClickGesture, setRightClickGesture] = useState(appConfig.rightClickGesture);
+  const [doubleClickGesture, setDoubleClickGesture] = useState(appConfig.doubleClickGesture);
+
 
   useEffect(() => {
     setScaleFactor(appConfig.mouseMovementScaleFactor);
@@ -108,6 +114,54 @@ const Settings: React.FC<Props> = (props) => {
       window.electronAPI.updateConfiguration(newAppConfig);
       setAppConfig(newAppConfig);
     }
+  };
+
+  const handleLeftClickChange = async (event: SelectChangeEvent) => {
+    console.log("leftClickGesture before", leftClickGesture)
+
+
+    // check if the other clicks are not set to this value
+    if (event.target.value !== "none" && (event.target.value == rightClickGesture || event.target.value == doubleClickGesture)) {
+        // create alert to user
+        return;
+    }
+    console.log(event);
+    setLeftClickGesture(event.target.value as string);
+
+
+
+    const newAppConfig = { ...appConfig, leftClickGesture: event.target.value};
+    await window.electronAPI.updateConfiguration(newAppConfig);
+    await setAppConfig(newAppConfig);
+
+    console.log("leftClickGesture after", leftClickGesture)
+
+  };
+
+  const handleRightClickChange = (event: SelectChangeEvent) => {
+    // check if the other clicks are not set to this value
+    if (event.target.value !== "none" &&  (event.target.value == leftClickGesture || event.target.value == doubleClickGesture)) {
+        // create alert to user
+        return;
+    }
+    setRightClickGesture(event.target.value as string);
+
+    const newAppConfig = { ...appConfig, rightClickGesture: event.target.value};
+    window.electronAPI.updateConfiguration(newAppConfig);
+    setAppConfig(newAppConfig);
+  };
+
+  const handleDoubleClickChange = (event: SelectChangeEvent) => {
+    // check if the other clicks are not set to this value
+    if (event.target.value !== "none" && (event.target.value == leftClickGesture || event.target.value == rightClickGesture)) {
+        // create alert to user
+        return;
+    }
+    setDoubleClickGesture(event.target.value as string);
+
+    const newAppConfig = { ...appConfig, doubleClickGesture: event.target.value};
+    window.electronAPI.updateConfiguration(newAppConfig);
+    setAppConfig(newAppConfig);
   };
 
   return (
@@ -224,6 +278,71 @@ const Settings: React.FC<Props> = (props) => {
         )
 
         }
+      </Stack>
+      <Stack>
+
+      
+        <Stack direction='row'>
+        
+          <Box>
+
+            <Alert id="left-click-gesture-error" sx={{ display: 'none' }} severity="error">This is an error alert — check it out!</Alert>
+
+            <FormControl>
+            <InputLabel id="demo-simple-select-label">Left Click</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={leftClickGesture}
+                label="leftClickGesture"
+                onChange={handleLeftClickChange}
+              >
+                  <MenuItem value={"none"}>Not Set</MenuItem>
+                  <MenuItem value={"dwell"}>Dwell Time</MenuItem>
+                  <MenuItem value={"mouth"}>Opening Mouth</MenuItem>
+                  <MenuItem value={"eyebrow-raise"}>Raising Eyebrows</MenuItem>
+                </Select>
+            </FormControl>
+
+          </Box>
+
+          <Box>
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">Right Click</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={rightClickGesture}
+                label="rightlickGesture"
+                onChange={handleRightClickChange}
+              >
+                  <MenuItem value={"none"}>Not Set</MenuItem>
+                  <MenuItem value={"dwell"}>Dwell Time</MenuItem>
+                  <MenuItem value={"mouth"}>Opening Mouth</MenuItem>
+                  <MenuItem value={"eyebrow-raise"}>Raising Eyebrows</MenuItem>
+                </Select>
+            </FormControl>
+          </Box>
+
+          <Box>
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">Double Click</InputLabel>
+
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={doubleClickGesture}
+                label="doubleClickGesture"
+                onChange={handleDoubleClickChange}
+              >
+                  <MenuItem value={"none"}>Not Set</MenuItem>
+                  <MenuItem value={"dwell"}>Dwell Time</MenuItem>
+                  <MenuItem value={"mouth"}>Opening Mouth</MenuItem>
+                  <MenuItem value={"eyebrow-raise"}>Raising Eyebrows</MenuItem>
+                </Select>
+            </FormControl>
+            </Box>
+        </Stack>
       </Stack>
     </Stack >
   );

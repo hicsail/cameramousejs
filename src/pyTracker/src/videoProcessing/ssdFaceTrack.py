@@ -13,7 +13,6 @@ from imutils import face_utils
 #SSD initialization
 currDirectory = os.path.dirname(os.path.abspath(__file__))
 prototxt =  currDirectory + "/deploy.prototxt.txt"
-print("prototxt path", prototxt)
 model = currDirectory + "/res10_300x300_ssd_iter_140000.caffemodel"
 confidenceThreshold = 0.9 #Minimum confidence for an object to be recognized as a face
 net = cv2.dnn.readNetFromCaffe(prototxt, model)
@@ -334,12 +333,12 @@ def trackFaces():
 			shapes.append(shape)
 
 			# draw the bounding box of the face along with the associated probability
-			text = "{:.2f}%".format(confidence * 100)
+			'''text = "{:.2f}%".format(confidence * 100)
 			y = startY - 10 if startY - 10 > 10 else startY + 10
 			cv2.rectangle(frame, (startX, startY), (endX, endY),
 				(0, 0, 255), 2)
 			cv2.putText(frame, text, (startX, y),
-				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
+				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)'''
 	
 	pos = []
 	# tracking using template matching 
@@ -379,19 +378,24 @@ def trackFaces():
 	# 		cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 	# 	pos = shape[-1]
 	drawScalingBox(cv2, frame)
-	cv2.imshow("Face Tracker", frame)
+
+	# crop the image
+	cropped = frame.copy()[150:250, 300:450]
+	
+
+	cv2.imshow("Face Tracker", cropped)
 
 	# print(pos)
 	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised]
 
 def trackFace():
-	faces, poses, pos, guesture = trackFaces() or (None,None,None,None)
+	faces, poses, pos, gesture = trackFaces() or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos, guesture
+			return faces[0], poses[0], pos, gesture
 		else:
-			return faces[0], [], pos, guesture
+			return faces[0], [], pos, gesture
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos, guesture
+		return [], [], pos, gesture
