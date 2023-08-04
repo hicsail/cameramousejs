@@ -54,7 +54,7 @@ def processShutDownCommand(response):
       if response and 'status' in response.json() and response.json()['status'] == "shutdown":
         # end python process immediately
         cv2.destroyAllWindows()
-        exit(0)
+        requests.get(f'{CAMERMOUSE_SERVER_URL}:{8000}/kill')
     except Exception:
         return None 
    
