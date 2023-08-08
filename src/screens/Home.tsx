@@ -110,7 +110,9 @@ const Home: React.FC<Props> = (props) => {
                 <Typography variant="h6">Tracker is initializing...</Typography>
               </Stack>
             )}
-            <Stack style={{ flexDirection: "row", marginTop: 30 }} alignItems={"center"} justifyContent={"center"}>
+
+
+            {/* <Stack style={{ flexDirection: "row", marginTop: 30 }} alignItems={"center"} justifyContent={"center"}>
               <Stack style={{ alignItems: "center" }}>
                 <Typography gutterBottom>
                   {clickDirection ? "Disable" : "Enable"} right click
@@ -134,7 +136,7 @@ const Home: React.FC<Props> = (props) => {
                   inputProps={{ "aria-label": "left click swtich" }}
                 />
               </Stack>
-            </Stack>
+            </Stack> */}
           </Box>) : (
 
           <Stack alignItems={"center"}>

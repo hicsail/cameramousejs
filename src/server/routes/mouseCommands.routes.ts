@@ -54,12 +54,14 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
   try {
     const action = req.body.action;
     if (action) {
-      if (action == "leftClick") {
-        click("left");
-      } else if (action == "rightClick") {
-        click("right");
-      } else if (action == "doubleClick") {
-        doubleClick();
+      if (configuration.trackingStatus == TRACKING_STATUS.ON) {
+        if (action == "leftClick") {
+          click("left");
+        } else if (action == "rightClick") {
+          click("right");
+        } else if (action == "doubleClick") {
+          doubleClick();
+        }
       }
     }
     res.send({ status: "ok" });

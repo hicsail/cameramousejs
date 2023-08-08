@@ -281,11 +281,14 @@ const Settings: React.FC<Props> = (props) => {
       </Stack>
       <Stack>
 
-      
-        <Stack direction='row'>
+          <Typography variant="h6" className="textCenter" gutterBottom>
+              Gestures
+          </Typography>
+
+        <Stack direction='row' justifyContent={"space-evenly"}>
         
           <Box>
-
+             
             <Alert id="left-click-gesture-error" sx={{ display: 'none' }} severity="error">This is an error alert — check it out!</Alert>
 
             <FormControl>
