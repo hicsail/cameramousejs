@@ -22,7 +22,7 @@ face : bounding box of face in format (x, y, w, h)
 frameSize: (w, h) 
     width and height of the frame in which the face was tracked
 """
-def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos):
+def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture):
     w, h = frameSize
     if len(pos) > 0:
         newMousePosition = { "x" : pos[0] / w, "y" : pos[1] / h }
@@ -32,12 +32,35 @@ def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos):
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(pose[0]), "pitch":str(pose[1])} })  
             else:
                 sendRequest(MOUSE_MOVEMENT_PATH, {**newMousePosition , **{"yaw":str(0), "pitch":str(0)} })  
-            detectHoverToClickGesture()
+            # detectHoverToClickGesture()
+
+            leftClick = trackerState.leftClickGesture
+            rightClick = trackerState.rightClickGesture
+            doubleClick = trackerState.doubleClickGesture
+            
+            # Handle left click
+            if leftClick == "dwell" : 
+                detectHoverToClickGesture(MOUSE_ACTIONS.LEFT_CLICK)
+            elif rightClick == "dwell":
+                detectHoverToClickGesture(MOUSE_ACTIONS.RIGHT_CLICK)
+            elif doubleClick == "dwell":
+                detectHoverToClickGesture(MOUSE_ACTIONS.DOUBLE_CLICK)
+
+            elif (leftClick == "mouth" and gesture[0]) or (leftClick == "eyebrow-raise" and gesture[1]): 
+                sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.LEFT_CLICK)
+
+            if (rightClick == "mouth" and gesture[0]) or (rightClick == "eyebrow-raise" and gesture[1]): 
+                sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.RIGHT_CLICK)
+
+            if (doubleClick == "mouth" and gesture[0]) or (doubleClick == "eyebrow-raise" and gesture[1]):
+                sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.DOUBLE_CLICK)
+
+
 
 """
 sends a left click command to server if face has been hovering around the same position for a while
 """
-def detectHoverToClickGesture():
+def detectHoverToClickGesture(command):
     if len(trackerState.trackedPositions) >= config.HOVER_TO_CLICK_MIN_POINTS: 
         # get last HOVER_TO_CLICK_MIN_POINTS tracked positions.
         startIndex = len(trackerState.trackedPositions) - config.HOVER_TO_CLICK_MIN_POINTS
@@ -50,4 +73,4 @@ def detectHoverToClickGesture():
         if longestDistanceX < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD and longestDistanceY < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD:
             # clear past positions to prevent unintentional consecutive clicks
             trackerState.trackedPositions.clear()
-            sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.LEFT_CLICK)
+            sendRequest(MOUSE_ACTION_PATH, command)

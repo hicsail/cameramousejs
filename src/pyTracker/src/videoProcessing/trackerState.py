@@ -13,6 +13,10 @@ class TrackerState:
         self.FRAME_WIDTH = 300
         self.FRAME_HEIGHT = 168
 
+        self.leftClickGesture = "dwell" # by default
+        self.rightClickGesture = "none" # by default
+        self.doubleClickGesture = "none" # by default
+
     def updateTracked(confidence):
         trackedReq += 1
         trackedProb += confidence
@@ -30,6 +34,10 @@ class TrackerState:
         self.FRAME_WIDTH = width
         self.FRAME_HEIGHT = height
 
+    def updateGestures(self, leftClickGesture, rightClickGesture, doubleClickGesture):
+        self.leftClickGesture = leftClickGesture
+        self.rightClickGesture = rightClickGesture
+        self.doubleClickGesture = doubleClickGesture 
 
 
 trackerState = TrackerState()

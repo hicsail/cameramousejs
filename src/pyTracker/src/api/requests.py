@@ -13,6 +13,7 @@ SETTINGS_PATH = "mouse/settings"
 class MOUSE_ACTIONS:
     LEFT_CLICK = {"action": "leftClick"}
     RIGHT_CLICK = {"action": "rightClick"}
+    DOUBLE_CLICK = {"action": "doubleClick"}
 
 # TODO validate requestPath and request payload compatibility. 
 def validateRequestPayload(requestPath, requestData):
@@ -43,10 +44,10 @@ def sendRequest(requestPath, requestData, httpMethod="post"):
 
 def getLatestAppSettingsFromServer():
     response = sendRequest(SETTINGS_PATH, None, httpMethod="get")
-    if  response and 'config' in response.json():
-        config = response.json()['config']
+    if  response and 'configuration' in response.json():
+        config = response.json()['configuration']
         trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
-
+        trackerState.updateGestures(config['leftClickGesture'], config['rightClickGesture'], config['doubleClickGesture'])
 
 # detect shutdown command from server and end python process immediately
 def processShutDownCommand(response):
