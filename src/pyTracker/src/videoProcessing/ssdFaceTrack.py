@@ -63,6 +63,8 @@ landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_6
 MOUTH_AR_THRESH = 0.70
 EYEBROW_DIST_THRESHOLD=0.70
 
+op_window_size = None
+
 num_frames = -1
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
@@ -382,6 +384,10 @@ def trackFaces():
 	# crop the image
 	# cropped = frame.copy()[150:250, 300:450]
 	cropped = frame.copy()[startY-15:endY+15, startX-15:endX+15]
+	global op_window_size
+	if op_window_size != None and op_window_size != cropped.shape:
+		cv2.destroyWindow("Face Tracker")
+	op_window_size = cropped.shape	
 	
 
 	cv2.imshow("Face Tracker", cropped)
