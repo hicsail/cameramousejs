@@ -101,6 +101,7 @@ const Home: React.FC<Props> = (props) => {
                   <Stack alignItems={"center"} spacing={2}>
                     <Chip label="Tracking" color="success" />
                     <Typography>Press ESC to stop tracking</Typography>
+                    <Typography>Press CTRL+ALT+S to stop tracking from outside the app</Typography>
                   </Stack>
                 )}
               </>
