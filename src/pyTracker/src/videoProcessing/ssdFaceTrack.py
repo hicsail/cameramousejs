@@ -380,7 +380,6 @@ def trackFaces():
 	startX, startY, endX, endY = drawScalingBox(cv2, frame)
 
 	# crop the image
-	# cropped = frame.copy()[150:250, 300:450]
 	cropped = frame.copy()[startY-15:endY+15, startX-15:endX+15]
 	
 
