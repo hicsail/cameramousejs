@@ -165,7 +165,7 @@ const Settings: React.FC<Props> = (props) => {
   };
 
   return (
-    <Stack minWidth={350} width={"100%"} spacing={5}>
+    <Stack minWidth={350} width={"100%"}>
       {!appConfig.monoTrackingMode && (
         <Box sx={{ minWidth: 150 }}>
           <FormControl fullWidth>
@@ -191,101 +191,13 @@ const Settings: React.FC<Props> = (props) => {
           Settings
         </Typography>
 
-        {trackingMode == "position" ? (
-          <>
-            <Stack flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={5}>
-              <Stack spacing={5}>
+        <Stack style={{marginTop: "2rem"}}>
 
-
-                <Stack>
-                  <Typography gutterBottom>Horizontal sensitivity</Typography>
-                  <StyledSlider
-                    aria-label="mouse movement scale slider"
-                    value={scaleFactor}
-                    onChangeCommitted={handleScaleSliderChange}
-                    getAriaValueText={(value: string) => value.toString()}
-                    step={1}
-                    marks
-                    min={SCALE_FACTOR_X_LOWERBOUND}
-                    max={SCALE_FACTOR_X_UPPERBOUND}
-                    valueLabelDisplay="auto"
-                  />
-                </Stack>
-                <Stack>
-                  <Typography gutterBottom>Vertical sensitivity</Typography>
-                  <StyledSlider
-                    aria-label="mouse movement scale slider y"
-                    value={scaleFactorY}
-                    onChangeCommitted={handleScaleYSliderChange}
-                    getAriaValueText={(value: string) => value.toString()}
-                    step={1}
-                    marks
-                    min={SCALE_FACTOR_Y_LOWERBOUND}
-                    max={SCALE_FACTOR_Y_UPPERBOUND}
-                    valueLabelDisplay="auto"
-                  />
-                </Stack>
-
-              </Stack>
-
-              <Stack style={{ marginLeft: "2rem" }}>
-                <ScreenExclusionForm />
-              </Stack>
-
-            </Stack>
-          </>
-        ) : (
-          <>
-            <Stack>
-              <Typography gutterBottom>Step size</Typography>
-              <StyledSlider
-                value={joystickStepSize}
-                onChangeCommitted={handleJoystickStepChange}
-                getAriaValueText={(value: string) => value.toString()}
-                step={1}
-                min={5}
-                max={50}
-                valueLabelDisplay="auto"
-              />
-            </Stack>
-            <Stack>
-              <Typography gutterBottom>Horizontal sensitivity</Typography>
-              <StyledSlider
-                value={yawThreshold}
-                onChangeCommitted={handleYawSliderChange}
-                getAriaValueText={(value: string) => value.toString()}
-                step={1}
-                marks
-                min={YAW_LOWERBOUND}
-                max={YAW_UPPERBOUND}
-                valueLabelDisplay="auto"
-              />
-            </Stack>
-            <Stack>
-              <Typography gutterBottom>Vertical sensitivity</Typography>
-              <StyledSlider
-                value={pitchThreshold}
-                onChangeCommitted={handlePitchSliderChange}
-                getAriaValueText={(value: string) => value.toString()}
-                step={1}
-                marks
-                min={PITCH_LOWERBOUND}
-                max={PITCH_UPPERBOUND}
-                valueLabelDisplay="auto"
-              />
-            </Stack>
-          </>
-        )
-
-        }
-      </Stack>
-      <Stack>
-
-          <Typography variant="h6" className="textCenter" gutterBottom>
+          <Typography className="textCenter" gutterBottom style={{marginBottom: "2rem"}}>
               Gestures
           </Typography>
 
-        <Stack direction='row' justifyContent={"space-evenly"}>
+        <Stack direction='row' justifyContent={"space-between"} spacing={10}>
         
           <Box>
              
@@ -347,6 +259,96 @@ const Settings: React.FC<Props> = (props) => {
             </Box>
         </Stack>
       </Stack>
+
+        {trackingMode == "position" ? (
+          <>
+            <Stack flexDirection={"row"} justifyContent={"space-between"} alignItems={"center"} spacing={10} style={{marginTop: "5rem"}}>
+              <Stack spacing={5} >
+
+
+                <Stack>
+                  <Typography gutterBottom>Horizontal sensitivity</Typography>
+                  <StyledSlider
+                    aria-label="mouse movement scale slider"
+                    value={scaleFactor}
+                    onChangeCommitted={handleScaleSliderChange}
+                    getAriaValueText={(value: string) => value.toString()}
+                    step={1}
+                    marks
+                    min={SCALE_FACTOR_X_LOWERBOUND}
+                    max={SCALE_FACTOR_X_UPPERBOUND}
+                    valueLabelDisplay="auto"
+                  />
+                </Stack>
+                <Stack>
+                  <Typography gutterBottom>Vertical sensitivity</Typography>
+                  <StyledSlider
+                    aria-label="mouse movement scale slider y"
+                    value={scaleFactorY}
+                    onChangeCommitted={handleScaleYSliderChange}
+                    getAriaValueText={(value: string) => value.toString()}
+                    step={1}
+                    marks
+                    min={SCALE_FACTOR_Y_LOWERBOUND}
+                    max={SCALE_FACTOR_Y_UPPERBOUND}
+                    valueLabelDisplay="auto"
+                  />
+                </Stack>
+
+              </Stack>
+
+              <Stack style={{ marginLeft: "5rem", marginTop: 0 }}>
+                <ScreenExclusionForm />
+              </Stack>
+
+            </Stack>
+          </>
+        ) : (
+          <>
+            <Stack>
+              <Typography gutterBottom>Step size</Typography>
+              <StyledSlider
+                value={joystickStepSize}
+                onChangeCommitted={handleJoystickStepChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                min={5}
+                max={50}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+            <Stack>
+              <Typography gutterBottom>Horizontal sensitivity</Typography>
+              <StyledSlider
+                value={yawThreshold}
+                onChangeCommitted={handleYawSliderChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                marks
+                min={YAW_LOWERBOUND}
+                max={YAW_UPPERBOUND}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+            <Stack>
+              <Typography gutterBottom>Vertical sensitivity</Typography>
+              <StyledSlider
+                value={pitchThreshold}
+                onChangeCommitted={handlePitchSliderChange}
+                getAriaValueText={(value: string) => value.toString()}
+                step={1}
+                marks
+                min={PITCH_LOWERBOUND}
+                max={PITCH_UPPERBOUND}
+                valueLabelDisplay="auto"
+              />
+            </Stack>
+          </>
+        )
+
+        }
+      </Stack>
+      
     </Stack >
   );
 };

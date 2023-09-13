@@ -50,7 +50,7 @@ const ScreenExclusionForm: React.FC<Props> = (props) => {
 
   return (
     <Stack style={{ flex: 1, alignItems: "center" }}>
-      <Typography gutterBottom>Screen exclusion</Typography>
+      <Typography gutterBottom style={{marginTop: "1.9rem"}}>Screen exclusion</Typography>
       <ScreenExclusionSlider
         direction="top"
         onUpdate={updateScreenExclusionBoundaries}

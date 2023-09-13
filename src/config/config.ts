@@ -39,7 +39,7 @@ var configuration = {
   isShuttingDown: false, //used to send shutdown signal to client. when true, all client requests are responded with a command to shutdown
   
   // The following three HAVE to be different
-  leftClickGesture: "mouth", // valid values => "dwell", "mouth", "eyebrow-raise"
+  leftClickGesture: "dwell", // valid values => "dwell", "mouth", "eyebrow-raise"
   rightClickGesture: "none", // valid values => "dwell", "mouth", "eyebrow-raise" and "none"
   doubleClickGesture: "none", // valid values => "dwell", "mouth", "eyebrow-raise" and "none"
 };
