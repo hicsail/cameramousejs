@@ -43,7 +43,7 @@ prev_pos = []
 prev_match_template_res = np.array([[]])
 template = []
 method = cv2.TM_CCOEFF_NORMED
-dist_threshold = 0.1
+dist_threshold = 0.15
 
 # parameters for tracking using optical flow
 # parameters for ShiTomasi corner detection
@@ -62,6 +62,8 @@ p0 = []
 landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
 MOUTH_AR_THRESH = 0.70
 EYEBROW_DIST_THRESHOLD=0.70
+
+op_window_size = None
 
 num_frames = -1
 vs = VideoStream(src=0).start()
@@ -312,8 +314,8 @@ def trackFaces():
 			shape = face_utils.shape_to_np(shape)
 			# detect mouth open
 			is_mouth_open = detect_mouth_open(shape[48:68])
-			for (x, y) in shape[48:68]:
-				cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
+			# for (x, y) in shape[48:68]:
+			# 	cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 			if is_mouth_open:
 				cv2.putText(frame, "Mouth Open", (endX, endY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
@@ -351,8 +353,11 @@ def trackFaces():
 		target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
 		top_left, bottom_right = templateTrack(ori_frame, target_face, target_shape)
 		# print("template box ", top_left[0] - bottom_right[0])
-		cv2.rectangle(frame, top_left, bottom_right, (0, 0, 0), 2)
-		pos = top_left
+		# cv2.rectangle(frame, top_left, bottom_right, (0, 0, 0), 2)
+		# pos = top_left
+		pos = [(top_left[0] + bottom_right[0]) / 2, (top_left[1] + bottom_right[1]) / 2]
+		cv2.circle(frame, (int(pos[0]), int(pos[1])), radius=5, color=(0, 0, 255), thickness=-1)
+
 
 	# tracking using optical flow (not stable)
 	# if faces:
@@ -382,6 +387,10 @@ def trackFaces():
 	# crop the image
 	# cropped = frame.copy()[150:250, 300:450]
 	cropped = frame.copy()[startY-15:endY+15, startX-15:endX+15]
+	global op_window_size
+	if op_window_size != None and op_window_size != cropped.shape:
+		cv2.destroyWindow("Face Tracker")
+	op_window_size = cropped.shape	
 	
 
 	cv2.imshow("Face Tracker", cropped)
