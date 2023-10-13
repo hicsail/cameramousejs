@@ -3,6 +3,8 @@ from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
 import cv2
+import os
+import sys
 
 if __name__ == "__main__":
 
@@ -31,8 +33,11 @@ if __name__ == "__main__":
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break
-        if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
-            break
+
+        # Do the if statement if the OS is Windows
+        if sys.platform == 'win32':
+            if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
+                break
         # reset to prevent overflow
         count = 0 if count > 100 else count + 1
 
