@@ -38,6 +38,8 @@ if __name__ == "__main__":
         if sys.platform == 'win32':
             if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
                 break
+
+        cv2.setWindowProperty('Face Tracker', cv2.WND_PROP_TOPMOST, 1)
         # reset to prevent overflow
         count = 0 if count > 100 else count + 1
 
