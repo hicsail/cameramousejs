@@ -7,6 +7,7 @@ added_files = [
          ( 'src/videoProcessing/fsanet_capsule_3_16_2_21_5.h5', runtime_data_folder ),
          ( 'src/videoProcessing/res10_300x300_SSD_iter_140000.caffemodel', runtime_data_folder ),
          ( 'src/videoProcessing/shape_predictor_68_face_landmarks.dat', runtime_data_folder), 
+         ( 'src/videoProcessing/face_landmarker.task', runtime_data_folder), 
          ( 'src/videoProcessing/deploy.prototxt.txt', runtime_data_folder)
          ]
 
