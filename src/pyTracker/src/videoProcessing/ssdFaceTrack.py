@@ -28,10 +28,10 @@ if config.DETECT_POSE:
 	lambda_d = 1
 	num_classes = 3
 	image_size = 64
+	ad = 0.6
 	num_primcaps = 7*3
 	m_dim = 5
 	S_set = [num_capsule, dim_capsule, routings, num_primcaps, m_dim]
-	ad = 0.6
 	pose_model = FSA_net_Capsule(image_size, num_classes, stage_num, lambda_d, S_set)()
 	weight_file = currDirectory + "/fsanet_capsule_3_16_2_21_5.h5"
 	pose_model.load_weights(weight_file)
@@ -62,6 +62,21 @@ p0 = []
 landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
 MOUTH_AR_THRESH = 0.70
 EYEBROW_DIST_THRESHOLD=0.65
+
+# STEP 1: Import the necessary modules.
+import mediapipe as mp
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+
+# STEP 2: Create an FaceLandmarker object.
+mp_base_options = python.BaseOptions(model_asset_path=currDirectory + '/face_landmarker.task')
+mp_options = vision.FaceLandmarkerOptions(base_options=mp_base_options,
+                                       output_face_blendshapes=True,
+                                       output_facial_transformation_matrixes=False,
+                                       num_faces=1)
+mp_detector = vision.FaceLandmarker.create_from_options(mp_options)
+EYEBROW_MP_THRESHOLD = 0.3
+MOUTH_MP_THRESHOLD = 0.3
 
 op_window_size = None
 
@@ -267,8 +282,20 @@ def trackFaces():
 
 	global num_frames
 	num_frames += 1
-	# detect face every 10 frames
+	# detect face every # frames
 	if num_frames % config.FACE_FREQ == 0:
+
+		# Load the input image.
+		image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+
+		# Detect face landmarks from the input image.
+		detection_result = mp_detector.detect(image)
+		if detection_result and len(detection_result.face_blendshapes) > 0:
+			# print(detection_result.face_blendshapes[0][3])
+			# print(detection_result.face_blendshapes[0][25])
+			are_eyebrows_raised = detection_result.face_blendshapes[0][3].score > EYEBROW_MP_THRESHOLD
+			is_mouth_open = detection_result.face_blendshapes[0][25].score > MOUTH_MP_THRESHOLD
+
 		# grab the frame dimensions and convert it to a blob
 		(h, w) = frame.shape[:2]
 		blob = cv2.dnn.blobFromImage(frame, 1.0,
@@ -313,25 +340,24 @@ def trackFaces():
 			shape = landmark_predictor_68(ori_frame, rect)
 			shape = face_utils.shape_to_np(shape)
 			# detect mouth open
-			is_mouth_open = detect_mouth_open(shape[48:68])
+			# is_mouth_open = detect_mouth_open(shape[48:68])
 			# for (x, y) in shape[48:68]:
 			# 	cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
-			if is_mouth_open:
-				cv2.putText(frame, "Mouth Open", (endX, endY),
-				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
+			# if is_mouth_open:
+			# 	cv2.putText(frame, "Mouth Open", (endX, endY),
+			# 	cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 
 			# detect if eyebrows are raised
-			left_eyebrow = shape[17:22]
-			right_eyebrow = shape[22:27]
-			left_eye = shape[36:42]
-			right_eye = shape[42:48]
+			# left_eyebrow = shape[17:22]
+			# right_eyebrow = shape[22:27]
+			# left_eye = shape[36:42]
+			# right_eye = shape[42:48]
+			# are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye)
 
-
-			are_eyebrows_raised = detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye)
-			if are_eyebrows_raised:
-				cv2.putText(frame, "Eyebrows raised", (endX, startY),
-				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
-
+			# if are_eyebrows_raised:
+			# 	cv2.putText(frame, "Eyebrows raised", (endX, startY),
+			# 	cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
+			
 			shapes.append(shape)
 
 			# draw the bounding box of the face along with the associated probability
