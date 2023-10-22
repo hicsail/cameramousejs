@@ -61,7 +61,7 @@ p0 = []
 # landmark_predictor = dlib.shape_predictor(currDirectory + "/shape_predictor_5_face_landmarks.dat")
 landmark_predictor_68 = dlib.shape_predictor(currDirectory + "/shape_predictor_68_face_landmarks.dat")
 MOUTH_AR_THRESH = 0.70
-EYEBROW_DIST_THRESHOLD=0.70
+EYEBROW_DIST_THRESHOLD=0.65
 
 op_window_size = None
 
