@@ -24,7 +24,7 @@ frameSize: (w, h)
 """
 def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture):
     w, h = frameSize
-    if len(pos) > 0:
+    if pos and len(pos) > 0:
         newMousePosition = { "x" : pos[0] / w, "y" : pos[1] / h }
         if newMousePosition:
             trackerState.addTrackedPosition(newMousePosition)

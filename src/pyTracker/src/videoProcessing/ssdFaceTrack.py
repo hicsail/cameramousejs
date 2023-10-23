@@ -43,7 +43,7 @@ prev_pos = []
 prev_match_template_res = np.array([[]])
 template = []
 method = cv2.TM_CCOEFF_NORMED
-dist_threshold = 0.15
+dist_threshold = 0.17
 
 # parameters for tracking using optical flow
 # parameters for ShiTomasi corner detection
@@ -75,8 +75,8 @@ mp_options = vision.FaceLandmarkerOptions(base_options=mp_base_options,
                                        output_facial_transformation_matrixes=False,
                                        num_faces=1)
 mp_detector = vision.FaceLandmarker.create_from_options(mp_options)
-EYEBROW_MP_THRESHOLD = 0.3
-MOUTH_MP_THRESHOLD = 0.3
+EYEBROW_MP_THRESHOLD = 0.4
+MOUTH_MP_THRESHOLD = 0.4
 
 op_window_size = None
 
