@@ -28,21 +28,13 @@ a = Analysis(
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-splash = Splash('src/assets/bu.png',
-                binaries=a.binaries,
-                datas=a.datas,
-                text_pos=(35, 50),
-                text_size=15,
-                text_color='white')
-
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
     a.zipfiles,
     a.datas,
-    splash,
-    splash.binaries,   
+    
     [],
     name='main',
     debug=False,
