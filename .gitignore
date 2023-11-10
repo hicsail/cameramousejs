@@ -7,3 +7,5 @@ build
 .DS_Store
 __pycache__
 .env
+.venv2/*
+.venv2

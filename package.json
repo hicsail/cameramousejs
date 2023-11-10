@@ -35,9 +35,10 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "name": "cameramouse",
-            "authors": "Manny and Hao",
-            "description": "Rewrite of cameramouse.org",
-            "certificateFile": "certificate.pfx"
+            "authors": "Manny, Hao and Farid",
+            "description": "Rewrite of cameramouse.org", 
+            "certificateFile": "certificate.pfx",
+            "loadingGif": "src/assets/LOADING GIF 1.gif"
           }
         },
         {
