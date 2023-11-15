@@ -37,8 +37,8 @@ export let mainWindow: BrowserWindow;
 const createWindow = (): void => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 400,
-    width: 600,
+    height: 600,
+    width: 900,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       webviewTag: true,

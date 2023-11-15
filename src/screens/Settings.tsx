@@ -41,8 +41,11 @@ const Settings: React.FC<Props> = (props) => {
   const [leftClickGesture, setLeftClickGesture] = useState(appConfig.leftClickGesture);
   const [rightClickGesture, setRightClickGesture] = useState(appConfig.rightClickGesture);
   const [doubleClickGesture, setDoubleClickGesture] = useState(appConfig.doubleClickGesture);
+  const [mouthThreshold, setMouthThreshold] = useState(appConfig.mouthGestureThreshold);
+  const [eyebrowThreshold, setEyebrowThreshold] = useState(appConfig.eyebrowGestureThreshold);
 
-
+  console.log(TAG, "appConfig", appConfig);
+  
   useEffect(() => {
     setScaleFactor(appConfig.mouseMovementScaleFactor);
     setScaleFactorY(appConfig.mouseMovementScaleFactorY);
@@ -50,6 +53,7 @@ const Settings: React.FC<Props> = (props) => {
     setYawThreshold(appConfig.joystickYawThreshold);
     setPitchThreshold(appConfig.joystickPitchThreshold);
     setTrackingMode(appConfig.trackingMode);
+
   }, []);
 
   const handleTrackModeChange = (event: SelectChangeEvent) => {
@@ -117,7 +121,6 @@ const Settings: React.FC<Props> = (props) => {
   };
 
   const handleLeftClickChange = async (event: SelectChangeEvent) => {
-    console.log("leftClickGesture before", leftClickGesture)
 
 
     // check if the other clicks are not set to this value
@@ -162,6 +165,26 @@ const Settings: React.FC<Props> = (props) => {
     const newAppConfig = { ...appConfig, doubleClickGesture: event.target.value};
     window.electronAPI.updateConfiguration(newAppConfig);
     setAppConfig(newAppConfig);
+  };
+
+  const handleMouthThresholdChange = async (_:Event, newValue: number | number[]) => {
+    if (typeof newValue == "number") {
+      setMouthThreshold(newValue);
+
+      const newAppConfig = { ...appConfig, mouthGestureThreshold: newValue};
+      window.electronAPI.updateConfiguration(newAppConfig);
+      await setAppConfig(newAppConfig);
+    }
+  };
+
+  const handleEyebrowThresholdChange = async (_:Event, newValue: number | number[]) => {
+    if (typeof newValue == "number") {
+      setEyebrowThreshold(newValue);
+
+      const newAppConfig = { ...appConfig, eyebrowGestureThreshold: newValue};
+      window.electronAPI.updateConfiguration(newAppConfig);
+      await setAppConfig(newAppConfig);
+    }
   };
 
   return (
@@ -257,7 +280,48 @@ const Settings: React.FC<Props> = (props) => {
                 </Select>
             </FormControl>
             </Box>
+
+          
         </Stack>
+        <Stack>
+            <Typography className="textCenter" gutterBottom style={{marginTop: "2rem", marginBottom: "2rem"}}>
+              Thresholds
+            </Typography>
+
+            <Stack direction='row' justifyContent={"space-between"} spacing={10}>
+
+
+              <Stack>
+                <Typography gutterBottom>Mouth threshold</Typography>
+                <StyledSlider
+                  aria-label="mouth threshold slider"
+                  value={mouthThreshold}
+                  onChangeCommitted={handleMouthThresholdChange}
+                  getAriaValueText={(value: string) => value.toString()}
+                  marks
+                  step={0.1}
+                  min={0.1}
+                  max={0.9}
+                  valueLabelDisplay="auto"
+                />
+              </Stack>
+              <Stack>
+                <Typography gutterBottom>Eyebrow threshold</Typography>
+                <StyledSlider
+                  aria-label="eyebrow threshold slider"
+                  value={eyebrowThreshold}
+                  onChangeCommitted={handleEyebrowThresholdChange}
+                  getAriaValueText={(value: string) => value.toString()}
+                  marks
+                  step={0.1}
+                  min={0.1}
+                  max={0.9}
+                  valueLabelDisplay="auto"
+                />
+              </Stack>
+            </Stack>
+            
+          </Stack>
       </Stack>
 
         {trackingMode == "position" ? (

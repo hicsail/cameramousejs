@@ -1,7 +1,4 @@
-# TODO Add type to all method parameters
-
 import requests
-from videoProcessing.trackerState import trackerState
 import cv2
 
 PORT = 3001
@@ -42,12 +39,15 @@ def sendRequest(requestPath, requestData, httpMethod="post"):
         return None 
 
 
-def getLatestAppSettingsFromServer():
+def getLatestAppSettingsFromServer(trackerState):
     response = sendRequest(SETTINGS_PATH, None, httpMethod="get")
     if  response and 'configuration' in response.json():
         config = response.json()['configuration']
         trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
         trackerState.updateGestures(config['leftClickGesture'], config['rightClickGesture'], config['doubleClickGesture'])
+        trackerState.updateGestureThresholds(config['mouthGestureThreshold'], config['eyebrowGestureThreshold'])
+        print("Mouth Gesture Threshold: ", config['mouthGestureThreshold'])
+        print("Eyebrow Gesture Threshold: ", config['eyebrowGestureThreshold'])
 
 # detect shutdown command from server and end python process immediately
 def processShutDownCommand(response):

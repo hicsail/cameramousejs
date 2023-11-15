@@ -42,6 +42,13 @@ var configuration = {
   leftClickGesture: "dwell", // valid values => "dwell", "mouth", "eyebrow-raise"
   rightClickGesture: "none", // valid values => "dwell", "mouth", "eyebrow-raise" and "none"
   doubleClickGesture: "none", // valid values => "dwell", "mouth", "eyebrow-raise" and "none"
+
+  // Dwell time hovering time 
+  dwellTime: 1000, // in milliseconds
+
+  // Thresholds for the gestures
+  mouthGestureThreshold: 0.4,
+  eyebrowGestureThreshold: 0.4,
 };
 
 function updateConfiguration(newConfiguration: typeof configuration) {
