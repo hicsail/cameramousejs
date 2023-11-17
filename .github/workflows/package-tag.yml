@@ -1,0 +1,66 @@
+name: Camera Mouse Packaging
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+jobs:
+  python:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/pyTracker
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Package
+        run: pyinstaller main.spec
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Camera Mouse Python Package
+          path: src/pyTracker/dist
+  electronWindows:
+    runs-on: windows-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "npm"
+      - name: Install dependencies
+        run: npm install
+      - name: Download python build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Camera Mouse Python Package
+          path: src/pyTracker/dist
+      - name: Package
+        run: npm run make
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Camera Mouse Package Exe
+          path: out/make
+      - name: Rename output exe
+        run: mv "D:/a/cameramousejs/cameramousejs/out/make/squirrel.windows/x64/cameramouse-1.0.0 Setup.exe" "D:/a/cameramousejs/cameramousejs/out/make/squirrel.windows/x64/CameraMouse.exe"
+      - name: Release (with exe .file)
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "D:/a/cameramousejs/cameramousejs/out/make/squirrel.windows/x64/cameramouse-1.0.0 Setup.exe"
