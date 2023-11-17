@@ -57,6 +57,8 @@ jobs:
         with:
           name: Camera Mouse Package Exe
           path: out/make
+      - name: Rename output exe
+        run: mv "D:/a/cameramousejs/cameramousejs/out/make/squirrel.windows/x64/cameramouse-1.0.0 Setup.exe" "D:/a/cameramousejs/cameramousejs/out/make/squirrel.windows/x64/CameraMouse.exe"
       - name: Release (with exe .file)
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
