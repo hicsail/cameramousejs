@@ -17,6 +17,9 @@ class TrackerState:
         self.rightClickGesture = "none" # by default
         self.doubleClickGesture = "none" # by default
 
+        self.mouthGestureThreshold = 0.4
+        self.eyebrowGestureThreshold = 0.4
+
     def updateTracked(confidence):
         trackedReq += 1
         trackedProb += confidence
@@ -39,5 +42,8 @@ class TrackerState:
         self.rightClickGesture = rightClickGesture
         self.doubleClickGesture = doubleClickGesture 
 
+    def updateGestureThresholds(self, mouthGestureThreshold, eyebrowGestureThreshold):
+        self.mouthGestureThreshold = mouthGestureThreshold
+        self.eyebrowGestureThreshold = eyebrowGestureThreshold
 
 trackerState = TrackerState()

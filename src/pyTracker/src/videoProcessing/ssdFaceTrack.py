@@ -258,7 +258,7 @@ def detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye):
 
 
 
-def trackFaces():
+def trackFaces(trackerState):
 	# grab the frame from the threaded video stream and resize it to the global frame size 
 	frame = vs.read()
 
@@ -293,8 +293,8 @@ def trackFaces():
 		if detection_result and len(detection_result.face_blendshapes) > 0:
 			# print(detection_result.face_blendshapes[0][3])
 			# print(detection_result.face_blendshapes[0][25])
-			are_eyebrows_raised = detection_result.face_blendshapes[0][3].score > EYEBROW_MP_THRESHOLD
-			is_mouth_open = detection_result.face_blendshapes[0][25].score > MOUTH_MP_THRESHOLD
+			are_eyebrows_raised = detection_result.face_blendshapes[0][3].score > trackerState.eyebrowGestureThreshold
+			is_mouth_open = detection_result.face_blendshapes[0][25].score > trackerState.mouthGestureThreshold
 
 		# grab the frame dimensions and convert it to a blob
 		(h, w) = frame.shape[:2]
@@ -361,12 +361,12 @@ def trackFaces():
 			shapes.append(shape)
 
 			# draw the bounding box of the face along with the associated probability
-			'''text = "{:.2f}%".format(confidence * 100)
+			text = "{:.2f}%".format(confidence * 100)
 			y = startY - 10 if startY - 10 > 10 else startY + 10
 			cv2.rectangle(frame, (startX, startY), (endX, endY),
 				(0, 0, 255), 2)
 			cv2.putText(frame, text, (startX, y),
-				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)'''
+				cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 	
 	pos = []
 	# tracking using template matching 
@@ -423,8 +423,8 @@ def trackFaces():
 	# print(pos)
 	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised]
 
-def trackFace():
-	faces, poses, pos, gesture = trackFaces() or (None,None,None,None)
+def trackFace(trackerState):
+	faces, poses, pos, gesture = trackFaces(trackerState) or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera

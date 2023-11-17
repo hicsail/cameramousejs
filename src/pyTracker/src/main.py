@@ -13,12 +13,12 @@ if __name__ == "__main__":
     trackerState.setWebcamFrameSize(frameSize[0], frameSize[1])
     count = 0
     while True:
-        face, pose, pos, guesture = trackFace()
+        face, pose, pos, guesture = trackFace(trackerState)
         convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, guesture)
         
         # get config every now and then
         if count % 20 == 0:
-            getLatestAppSettingsFromServer()
+            getLatestAppSettingsFromServer(trackerState)
 
         # Stop if escape key is pressed
         k = cv2.waitKey(30) & 0xff
