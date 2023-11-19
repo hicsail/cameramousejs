@@ -1,4 +1,4 @@
-name: Camera Mouse Packaging
+name: Camera Mouse Packaging with Version
 on:
   workflow_dispatch:
   push:
