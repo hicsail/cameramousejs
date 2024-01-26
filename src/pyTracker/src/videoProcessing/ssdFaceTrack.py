@@ -280,6 +280,10 @@ def trackFaces(trackerState):
 	are_eyebrows_raised = False
 	shapes = []
 
+	face_confidence = 0
+	eyebrow_confidence = 0
+	mouth_confidence = 0
+
 	global num_frames
 	num_frames += 1
 	# detect face every # frames
@@ -287,14 +291,22 @@ def trackFaces(trackerState):
 
 		# Load the input image.
 		image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+		
+		
 
 		# Detect face landmarks from the input image.
 		detection_result = mp_detector.detect(image)
 		if detection_result and len(detection_result.face_blendshapes) > 0:
 			# print(detection_result.face_blendshapes[0][3])
 			# print(detection_result.face_blendshapes[0][25])
-			are_eyebrows_raised = detection_result.face_blendshapes[0][3].score > trackerState.eyebrowGestureThreshold
-			is_mouth_open = detection_result.face_blendshapes[0][25].score > trackerState.mouthGestureThreshold
+			eyebrow_confidence = detection_result.face_blendshapes[0][3].score
+			mouth_confidence = detection_result.face_blendshapes[0][25].score
+
+			are_eyebrows_raised = eyebrow_confidence > trackerState.eyebrowGestureThreshold
+			is_mouth_open = mouth_confidence > trackerState.mouthGestureThreshold
+		else:
+			eyebrow_confidence = -1
+			mouth_confidence = -1
 
 		# grab the frame dimensions and convert it to a blob
 		(h, w) = frame.shape[:2]
@@ -303,6 +315,8 @@ def trackFaces(trackerState):
 		# pass the blob through the network and obtain the detections and predictions
 		net.setInput(blob)
 		detections = net.forward()
+
+		
 
 		for i in range(0, detections.shape[2]):
 		# extract the confidence associated with the prediction
@@ -361,6 +375,7 @@ def trackFaces(trackerState):
 			shapes.append(shape)
 
 			# draw the bounding box of the face along with the associated probability
+			face_confidence = confidence
 			text = "{:.2f}%".format(confidence * 100)
 			y = startY - 10 if startY - 10 > 10 else startY + 10
 			cv2.rectangle(frame, (startX, startY), (endX, endY),
@@ -421,16 +436,16 @@ def trackFaces(trackerState):
 	cv2.imshow("Face Tracker", cropped)
 
 	# print(pos)
-	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised]
+	return faces, poses, pos, [is_mouth_open, are_eyebrows_raised], face_confidence, [eyebrow_confidence, mouth_confidence]
 
 def trackFace(trackerState):
-	faces, poses, pos, gesture = trackFaces(trackerState) or (None,None,None,None)
+	faces, poses, pos, gesture, face_conf, gesture_confidences = trackFaces(trackerState) or (None,None,None,None)
 	if faces:
 		if config.DETECT_POSE:
 			##TO DO: Select the closest face to the camera
-			return faces[0], poses[0], pos, gesture
+			return faces[0], poses[0], pos, gesture, face_conf, gesture_confidences
 		else:
-			return faces[0], [], pos, gesture
+			return faces[0], [], pos, gesture, face_conf, gesture_confidences
 	else:
 		# print("failed to detect a face!")
-		return [], [], pos, gesture
+		return [], [], pos, gesture, face_conf, gesture_confidences
