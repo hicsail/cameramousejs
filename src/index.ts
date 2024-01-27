@@ -16,6 +16,7 @@ import {
 import { IPC_FUNCTION_KEYS } from "./constants/ipcFunctionKeys";
 import { startServer } from "./server/server";
 import * as path from "path";
+import { create } from "@mui/material/styles/createTransitions";
 const log = require("electron-log");
 const isDev = require("electron-is-dev"); //whether elctron is running in prod or dev mode
 
@@ -255,7 +256,7 @@ app.whenReady().then(async () => {
     }
   }
   createFile("movement_log.txt");
- 
+  createFile("tracking_log.txt");
 
 });
 

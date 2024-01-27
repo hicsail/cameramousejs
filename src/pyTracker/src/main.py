@@ -1,13 +1,10 @@
 from api.requests import getLatestAppSettingsFromServer
-from videoProcessing.track2Command import convertFaceTrackingToMouseMovement
+from videoProcessing.track2Command import convertFaceTrackingToMouseMovement, sendTrackingInfo
 from videoProcessing.ssdFaceTrack import getFrameSize, trackFace
 from videoProcessing.trackerState import trackerState
-from utils.utils import writeFaceTrackingLogToFile
 import cv2
 import os
 import sys
-
-f = open("trackingLog.txt", "w")
 
 if __name__ == "__main__":
 
@@ -17,7 +14,7 @@ if __name__ == "__main__":
     count = 0
     while True:
         face, pose, pos, guesture, face_confidence, gesture_confidences = trackFace(trackerState)
-        writeFaceTrackingLogToFile(face, frameSize, pose, pos, guesture, face_confidence, gesture_confidences)
+        sendTrackingInfo(face, frameSize, pose, pos, guesture, face_confidence, gesture_confidences)
         convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, guesture)
         
         
