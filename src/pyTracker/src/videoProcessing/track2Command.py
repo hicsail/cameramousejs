@@ -3,7 +3,7 @@ contains methods that converts tracking data to mouse and keyboard commands
 """ 
 from collections import deque
 import itertools
-from api.requests import MOUSE_ACTION_PATH, MOUSE_ACTIONS, MOUSE_MOVEMENT_PATH, sendRequest
+from api.requests import MOUSE_ACTION_PATH, MOUSE_ACTIONS, MOUSE_MOVEMENT_PATH, TRACKING_LOG_PATH, sendRequest
 from videoProcessing.trackerState import trackerState
 from videoProcessing.config import config
 
@@ -55,7 +55,18 @@ def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture):
             if (doubleClick == "mouth" and gesture[0]) or (doubleClick == "eyebrow-raise" and gesture[1]):
                 sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.DOUBLE_CLICK)
 
+def sendTrackingInfo(face, frameSize, pose, pos, guesture, face_confidence, gesture_confidences):
+    data = {
+        "face": str(face),
+        "frameSize": str(frameSize),
+        "pose": str(pose),
+        "pos": str(pos),
+        "gesture": str(guesture),
+        "face_confidence": str(face_confidence),
+        "gesture_confidences": str(gesture_confidences)
+    }
 
+    sendRequest(TRACKING_LOG_PATH, data)
 
 """
 sends a left click command to server if face has been hovering around the same position for a while

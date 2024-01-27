@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { mainWindow } from "../../index";
 import { configuration, TRACKING_STATUS } from "../../config/config";
-import { click, doubleClick, moveMouse } from "../../controlApis/mouseCommands";
+import { click, doubleClick, moveMouse, writeTrackingInfo} from "../../controlApis/mouseCommands";
 import { IPC_FUNCTION_KEYS } from "../../constants/ipcFunctionKeys";
 
 let router = Router();
@@ -9,6 +9,7 @@ const { handleUnknownError } = require("../utils");
 const MOVEMENT_PATH = "/moveto";
 const ACTION_PATH = "/action";
 const SETTINGS_PATH = "/settings";
+const LOG_PATH = "/tracking_log";
 
 // get current app configuration
 router.route(SETTINGS_PATH).get(async (req, res) => {
@@ -69,6 +70,21 @@ router.route(ACTION_PATH).post(async (req: any, res: any) => {
     handleUnknownError(res, error);
   }
 });
+
+router.route(LOG_PATH).post(async (req: any, res: any) => {
+  try {
+    const log = req.body;
+    
+    if (log) {
+      writeTrackingInfo(log);
+    }
+    res.send({ status: "ok" });
+  } catch (error) {
+    handleUnknownError(res, error);
+  }
+}
+
+);
 
 /**
  * detects if app is shutting down and responds with shutdown status

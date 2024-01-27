@@ -6,6 +6,7 @@ CAMERMOUSE_SERVER_URL = "http://localhost"
 MOUSE_MOVEMENT_PATH = "mouse/moveto"
 MOUSE_ACTION_PATH = "mouse/action"
 SETTINGS_PATH = "mouse/settings"
+TRACKING_LOG_PATH = "mouse/tracking_log"
 
 class MOUSE_ACTIONS:
     LEFT_CLICK = {"action": "leftClick"}

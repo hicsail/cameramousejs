@@ -2,6 +2,7 @@ import { Button, down, left, right, up } from "@nut-tree/nut-js";
 import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
 
+const fs = require('fs/promises');
 const { mouse, straightTo } = require("@nut-tree/nut-js");
 
 const lPFStreamX = new LPFStream(
@@ -12,6 +13,17 @@ const lPFStreamY = new LPFStream(
   configuration.smoothingBufferSize,
   configuration.smoothingFactor
 );
+
+type TRACKING_INFO = {
+  face: string, 
+  frameSize: string,
+  pose: string,
+  pos: string,
+  gesture: string,
+  face_confidence: string,
+  gesture_confidences: string
+}
+
 
 /**
  * adjust the position ratios based on configuration.mouseMovementScaleFactor
@@ -120,17 +132,16 @@ async function moveMouse(requestBody: {
     y: number;
   };
 
-  const content = "Movement to " + requestBody.x + " " + requestBody.y + "\n";
-  const fs = require('fs/promises');
+  const movementContent = "Movement to " + requestBody.x + " " + requestBody.y + "\n";
 
-  async function example() {
+  async function writeLogs() {
   try {
-    await fs.appendFile('movement_log.txt', content);
+    await fs.appendFile('movement_log.txt', movementContent);
   } catch (err) {
     console.log(err);
   }
 }
-example();
+  writeLogs();
   if (configuration.trackingMode == "position") {
     newPosition = await moveByRatioCoordinates({
       x: requestBody.x,
@@ -197,7 +208,6 @@ async function moveByYawAndPitch(yaw: number, pitch: number) {
 function click(direction: "left" | "right") {
   const content = direction + " click \n";
 
-  const fs = require('fs/promises');
 
   async function example() {
   try {
@@ -233,5 +243,14 @@ const demoMove = async () => {
   await mouse.move(down(500));
 };
 
-export { moveByRatioCoordinates, click, doubleClick, moveMouse, demoMove };
+const writeTrackingInfo = async (trackingInfo: TRACKING_INFO) => {
+  try {
+    const content = trackingInfo.face + " " + trackingInfo.frameSize + " " + trackingInfo.pose + " " + trackingInfo.pos + " " + trackingInfo.gesture + " " + trackingInfo.face_confidence + " " + trackingInfo.gesture_confidences + "\n";
+    await fs.appendFile('tracking_log.txt', content);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export { moveByRatioCoordinates, click, doubleClick, moveMouse, demoMove, writeTrackingInfo };
 
