@@ -1,6 +1,7 @@
 import { Button, down, left, right, up } from "@nut-tree/nut-js";
 import { LPFStream } from "../utils/filters";
 import { configuration } from "../config/config";
+import { app } from "electron";
 
 const fs = require('fs/promises');
 const { mouse, straightTo } = require("@nut-tree/nut-js");
@@ -227,7 +228,7 @@ function doubleClick() {
 
   async function example() {
   try {
-    await fs.appendFile('movement_log.txt', content);
+    await fs.appendFile(app.getPath("desktop") + "/movement_log.txt", content);
   } catch (err) {
     console.log(err);
   }
@@ -246,7 +247,7 @@ const demoMove = async () => {
 const writeTrackingInfo = async (trackingInfo: TRACKING_INFO) => {
   try {
     const content = trackingInfo.face + " " + trackingInfo.frameSize + " " + trackingInfo.pose + " " + trackingInfo.pos + " " + trackingInfo.gesture + " " + trackingInfo.face_confidence + " " + trackingInfo.gesture_confidences + "\n";
-    await fs.appendFile('tracking_log.txt', content);
+    await fs.appendFile(app.getPath("desktop") + "/tracking_log.txt", content);
   } catch (err) {
     console.log(err);
   }
