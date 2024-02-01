@@ -3,6 +3,7 @@ import { mainWindow } from "../../index";
 import { configuration, TRACKING_STATUS } from "../../config/config";
 import { click, doubleClick, moveMouse, writeTrackingInfo} from "../../controlApis/mouseCommands";
 import { IPC_FUNCTION_KEYS } from "../../constants/ipcFunctionKeys";
+import { app } from "electron";
 
 let router = Router();
 const { handleUnknownError } = require("../utils");

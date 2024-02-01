@@ -1,6 +1,6 @@
 {
   "name": "cameramouse",
-  "productName": "cameramouse",
+  "productName": "CameraMouse",
   "version": "1.0.0",
   "description": "My Electron application description",
   "main": ".webpack/main",
@@ -34,7 +34,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "cameramouse",
+            "name": "CameraMouse",
             "authors": "Manny, Hao and Farid",
             "description": "Rewrite of cameramouse.org", 
             "certificateFile": "certificate.pfx",

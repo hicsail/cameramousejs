@@ -255,9 +255,11 @@ app.whenReady().then(async () => {
       console.log(err);
     }
   }
-  createFile("movement_log.txt");
-  createFile("tracking_log.txt");
-
+  // createFile in the app path
+  console.log("1" + app.getPath("userData"));
+  createFile(app.getPath("desktop") + "/movement_log.txt");
+  createFile(app.getPath("desktop") + "/tracking_log.txt");
+  
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
