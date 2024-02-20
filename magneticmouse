@@ -1,0 +1,126 @@
+import tkinter as tk
+import pyautogui
+import math
+
+class MagneticMouseApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Magnetic Mouse")
+        self.master.configure(bg="white")
+
+        self.magnetic_strength = 5
+        self.max_magnetic_strength = 20
+        self.damping_factor = 0.2
+        self.velocity = [0, 0]
+
+        self.circle_center = (400, 400)  
+        self.circle_radius = 250
+
+        self.targets = self.create_targets()
+
+        self.inside_target_box = False
+
+        self.master.bind('<Motion>', self.move_mouse_with_attraction)
+
+    def create_targets(self):
+        targets = []
+        num_targets = 10
+        radius = 250
+        center_x, center_y = self.circle_center
+
+        for i in range(num_targets):
+            angle = (2 * math.pi / num_targets) * i
+            target_x = center_x + int(radius * math.cos(angle))
+            target_y = center_y + int(radius * math.sin(angle))
+
+            target = tk.Label(self.master, text=f'Target {i + 1}', borderwidth=2, relief="solid", bg="green")
+            target.place(x=target_x - 40, y=target_y - 20, width=80, height=40)
+            targets.append((target_x - 40, target_y - 20, target_x + 40, target_y + 20))
+
+        return targets
+
+    def calculate_force(self, mouse_position, target_position, center_position):
+        delta_x_center = center_position[0] - mouse_position.x_root
+        delta_y_center = center_position[1] - mouse_position.y_root
+
+        distance_center = math.sqrt(delta_x_center**2 + delta_y_center**2)
+        distance_center = max(distance_center, 1)
+
+        force_x_center = (delta_x_center / distance_center) * self.magnetic_strength
+        force_y_center = (delta_y_center / distance_center) * self.magnetic_strength
+
+        delta_x_target = target_position[0] - mouse_position.x_root
+        delta_y_target = target_position[1] - mouse_position.y_root
+
+        distance_target = math.sqrt(delta_x_target**2 + delta_y_target**2)
+        distance_target = max(distance_target, 1)
+
+        force_x_target = (delta_x_target / distance_target) * self.magnetic_strength
+        force_y_target = (delta_y_target / distance_target) * self.magnetic_strength
+
+        return force_x_center + force_x_target, force_y_center + force_y_target
+
+    def move_mouse_with_attraction(self, event):
+        mouse_position = event
+
+        distance_to_center = math.dist((mouse_position.x_root, mouse_position.y_root), self.circle_center)
+        if distance_to_center <= self.circle_radius:
+            min_distance = float('inf')
+            closest_target = None
+
+            for target_box in self.targets:
+                x1, y1, x2, y2 = target_box
+
+                if x1 <= mouse_position.x_root <= x2 and y1 <= mouse_position.y_root <= y2:
+                    if not self.inside_target_box:
+                        
+                        self.inside_target_box = True
+                        self.magnetic_strength = 5
+
+                    force_vector = self.calculate_force(mouse_position, target_box, self.circle_center)
+
+                    self.velocity[0] += force_vector[0]
+                    self.velocity[1] += force_vector[1]
+
+                    self.velocity[0] *= (1 - self.damping_factor)
+                    self.velocity[1] *= (1 - self.damping_factor)
+
+                    new_x = self.master.winfo_pointerx() + self.velocity[0]
+                    new_y = self.master.winfo_pointery() + self.velocity[1]
+
+                    distance_to_new_position = math.dist((new_x, new_y), self.circle_center)
+                    if distance_to_new_position <= self.circle_radius:
+                        pyautogui.move(self.velocity[0], self.velocity[1])
+
+                    return
+                else:
+                    distance = math.dist((mouse_position.x_root, mouse_position.y_root), (x1 + (x2 - x1) / 2, y1 + (y2 - y1) / 2))
+                    if distance < min_distance:
+                        min_distance = distance
+                        closest_target = target_box
+
+                    self.inside_target_box = False
+
+            self.magnetic_strength += 1
+            if self.magnetic_strength > self.max_magnetic_strength:
+                self.magnetic_strength = self.max_magnetic_strength
+
+            force_vector_center = self.calculate_force(mouse_position, closest_target, self.circle_center)
+
+            self.velocity[0] += force_vector_center[0]
+            self.velocity[1] += force_vector_center[1]
+
+            self.velocity[0] *= (1 - self.damping_factor)
+            self.velocity[1] *= (1 - self.damping_factor)
+
+            new_x = self.master.winfo_pointerx() + self.velocity[0]
+            new_y = self.master.winfo_pointery() + self.velocity[1]
+
+            distance_to_new_position = math.dist((new_x, new_y), self.circle_center)
+            if distance_to_new_position <= self.circle_radius:
+                pyautogui.move(self.velocity[0], self.velocity[1])
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = MagneticMouseApp(root)
+    root.mainloop()
