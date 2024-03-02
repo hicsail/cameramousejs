@@ -250,10 +250,6 @@ def detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye):
 	relative_left = abs(left_eyebrow[2][1] - left_eye[-1][1]) / dist.euclidean(left_eyebrow[0], left_eyebrow[-1])
 	relative_right = abs(right_eyebrow[2][1] - right_eye[-1][1]) / dist.euclidean(right_eyebrow[0], right_eyebrow[-1])
 
-	# print('-------------------')
-	# print("left", relative_left)
-	# print("right", relative_right)
-
 	return min(relative_left, relative_right) > EYEBROW_DIST_THRESHOLD
 
 

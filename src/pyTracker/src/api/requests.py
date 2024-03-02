@@ -47,6 +47,7 @@ def getLatestAppSettingsFromServer(trackerState):
         trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
         trackerState.updateGestures(config['leftClickGesture'], config['rightClickGesture'], config['doubleClickGesture'])
         trackerState.updateGestureThresholds(config['mouthGestureThreshold'], config['eyebrowGestureThreshold'])
+        trackerState.updateDwellTime(config['dwellTime'])
         print("Mouth Gesture Threshold: ", config['mouthGestureThreshold'])
         print("Eyebrow Gesture Threshold: ", config['eyebrowGestureThreshold'])
 

@@ -20,6 +20,8 @@ class TrackerState:
         self.mouthGestureThreshold = 0.4
         self.eyebrowGestureThreshold = 0.4
 
+        self.dwellTime = 25 # in frames
+
     def updateTracked(confidence):
         trackedReq += 1
         trackedProb += confidence
@@ -45,5 +47,10 @@ class TrackerState:
     def updateGestureThresholds(self, mouthGestureThreshold, eyebrowGestureThreshold):
         self.mouthGestureThreshold = mouthGestureThreshold
         self.eyebrowGestureThreshold = eyebrowGestureThreshold
+
+    def updateDwellTime(self, dwellTime):
+        # input: dwellTime - in seconds
+        frames = ((30*dwellTime) // 1) + 1
+        self.dwellTime = frames
 
 trackerState = TrackerState()

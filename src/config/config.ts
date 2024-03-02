@@ -44,7 +44,7 @@ var configuration = {
   doubleClickGesture: "none", // valid values => "dwell", "mouth", "eyebrow-raise" and "none"
 
   // Dwell time hovering time 
-  dwellTime: 1000, // in milliseconds
+  dwellTime: 0.833, // in seconds
 
   // Thresholds for the gestures
   mouthGestureThreshold: 0.4,

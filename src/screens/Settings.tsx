@@ -43,6 +43,7 @@ const Settings: React.FC<Props> = (props) => {
   const [doubleClickGesture, setDoubleClickGesture] = useState(appConfig.doubleClickGesture);
   const [mouthThreshold, setMouthThreshold] = useState(appConfig.mouthGestureThreshold);
   const [eyebrowThreshold, setEyebrowThreshold] = useState(appConfig.eyebrowGestureThreshold);
+  const [dwellTime, setDwellTime] = useState(appConfig.dwellTime);
 
   console.log(TAG, "appConfig", appConfig);
   
@@ -187,6 +188,16 @@ const Settings: React.FC<Props> = (props) => {
     }
   };
 
+  const handleDwellTimeChange = async (_:Event, newValue: number | number[]) => {
+    if (typeof newValue == "number") {
+      setDwellTime(newValue);
+
+      const newAppConfig = { ...appConfig, dwellTime: newValue};
+      window.electronAPI.updateConfiguration(newAppConfig);
+      await setAppConfig(newAppConfig);
+    }
+  }
+
   return (
     <Stack minWidth={350} width={"100%"}>
       {!appConfig.monoTrackingMode && (
@@ -288,9 +299,22 @@ const Settings: React.FC<Props> = (props) => {
               Thresholds
             </Typography>
 
-            <Stack direction='row' justifyContent={"space-between"} spacing={10}>
+            <Stack direction='row' justifyContent={"space-between"} spacing={10} >
 
-
+              <Stack>
+                <Typography gutterBottom>Dwell Time</Typography>
+                <StyledSlider
+                  aria-label="eyebrow threshold slider"
+                  value={dwellTime}
+                  onChangeCommitted={handleDwellTimeChange}
+                  getAriaValueText={(value: string) => value.toString()}
+                  marks
+                  step={0.1}
+                  min={0.3}
+                  max={1.7}
+                  valueLabelDisplay="auto"
+                />
+              </Stack>
               <Stack>
                 <Typography gutterBottom>Mouth threshold</Typography>
                 <StyledSlider
@@ -303,6 +327,7 @@ const Settings: React.FC<Props> = (props) => {
                   min={0.1}
                   max={0.9}
                   valueLabelDisplay="auto"
+                  style={{flexGrow: 2}}
                 />
               </Stack>
               <Stack>
