@@ -129,7 +129,6 @@ const Settings: React.FC<Props> = (props) => {
         // create alert to user
         return;
     }
-    console.log(event);
     setLeftClickGesture(event.target.value as string);
 
 
@@ -138,7 +137,6 @@ const Settings: React.FC<Props> = (props) => {
     await window.electronAPI.updateConfiguration(newAppConfig);
     await setAppConfig(newAppConfig);
 
-    console.log("leftClickGesture after", leftClickGesture)
 
   };
 
@@ -191,7 +189,7 @@ const Settings: React.FC<Props> = (props) => {
   const handleDwellTimeChange = async (_:Event, newValue: number | number[]) => {
     if (typeof newValue == "number") {
       setDwellTime(newValue);
-
+      console.log("dwellTime", newValue);
       const newAppConfig = { ...appConfig, dwellTime: newValue};
       window.electronAPI.updateConfiguration(newAppConfig);
       await setAppConfig(newAppConfig);

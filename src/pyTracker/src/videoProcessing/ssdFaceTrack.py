@@ -98,7 +98,7 @@ def getFrameSize():
 		return (config.FRAME_WIDTH,config.FRAME_HEIGHT)
 	frame = imutils.resize(frame, width=config.FRAME_WIDTH, height=config.FRAME_HEIGHT)
 	(h, w) = frame.shape[:2]
-	print("Webcam size (h, w)",(h, w) )
+	#print("Webcam size (h, w)",(h, w) )
 	return (w,h)
 
 from math import cos, sin, hypot

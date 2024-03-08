@@ -85,4 +85,5 @@ def detectHoverToClickGesture(command, frames):
         if longestDistanceX < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD and longestDistanceY < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD:
             # clear past positions to prevent unintentional consecutive clicks
             trackerState.trackedPositions.clear()
+            #print("frames: ", frames)
             sendRequest(MOUSE_ACTION_PATH, command)

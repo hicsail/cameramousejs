@@ -50,7 +50,7 @@ class TrackerState:
 
     def updateDwellTime(self, dwellTime):
         # input: dwellTime - in seconds
-        frames = ((30*dwellTime) // 1) + 1
+        frames = int((30*dwellTime) // 1)
         self.dwellTime = frames
 
 trackerState = TrackerState()

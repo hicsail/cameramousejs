@@ -58,7 +58,7 @@ const createWindow = (): void => {
 };
 
 const turnOffTracking = () => {
-  console.log("Turned off tracking!");
+  //console.log("Turned off tracking!");
   configuration.trackingStatus = TRACKING_STATUS.OFF;
   mainWindow.webContents.send(
     IPC_FUNCTION_KEYS.HANDLE_CONFIGURATION_UPDATE,
