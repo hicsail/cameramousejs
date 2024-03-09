@@ -15,8 +15,7 @@ if __name__ == "__main__":
     while True:
         face, pose, pos, guesture, face_confidence, gesture_confidences = trackFace(trackerState)
         sendTrackingInfo(face, frameSize, pose, pos, guesture, face_confidence, gesture_confidences)
-        convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, guesture)
-        
+        convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, guesture, trackerState)
         
         # get config every now and then
         if count % 20 == 0:
@@ -27,7 +26,7 @@ if __name__ == "__main__":
         if k == 27:
             break
 
-        # Do the if statement if the OS is Windows
+        # On Windows, close both windows if the close button is pressed
         if sys.platform == 'win32':
             if cv2.getWindowProperty('Face Tracker', cv2.WND_PROP_VISIBLE) < 1:        
                 break

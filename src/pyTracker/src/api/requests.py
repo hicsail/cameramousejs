@@ -47,8 +47,7 @@ def getLatestAppSettingsFromServer(trackerState):
         trackerState.setScaleFactorValues(config['mouseMovementScaleFactor'], config['mouseMovementScaleFactorY'])
         trackerState.updateGestures(config['leftClickGesture'], config['rightClickGesture'], config['doubleClickGesture'])
         trackerState.updateGestureThresholds(config['mouthGestureThreshold'], config['eyebrowGestureThreshold'])
-        print("Mouth Gesture Threshold: ", config['mouthGestureThreshold'])
-        print("Eyebrow Gesture Threshold: ", config['eyebrowGestureThreshold'])
+        trackerState.updateDwellTime(config['dwellTime'])
 
 # detect shutdown command from server and end python process immediately
 def processShutDownCommand(response):

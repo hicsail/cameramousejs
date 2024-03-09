@@ -22,7 +22,7 @@ face : bounding box of face in format (x, y, w, h)
 frameSize: (w, h) 
     width and height of the frame in which the face was tracked
 """
-def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture):
+def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture, state):
     w, h = frameSize
     if pos and len(pos) > 0:
         newMousePosition = { "x" : pos[0] / w, "y" : pos[1] / h }
@@ -38,13 +38,14 @@ def convertFaceTrackingToMouseMovement(face, frameSize, pose, pos, gesture):
             rightClick = trackerState.rightClickGesture
             doubleClick = trackerState.doubleClickGesture
             
+            frames = trackerState.dwellTime
             # Handle left click
             if leftClick == "dwell" : 
-                detectHoverToClickGesture(MOUSE_ACTIONS.LEFT_CLICK)
+                detectHoverToClickGesture(MOUSE_ACTIONS.LEFT_CLICK, frames)
             elif rightClick == "dwell":
-                detectHoverToClickGesture(MOUSE_ACTIONS.RIGHT_CLICK)
+                detectHoverToClickGesture(MOUSE_ACTIONS.RIGHT_CLICK, frames)
             elif doubleClick == "dwell":
-                detectHoverToClickGesture(MOUSE_ACTIONS.DOUBLE_CLICK)
+                detectHoverToClickGesture(MOUSE_ACTIONS.DOUBLE_CLICK, frames)
 
             elif (leftClick == "mouth" and gesture[0]) or (leftClick == "eyebrow-raise" and gesture[1]): 
                 sendRequest(MOUSE_ACTION_PATH, MOUSE_ACTIONS.LEFT_CLICK)
@@ -71,10 +72,10 @@ def sendTrackingInfo(face, frameSize, pose, pos, guesture, face_confidence, gest
 """
 sends a left click command to server if face has been hovering around the same position for a while
 """
-def detectHoverToClickGesture(command):
-    if len(trackerState.trackedPositions) >= config.HOVER_TO_CLICK_MIN_POINTS: 
+def detectHoverToClickGesture(command, frames):
+    if len(trackerState.trackedPositions) >= frames: 
         # get last HOVER_TO_CLICK_MIN_POINTS tracked positions.
-        startIndex = len(trackerState.trackedPositions) - config.HOVER_TO_CLICK_MIN_POINTS
+        startIndex = len(trackerState.trackedPositions) - frames
         endIndex = len(trackerState.trackedPositions)
         cluster = deque(itertools.islice(trackerState.trackedPositions, startIndex, endIndex))# a deque can't be sliced with [x:x]
         # get distance between furthest two points in cluster 
@@ -84,4 +85,5 @@ def detectHoverToClickGesture(command):
         if longestDistanceX < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD and longestDistanceY < config.HOVER_TO_CLICK_DISTANCE_THRESHOLD:
             # clear past positions to prevent unintentional consecutive clicks
             trackerState.trackedPositions.clear()
+            #print("frames: ", frames)
             sendRequest(MOUSE_ACTION_PATH, command)
