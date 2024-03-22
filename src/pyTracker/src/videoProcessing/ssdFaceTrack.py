@@ -397,7 +397,7 @@ def trackFaces(trackerState):
 	
 	pos = []
 	# tracking using template matching 
-	if faces or len(template) != 0:
+	if shapes or len(template) != 0:
 		# select the largest face
 		# sorted_face = sorted(faces, key=lambda x : x[2] * x[3])
 		# target_face = sorted_face[-1] if sorted_face else []
