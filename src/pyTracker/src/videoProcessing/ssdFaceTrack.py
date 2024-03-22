@@ -403,7 +403,12 @@ def trackFaces(trackerState):
 		# target_face = sorted_face[-1] if sorted_face else []
 		sorted_idx = sorted(range(len(faces)), key=lambda k: faces[k][2] * faces[k][3])
 		target_face = faces[sorted_idx[-1]] if sorted_idx else []
-		target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
+		# target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
+		if len(shapes) > 0:
+			target_shape = shapes[0]
+		else:
+			target_face = []
+			target_shape = []
 		top_left, bottom_right = templateTrack(ori_frame, target_face, target_shape)
 		# print("template box ", top_left[0] - bottom_right[0])
 		# cv2.rectangle(frame, top_left, bottom_right, (0, 0, 0), 2)
