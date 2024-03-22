@@ -37,13 +37,14 @@ if config.DETECT_POSE:
 	pose_model.load_weights(weight_file)
 
 # parameters for template matching
-template_size = 0.04
+template_size = 30
+# template_size = 0.04
 search_size = 0.5
 prev_pos = []
 prev_match_template_res = np.array([[]])
 template = []
 method = cv2.TM_CCOEFF_NORMED
-dist_threshold = 0.17
+dist_threshold = 0.25
 
 # parameters for tracking using optical flow
 # parameters for ShiTomasi corner detection
@@ -145,15 +146,22 @@ def templateTrack(frame, face, shape):
 		# shape = face_utils.shape_to_np(shape)
 		# center = (shape[1] + shape[2]) / 2 # middle of eyes
 		# center = (shape[0] + shape[1]) / 2 # center of right eye to make sure enough distinctive feature
-		center = shape[27] # center of two eyes
-		center = shape[30] # nose
+		# center = shape[27] # center of two eyes
+		# center = shape[33] # nostril
+		center = shape[94] # nostril
 
 		(h, w) = frame.shape[:2]
-		if len(template) == 0 or hypot(center[0]-template_size*h-prev_pos[0], center[1]-template_size*h-prev_pos[1]) > dist_threshold * face[2]:
+		if len(template) == 0 or hypot(center[0]-template_size-prev_pos[0], center[1]-template_size-prev_pos[1]) > dist_threshold * face[2]:
 			# initialize with eyes
-			template = frame[int(center[1]-template_size*h):int(center[1]+template_size*h), 
-					int(center[0]-template_size*h):int(center[0]+template_size*h), :]
-			prev_pos = [int(center[0]-template_size*h), int(center[1]-template_size*h)]
+			template = frame[int(center[1]-template_size):int(center[1]+template_size), 
+					int(center[0]-template_size):int(center[0]+template_size), :]
+			prev_pos = [int(center[0]-template_size), int(center[1]-template_size)]
+
+		# if len(template) == 0 or hypot(center[0]-template_size*h-prev_pos[0], center[1]-template_size*h-prev_pos[1]) > dist_threshold * face[2]:
+			# initialize with eyes
+			# template = frame[int(center[1]-template_size*h):int(center[1]+template_size*h), 
+			# 		int(center[0]-template_size*h):int(center[0]+template_size*h), :]
+			# prev_pos = [int(center[0]-template_size*h), int(center[1]-template_size*h)]
 
 			# initialize using the center of the face
 			# center = (face[0] + face[2] / 2, face[1] + face[3] / 2)
@@ -252,8 +260,8 @@ def detect_eyebrows_raised(left_eyebrow, right_eyebrow, left_eye, right_eye):
 
 	return min(relative_left, relative_right) > EYEBROW_DIST_THRESHOLD
 
-
-
+from mediapipe import solutions
+from mediapipe.framework.formats import landmark_pb2
 def trackFaces(trackerState):
 	# grab the frame from the threaded video stream and resize it to the global frame size 
 	frame = vs.read()
@@ -284,25 +292,6 @@ def trackFaces(trackerState):
 	num_frames += 1
 	# detect face every # frames
 	if num_frames % config.FACE_FREQ == 0:
-
-		# Load the input image.
-		image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-		
-		
-
-		# Detect face landmarks from the input image.
-		detection_result = mp_detector.detect(image)
-		if detection_result and len(detection_result.face_blendshapes) > 0:
-			# print(detection_result.face_blendshapes[0][3])
-			# print(detection_result.face_blendshapes[0][25])
-			eyebrow_confidence = detection_result.face_blendshapes[0][3].score
-			mouth_confidence = detection_result.face_blendshapes[0][25].score
-
-			are_eyebrows_raised = eyebrow_confidence > trackerState.eyebrowGestureThreshold
-			is_mouth_open = mouth_confidence > trackerState.mouthGestureThreshold
-		else:
-			eyebrow_confidence = -1
-			mouth_confidence = -1
 
 		# grab the frame dimensions and convert it to a blob
 		(h, w) = frame.shape[:2]
@@ -344,14 +333,41 @@ def trackFaces(trackerState):
 				draw_pose_result = draw_axis(frame[yw1:yw2 + 1, xw1:xw2 + 1, :], yaw, pitch, roll)
 				frame[yw1:yw2 + 1, xw1:xw2 + 1, :] = draw_pose_result
 
+
+			# Load the input image.
+			image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+			
+		
+			# Detect face landmarks from the input image.
+			detection_result = mp_detector.detect(image)
+			if detection_result and len(detection_result.face_blendshapes) > 0:
+				# print(detection_result.face_blendshapes[0][3])
+				# print(detection_result.face_blendshapes[0][25])
+				eyebrow_confidence = detection_result.face_blendshapes[0][3].score
+				mouth_confidence = detection_result.face_blendshapes[0][25].score
+
+				are_eyebrows_raised = eyebrow_confidence > trackerState.eyebrowGestureThreshold
+				is_mouth_open = mouth_confidence > trackerState.mouthGestureThreshold
+				# annotated_image = frame.copy()
+				# https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+				# for f in detection_result.face_landmarks:
+				# 	for l in f[94:95]:
+				# 		px, py = solutions.drawing_utils._normalized_to_pixel_coordinates(l.x, l.y, frame.shape[1], frame.shape[0])
+				# 		cv2.circle(annotated_image, (px, py), 1, (0, 0, 255), -1)
+				# cv2.imshow("mediapipe", annotated_image)
+				shapes.append([solutions.drawing_utils._normalized_to_pixel_coordinates(l.x, l.y, frame.shape[1], frame.shape[0]) for l in detection_result.face_landmarks[0]])
+			else:
+				eyebrow_confidence = -1
+				mouth_confidence = -1
+
 			# 68 facial landmarks	
-			rect = dlib.rectangle(left=face[0], top=face[1], 
-			right=face[0]+face[2], bottom=face[1]+face[3])
-			shape = landmark_predictor_68(ori_frame, rect)
-			shape = face_utils.shape_to_np(shape)
+			# rect = dlib.rectangle(left=face[0], top=face[1], 
+			# right=face[0]+face[2], bottom=face[1]+face[3])
+			# shape = landmark_predictor_68(ori_frame, rect)
+			# shape = face_utils.shape_to_np(shape)
 			# detect mouth open
 			# is_mouth_open = detect_mouth_open(shape[48:68])
-			# for (x, y) in shape[48:68]:
+			# for (x, y) in shape:
 			# 	cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 			# if is_mouth_open:
 			# 	cv2.putText(frame, "Mouth Open", (endX, endY),
@@ -368,7 +384,7 @@ def trackFaces(trackerState):
 			# 	cv2.putText(frame, "Eyebrows raised", (endX, startY),
 			# 	cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 0, 0), 2)
 			
-			shapes.append(shape)
+			# shapes.append(shape)
 
 			# draw the bounding box of the face along with the associated probability
 			face_confidence = confidence
@@ -381,13 +397,18 @@ def trackFaces(trackerState):
 	
 	pos = []
 	# tracking using template matching 
-	if faces or len(template) != 0:
+	if shapes or len(template) != 0:
 		# select the largest face
 		# sorted_face = sorted(faces, key=lambda x : x[2] * x[3])
 		# target_face = sorted_face[-1] if sorted_face else []
 		sorted_idx = sorted(range(len(faces)), key=lambda k: faces[k][2] * faces[k][3])
 		target_face = faces[sorted_idx[-1]] if sorted_idx else []
-		target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
+		# target_shape = shapes[sorted_idx[-1]] if sorted_idx else []
+		if len(shapes) > 0:
+			target_shape = shapes[0]
+		else:
+			target_face = []
+			target_shape = []
 		top_left, bottom_right = templateTrack(ori_frame, target_face, target_shape)
 		# print("template box ", top_left[0] - bottom_right[0])
 		# cv2.rectangle(frame, top_left, bottom_right, (0, 0, 0), 2)
